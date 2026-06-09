@@ -241,13 +241,19 @@ body{
 /* Timer warna merah (sisa 2 menit) */
 .timer-danger{
     color: #dc3545 !important;
-    animation: blink 1s ease infinite;
 }
 
-/* Efek blink untuk timer merah */
-@keyframes blink {
+/* Timer kedap-kedip untuk sisa < 20 detik */
+.timer-blink{
+    color: #dc3545 !important;
+    animation: blinkFast 0.5s ease infinite;
+    font-weight: bold;
+}
+
+/* Efek blink cepat untuk < 20 detik */
+@keyframes blinkFast {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    50% { opacity: 0.3; }
 }
 
 .question{
@@ -377,7 +383,6 @@ button:hover{
     }
 }
 
-/* CSS untuk acak-info disembunyikan */
 .acak-info{
     display:none;
 }
@@ -547,10 +552,22 @@ let timerInterval = null;
 let time = 600;
 const prefixes = ["A", "B", "C", "D", "E"];
 
-// Cek apakah ada parameter seed dari index.html
-function getParameter(nama) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(nama);
+// ========== FUNGSI UPDATE WARNA TIMER ==========
+function updateTimerColor(remainingTime) {
+    const timerElement = document.getElementById("timer");
+    
+    // Hapus semua kelas yang ada
+    timerElement.classList.remove("timer-warning", "timer-danger", "timer-blink");
+    
+    // Cek sisa waktu
+    if(remainingTime <= 20) { // Kurang dari 20 detik
+        timerElement.classList.add("timer-blink");
+    } else if(remainingTime <= 120) { // 2 menit (120 detik)
+        timerElement.classList.add("timer-danger");
+    } else if(remainingTime <= 300) { // 5 menit (300 detik)
+        timerElement.classList.add("timer-warning");
+    }
+    // Selain itu warna default (hitam)
 }
 
 // ========== FUNGSI MENGACAK PILIHAN ==========
@@ -579,25 +596,8 @@ function shuffleAllQuestions() {
     questions = originalQuestions.map(q => shuffleOptions(q));
 }
 
-// ========== FUNGSI UPDATE WARNA TIMER ==========
-function updateTimerColor(remainingTime) {
-    const timerElement = document.getElementById("timer");
-    
-    // Hapus kelas yang ada
-    timerElement.classList.remove("timer-warning", "timer-danger");
-    
-    // Cek sisa waktu
-    if(remainingTime <= 120) { // 2 menit (120 detik)
-        timerElement.classList.add("timer-danger");
-    } else if(remainingTime <= 300) { // 5 menit (300 detik)
-        timerElement.classList.add("timer-warning");
-    }
-    // Selain itu warna default (hitam)
-}
-
 // ========== INISIALISASI ==========
 function initQuiz() {
-    // Acak pilihan (tanpa menampilkan notifikasi)
     shuffleAllQuestions();
     
     currentQuestion = 0;
@@ -611,7 +611,6 @@ function initQuiz() {
 function restartQuiz() {
     if(timerInterval) clearInterval(timerInterval);
     
-    // Acak ulang pilihan
     shuffleAllQuestions();
     
     currentQuestion = 0;
@@ -742,7 +741,6 @@ function startTimer() {
         let minutes = Math.floor(time/60);
         let seconds = time%60;
         
-        // Update tampilan timer
         document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
         
         // Update warna timer berdasarkan sisa waktu
