@@ -631,6 +631,52 @@ function updateTimerColor(remainingTime) {
     }
 }
 
+// ========== FUNGSI MENYIMPAN PROGRES KE LOCALSTORAGE ==========
+function saveProgress() {
+    const progress = {
+        currentQuestion: currentQuestion,
+        userAnswers: userAnswers,
+        time: time,
+        questionsData: questions.map(q => ({
+            question: q.question,
+            options: q.options,
+            answer: q.answer
+        }))
+    };
+    localStorage.setItem('skdQuizProgress', JSON.stringify(progress));
+}
+
+// ========== FUNGSI MEMUAT PROGRES DARI LOCALSTORAGE ==========
+function loadProgress() {
+    const saved = localStorage.getItem('skdQuizProgress');
+    if(saved) {
+        try {
+            const progress = JSON.parse(saved);
+            currentQuestion = progress.currentQuestion;
+            userAnswers = progress.userAnswers;
+            time = progress.time;
+            
+            // Memuat ulang soal yang tersimpan
+            if(progress.questionsData && progress.questionsData.length === originalQuestions.length) {
+                questions = progress.questionsData;
+            } else {
+                // Jika tidak cocok, buat ulang dengan acak
+                shuffleAllQuestions();
+            }
+            return true;
+        } catch(e) {
+            console.log('Gagal memuat progres');
+            return false;
+        }
+    }
+    return false;
+}
+
+// ========== FUNGSI MENGHAPUS PROGRES ==========
+function clearProgress() {
+    localStorage.removeItem('skdQuizProgress');
+}
+
 // ========== FUNGSI MENGHITUNG SKOR ==========
 function hitungSkor() {
     let twkScore = 0;
@@ -653,17 +699,16 @@ function hitungSkor() {
         }
         else { // TKP (66-110)
             if(userAnswer !== null) {
-                // Skor TKP adalah nilai pilihan +1 (karena index 0-4 menjadi skor 1-5)
                 tkpScore += (userAnswer + 1);
             }
         }
     }
     
     const totalScore = twkScore + tiuScore + tkpScore;
-    const maxTwk = 30 * 5; // 150
-    const maxTiu = 35 * 5; // 175
-    const maxTkp = 45 * 5; // 225
-    const maxTotal = maxTwk + maxTiu + maxTkp; // 550
+    const maxTwk = 30 * 5;
+    const maxTiu = 35 * 5;
+    const maxTkp = 45 * 5;
+    const maxTotal = maxTwk + maxTiu + maxTkp;
     
     return {
         twk: twkScore,
@@ -681,7 +726,7 @@ function hitungSkor() {
 // ========== 110 SOAL ==========
 const originalQuestions = [];
 
-// TWK Soal 1-30 (Pengetahuan Umum & Kebangsaan) - skor 5 jika benar
+// TWK Soal 1-30
 const twkSoal = [
     {q:"Pancasila sebagai dasar negara Indonesia terdiri dari berapa sila?", opt:["3","4","5","6","7"], a:2},
     {q:"Siapa presiden pertama Indonesia?", opt:["Soeharto","Soekarno","Habibie","Gus Dur","Megawati"], a:1},
@@ -715,7 +760,7 @@ const twkSoal = [
     {q:"Warna pada lambang Garuda Pancasila melambangkan?", opt:["Kemakmuran","Kesuburan","Keadilan","Persatuan","Kekuatan"], a:0}
 ];
 
-// TIU Soal 31-65 (Matematika & Logika) - skor 5 jika benar
+// TIU Soal 31-65
 const tiuSoal = [
     {q:"2 + 2 = ?", opt:["2","3","4","5","6"], a:2},
     {q:"5 x 5 = ?", opt:["20","25","30","35","40"], a:1},
@@ -754,7 +799,7 @@ const tiuSoal = [
     {q:"Jika 2x - 3 = 7, maka x = ?", opt:["3","4","5","6","7"], a:2}
 ];
 
-// TKP Soal 66-110 (Kepribadian & Pelayanan Publik) - skor 1-5 (index jawaban + 1)
+// TKP Soal 66-110
 const tkpSoal = [
     {q:"Saat bekerja dalam tim, sikap terbaik adalah?", opt:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"], a:2},
     {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?", opt:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"], a:2},
@@ -829,7 +874,7 @@ let questions = [];
 let currentQuestion = 0;
 let userAnswers = [];
 let timerInterval = null;
-let time = 6000; // 100 menit (6000 detik) untuk 110 soal
+let time = 6000;
 const prefixes = ["A", "B", "C", "D", "E"];
 
 function shuffleOptions(questionData) {
@@ -858,9 +903,17 @@ function shuffleAllQuestions() {
 }
 
 function initQuiz() {
-    shuffleAllQuestions();
-    currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
+    // Cek apakah ada progres tersimpan
+    const hasProgress = loadProgress();
+    
+    if(!hasProgress) {
+        // Jika tidak ada progres, buat baru
+        shuffleAllQuestions();
+        currentQuestion = 0;
+        userAnswers = Array(questions.length).fill(null);
+        time = 6000;
+    }
+    
     loadQuestion();
     updateSoalGrid();
     startTimer();
@@ -868,9 +921,14 @@ function initQuiz() {
 
 function restartQuiz() {
     if(timerInterval) clearInterval(timerInterval);
+    // Hapus progres lama
+    clearProgress();
+    // Buat ulang semua
     shuffleAllQuestions();
     currentQuestion = 0;
     userAnswers = Array(questions.length).fill(null);
+    time = 6000;
+    
     document.getElementById("result").style.display = "none";
     document.getElementById("quiz").style.display = "block";
     document.getElementById("sidebarToggle").style.display = "block";
@@ -908,6 +966,7 @@ function goToSoal(soalIndex) {
     currentQuestion = soalIndex;
     loadQuestion();
     toggleSidebar();
+    saveProgress(); // Simpan progres setelah pindah soal
 }
 
 function loadQuestion() {
@@ -952,6 +1011,7 @@ function saveAnswer() {
     if(selected) {
         userAnswers[currentQuestion] = parseInt(selected.value);
         updateSoalGrid();
+        saveProgress(); // Simpan progres setiap kali menjawab
     }
 }
 
@@ -960,6 +1020,7 @@ function nextQuestion() {
     if(currentQuestion < questions.length-1) {
         currentQuestion++;
         loadQuestion();
+        saveProgress(); // Simpan progres setelah pindah soal
     }
 }
 
@@ -968,12 +1029,16 @@ function prevQuestion() {
     if(currentQuestion > 0) {
         currentQuestion--;
         loadQuestion();
+        saveProgress(); // Simpan progres setelah pindah soal
     }
 }
 
 function finishQuiz() {
     if(timerInterval) clearInterval(timerInterval);
     saveAnswer();
+    
+    // Hapus progres karena kuis sudah selesai
+    clearProgress();
 
     const skor = hitungSkor();
     
@@ -981,15 +1046,26 @@ function finishQuiz() {
     document.getElementById("result").style.display = "block";
     document.getElementById("sidebarToggle").style.display = "none";
     
-    // Tampilkan detail skor
     const scoreDetail = document.getElementById("scoreDetail");
     scoreDetail.innerHTML = `
         <h3>📊 Detail Skor</h3>
-        <table>
-            <tr><td>📚 TWK (30 soal)</td><td><strong>${skor.twk}</strong> / ${skor.maxTwk}</td></tr>
-            <tr><td>🔢 TIU (35 soal)</td><td><strong>${skor.tiu}</strong> / ${skor.maxTiu}</td></tr>
-            <tr><td>⭐ TKP (45 soal)</td><td><strong>${skor.tkp}</strong> / ${skor.maxTkp}</td></tr>
-            <tr style="border-top:2px solid #ddd;"><td><strong>✅ TOTAL SKOR</strong></td><td><strong>${skor.total}</strong> / ${skor.maxTotal}</td></tr>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">📚 TWK (30 soal)</td>
+                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.twk}</strong> / ${skor.maxTwk}</td>
+            </tr>
+            <tr>
+                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">🔢 TIU (35 soal)</td>
+                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tiu}</strong> / ${skor.maxTiu}</td>
+            </tr>
+            <tr>
+                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">⭐ TKP (45 soal)</td>
+                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tkp}</strong> / ${skor.maxTkp}</td>
+            </tr>
+            <tr style="border-top:2px solid #ddd;">
+                <td style="padding:8px; font-weight:bold;">✅ TOTAL SKOR</td>
+                <td style="padding:8px; text-align:right;"><strong>${skor.total}</strong> / ${skor.maxTotal}</td>
+            </tr>
         </table>
         <div class="total-score">
             🎯 Nilai Akhir: ${skor.persen}
@@ -1003,22 +1079,22 @@ function finishQuiz() {
 
 function startTimer() {
     if(timerInterval) clearInterval(timerInterval);
-    time = 6000; // 100 menit
     timerInterval = setInterval(() => {
-        let minutes = Math.floor(time/60);
-        let seconds = time%60;
-        
-        document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-        updateTimerColor(time);
-        
         if(time <= 0) {
             clearInterval(timerInterval);
             finishQuiz();
+        } else {
+            time--;
+            let minutes = Math.floor(time/60);
+            let seconds = time%60;
+            document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+            updateTimerColor(time);
+            saveProgress(); // Simpan progres setiap detik (update timer)
         }
-        time--;
     }, 1000);
 }
 
+// Memulai kuis
 initQuiz();
 
 </script>
