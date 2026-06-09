@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Latihan SKD 1</title>
+<title>Latihan SKD 1 - Sistem Skor</title>
 
 <style>
 *{
@@ -419,6 +419,10 @@ button:hover{
     font-size:18px;
 }
 
+.result p span{
+    font-weight:bold;
+}
+
 .result-buttons{
     display:flex;
     gap:15px;
@@ -480,6 +484,46 @@ button:hover{
     color:#20c997;
     border:1px solid #20c997;
 }
+
+/* Score display di hasil */
+.score-detail{
+    text-align:left;
+    max-width:400px;
+    margin:20px auto;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:10px;
+}
+
+.score-detail h3{
+    margin-bottom:10px;
+    color:#0d6efd;
+}
+
+.score-detail table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.score-detail td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.score-detail td:first-child{
+    font-weight:bold;
+}
+
+.score-detail td:last-child{
+    text-align:right;
+}
+
+.total-score{
+    font-size:24px;
+    font-weight:bold;
+    color:#198754;
+    margin-top:15px;
+}
 </style>
 </head>
 <body>
@@ -493,9 +537,9 @@ button:hover{
 <div id="quiz">
     <div class="info-section">
         <div class="category-info">
-            📚 <span class="twk-text">TWK</span> (Soal 1-30) | 
-            <span class="tiu-text">TIU</span> (Soal 31-65) | 
-            <span class="tkp-text">TKP</span> (Soal 66-110)
+            📚 <span class="twk-text">TWK</span> (Soal 1-30, skor 5/soal) | 
+            <span class="tiu-text">TIU</span> (Soal 31-65, skor 5/soal) | 
+            <span class="tkp-text">TKP</span> (Soal 66-110, skor 1-5/soal)
         </div>
         <div id="currentCategory" class="current-category twk">📍 TWK</div>
     </div>
@@ -517,10 +561,7 @@ button:hover{
 <div class="result" id="result">
     <h1>📊 Hasil Kuis</h1>
     <p>📝 Latihan SKD - TWK, TIU, TKP</p>
-    <p>✅ Jawaban Benar: <span id="correct"></span></p>
-    <p>❌ Jawaban Salah: <span id="wrong"></span></p>
-    <p>⭐ Nilai: <span id="score"></span></p>
-    <br />
+    <div id="scoreDetail" class="score-detail"></div>
     <div class="result-buttons">
         <button class="finish" onclick="restartQuiz()">
             🔄 Ulangi Kuis
@@ -566,15 +607,15 @@ button:hover{
             <div class="legend" style="margin-top:5px;">
                 <div class="legend-item">
                     <div class="legend-color" style="background:#6f42c1;"></div>
-                    <span>🟣 TWK (Soal 1-30)</span>
+                    <span>🟣 TWK (Soal 1-30) - Skor 5</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#8B4513;"></div>
-                    <span>🟤 TIU (Soal 31-65)</span>
+                    <span>🟤 TIU (Soal 31-65) - Skor 5</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background:#20c997;"></div>
-                    <span>🟢 TKP (Soal 66-110)</span>
+                    <span>🟢 TKP (Soal 66-110) - Skor 1-5</span>
                 </div>
             </div>
             <p style="margin-top:15px; font-size:12px; color:#666;">
@@ -624,10 +665,57 @@ function updateTimerColor(remainingTime) {
     }
 }
 
+// ========== FUNGSI MENGHITUNG SKOR ==========
+function hitungSkor() {
+    let twkScore = 0;
+    let tiuScore = 0;
+    let tkpScore = 0;
+    
+    for(let i = 0; i < questions.length; i++) {
+        const soalNumber = i + 1;
+        const userAnswer = userAnswers[i];
+        
+        if(soalNumber >= 1 && soalNumber <= 30) { // TWK
+            if(userAnswer !== null && userAnswer === questions[i].answer) {
+                twkScore += 5;
+            }
+        }
+        else if(soalNumber >= 31 && soalNumber <= 65) { // TIU
+            if(userAnswer !== null && userAnswer === questions[i].answer) {
+                tiuScore += 5;
+            }
+        }
+        else { // TKP (66-110)
+            if(userAnswer !== null) {
+                // Skor TKP adalah nilai pilihan +1 (karena index 0-4 menjadi skor 1-5)
+                tkpScore += (userAnswer + 1);
+            }
+        }
+    }
+    
+    const totalScore = twkScore + tiuScore + tkpScore;
+    const maxTwk = 30 * 5; // 150
+    const maxTiu = 35 * 5; // 175
+    const maxTkp = 45 * 5; // 225
+    const maxTotal = maxTwk + maxTiu + maxTkp; // 550
+    
+    return {
+        twk: twkScore,
+        tiu: tiuScore,
+        tkp: tkpScore,
+        total: totalScore,
+        maxTwk: maxTwk,
+        maxTiu: maxTiu,
+        maxTkp: maxTkp,
+        maxTotal: maxTotal,
+        persen: Math.round((totalScore / maxTotal) * 100)
+    };
+}
+
 // ========== 110 SOAL ==========
 const originalQuestions = [];
 
-// TWK Soal 1-30 (Pengetahuan Umum & Kebangsaan)
+// TWK Soal 1-30 (Pengetahuan Umum & Kebangsaan) - skor 5 jika benar
 const twkSoal = [
     {q:"Pancasila sebagai dasar negara Indonesia terdiri dari berapa sila?", opt:["3","4","5","6","7"], a:2},
     {q:"Siapa presiden pertama Indonesia?", opt:["Soeharto","Soekarno","Habibie","Gus Dur","Megawati"], a:1},
@@ -661,7 +749,7 @@ const twkSoal = [
     {q:"Warna pada lambang Garuda Pancasila melambangkan?", opt:["Kemakmuran","Kesuburan","Keadilan","Persatuan","Kekuatan"], a:0}
 ];
 
-// TIU Soal 31-65 (Matematika & Logika)
+// TIU Soal 31-65 (Matematika & Logika) - skor 5 jika benar
 const tiuSoal = [
     {q:"2 + 2 = ?", opt:["2","3","4","5","6"], a:2},
     {q:"5 x 5 = ?", opt:["20","25","30","35","40"], a:1},
@@ -700,7 +788,7 @@ const tiuSoal = [
     {q:"Jika 2x - 3 = 7, maka x = ?", opt:["3","4","5","6","7"], a:2}
 ];
 
-// TKP Soal 66-110 (Kepribadian & Pelayanan Publik)
+// TKP Soal 66-110 (Kepribadian & Pelayanan Publik) - skor 1-5 (index jawaban + 1)
 const tkpSoal = [
     {q:"Saat bekerja dalam tim, sikap terbaik adalah?", opt:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"], a:2},
     {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?", opt:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"], a:2},
@@ -744,7 +832,6 @@ const tkpSoal = [
     {q:"Peningkatan kualitas diri dapat dilakukan dengan?", opt:["Bermalas-malasan","Belajar terus-menerus","Berhenti bekerja","Pindah kerja","Mengeluh"], a:1},
     {q:"Sikap empati terhadap rekan kerja?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
     {q:"Menyelesaikan pekerjaan tepat waktu disebut?", opt:["Profesional","Malas","Biasa","Lamban","Ceroboh"], a:0},
-    {q:"Saat ada perubahan kebijakan, sikap terbaik?", opt:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], a:1},
     {q:"Saat ada perubahan kebijakan, sikap terbaik?", opt:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], a:1},
     {q:"Integritas adalah?", opt:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"], a:1}
 ];
@@ -922,21 +1009,30 @@ function finishQuiz() {
     if(timerInterval) clearInterval(timerInterval);
     saveAnswer();
 
-    let correct = 0;
-    questions.forEach((q, index) => {
-        if(userAnswers[index] === q.answer) correct++;
-    });
-
-    let wrong = questions.length - correct;
-    let score = Math.round((correct/questions.length)*100);
-
+    const skor = hitungSkor();
+    
     document.getElementById("quiz").style.display = "none";
     document.getElementById("result").style.display = "block";
-    document.getElementById("correct").innerText = correct;
-    document.getElementById("wrong").innerText = wrong;
-    document.getElementById("score").innerText = score;
-    
     document.getElementById("sidebarToggle").style.display = "none";
+    
+    // Tampilkan detail skor
+    const scoreDetail = document.getElementById("scoreDetail");
+    scoreDetail.innerHTML = `
+        <h3>📊 Detail Skor</h3>
+        <table>
+            <tr><td>📚 TWK (30 soal)</td><td><strong>${skor.twk}</strong> / ${skor.maxTwk}</td></tr>
+            <tr><td>🔢 TIU (35 soal)</td><td><strong>${skor.tiu}</strong> / ${skor.maxTiu}</td></tr>
+            <tr><td>⭐ TKP (45 soal)</td><td><strong>${skor.tkp}</strong> / ${skor.maxTkp}</td></tr>
+            <tr style="border-top:2px solid #ddd;"><td><strong>✅ TOTAL SKOR</strong></td><td><strong>${skor.total}</strong> / ${skor.maxTotal}</td></tr>
+        </table>
+        <div class="total-score">
+            🎯 Nilai Akhir: ${skor.persen}
+        </div>
+        <p style="margin-top:15px; font-size:12px; color:#666;">
+            ℹ️ TWK & TIU: Benar = 5 poin, Salah/Tidak menjawab = 0<br>
+            ℹ️ TKP: Setiap jawaban memiliki skor 1-5 (semakin benar semakin tinggi)
+        </p>
+    `;
 }
 
 function startTimer() {
