@@ -241,13 +241,19 @@ body{
 /* Timer warna merah (sisa 2 menit) */
 .timer-danger{
     color: #dc3545 !important;
-    animation: blink 1s ease infinite;
 }
 
-/* Efek blink untuk timer merah */
-@keyframes blink {
+/* Timer kedap-kedip untuk sisa < 20 detik */
+.timer-blink{
+    color: #dc3545 !important;
+    animation: blinkFast 0.5s ease infinite;
+    font-weight: bold;
+}
+
+/* Efek blink cepat untuk < 20 detik */
+@keyframes blinkFast {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    50% { opacity: 0.3; }
 }
 
 .question{
@@ -655,11 +661,13 @@ const prefixes = ["A", "B", "C", "D", "E"];
 function updateTimerColor(remainingTime) {
     const timerElement = document.getElementById("timer");
     
-    // Hapus kelas yang ada
-    timerElement.classList.remove("timer-warning", "timer-danger");
+    // Hapus semua kelas yang ada
+    timerElement.classList.remove("timer-warning", "timer-danger", "timer-blink");
     
     // Cek sisa waktu
-    if(remainingTime <= 120) { // 2 menit (120 detik)
+    if(remainingTime <= 20) { // Kurang dari 20 detik
+        timerElement.classList.add("timer-blink");
+    } else if(remainingTime <= 120) { // 2 menit (120 detik)
         timerElement.classList.add("timer-danger");
     } else if(remainingTime <= 300) { // 5 menit (300 detik)
         timerElement.classList.add("timer-warning");
