@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Latihan SKD 1 - Sistem Skor</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:900px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+/* Tombol Sidebar */
+.sidebar-toggle{
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    z-index:1000;
+}
+
+.btn-sidebar{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    border-radius:50px;
+    padding:12px 24px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-sidebar:hover{
+    background:#0b5ed7;
+    transform:scale(1.05);
+}
+
+/* Sidebar */
+.sidebar{
+    position:fixed;
+    top:0;
+    right:-350px;
+    width:350px;
+    height:100vh;
+    background:white;
+    box-shadow:-2px 0 10px rgba(0,0,0,.1);
+    z-index:1001;
+    transition:right 0.3s ease;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+}
+
+.sidebar.open{
+    right:0;
+}
+
+.sidebar-header{
+    padding:20px;
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+}
+
+.sidebar-header h3{
+    margin:0;
+}
+
+.close-sidebar{
+    background:none;
+    border:none;
+    color:white;
+    font-size:28px;
+    cursor:pointer;
+    padding:0;
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.close-sidebar:hover{
+    background:rgba(255,255,255,.2);
+    border-radius:50%;
+}
+
+.sidebar-content{
+    padding:20px;
+}
+
+.soal-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+    margin-bottom:20px;
+    max-height:400px;
+    overflow-y:auto;
+    padding-right:5px;
+}
+
+.grid-soal{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+    transition:0.2s;
+    border:2px solid #dee2e6;
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.grid-soal:hover{
+    transform:scale(1.05);
+}
+
+/* ========== STATUS WARNA (FULL BACKGROUND) ========== */
+.grid-soal.answered{
+    background: #198754;
+    color: white;
+    border-color: #198754;
+}
+
+.grid-soal.unanswered{
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.grid-soal.active{
+    background: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.3);
+    transform: scale(1.02);
+}
+
+/* ========== WARNA KATEGORI (HANYA BORDER KIRI) ========== */
+.grid-soal.twk{
+    border-left: 5px solid #6f42c1;
+}
+
+.grid-soal.tiu{
+    border-left: 5px solid #8B4513;
+}
+
+.grid-soal.tkp{
+    border-left: 5px solid #20c997;
+}
+
+.grid-soal.active.twk{
+    border-left: 5px solid #ffffff;
+}
+
+.grid-soal.active.tiu{
+    border-left: 5px solid #ffffff;
+}
+
+.grid-soal.active.tkp{
+    border-left: 5px solid #ffffff;
+}
+
+.sidebar-info{
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid #ddd;
+}
+
+.sidebar-info p{
+    margin:8px 0;
+    font-size:14px;
+}
+
+.legend{
+    display:flex;
+    gap:15px;
+    margin-top:15px;
+    flex-wrap:wrap;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+}
+
+.legend-color{
+    width:20px;
+    height:20px;
+    border-radius:5px;
+}
+
+/* Overlay */
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.5);
+    z-index:1000;
+    display:none;
+}
+
+.overlay.show{
+    display:block;
+}
+
+/* Style Utama Kuis */
+.header-title{
+    text-align:center;
+    margin-bottom:20px;
+    padding-bottom:10px;
+    border-bottom:2px solid #0d6efd;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.header-title h2{
+    color:#0d6efd;
+    margin:0;
+}
+
+/* Kategori aktif di samping judul */
+.header-category{
+    font-weight:bold;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.header-category.twk{
+    background:#6f42c120;
+    color:#6f42c1;
+    border:1px solid #6f42c1;
+}
+
+.header-category.tiu{
+    background:#8B451320;
+    color:#8B4513;
+    border:1px solid #8B4513;
+}
+
+.header-category.tkp{
+    background:#20c99720;
+    color:#20c997;
+    border:1px solid #20c997;
+}
+
+.info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+#timer{
+    transition: color 0.3s ease;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.timer-warning{
+    color: #fd7e14 !important;
+}
+
+.timer-danger{
+    color: #dc3545 !important;
+}
+
+.timer-blink{
+    color: #dc3545 !important;
+    animation: blinkFast 0.5s ease infinite;
+    font-weight: bold;
+}
+
+@keyframes blinkFast {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.question{
+    font-size:18px;
+    margin-bottom:20px;
+    font-weight:bold;
+    line-height:1.5;
+}
+
+.option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f2f2f2;
+}
+
+.option input{
+    display:none;
+}
+
+.choice-letter{
+    width:40px;
+    height:40px;
+    min-width:40px;
+    border-radius:50%;
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.choice-text{
+    flex:1;
+}
+
+.option input:checked + .choice-letter{
+    background:#198754;
+}
+    
+.buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s;
+}
+
+button:hover{
+    opacity:0.85;
+}
+
+.prev{
+    background:#6c757d;
+    color:white;
+}
+
+.next{
+    background:#0d6efd;
+    color:white;
+}
+
+.finish{
+    background:#198754;
+    color:white;
+}
+
+.back-home{
+    background:#fd7e14;
+    color:white;
+}
+
+.result{
+    display:none;
+    text-align:center;
+}
+
+.result h1{
+    margin-bottom:20px;
+    color:#0d6efd;
+}
+
+.result p{
+    margin:10px 0;
+    font-size:18px;
+}
+
+.result p span{
+    font-weight:bold;
+}
+
+.result-buttons{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    margin-top:25px;
+    flex-wrap:wrap;
+}
+
+@media (max-width: 768px){
+    .sidebar{
+        width:100%;
+        right:-100%;
+    }
+    
+    .soal-grid{
+        grid-template-columns:repeat(5,1fr);
+    }
+    
+    .btn-sidebar{
+        padding:10px 18px;
+        font-size:14px;
+    }
+    
+    .header-title{
+        flex-direction:column;
+        text-align:center;
+    }
+    
+    .question{
+        font-size:16px;
+    }
+}
+
+.acak-info{
+    display:none;
+}
+
+/* Score display di hasil */
+.score-detail{
+    text-align:left;
+    max-width:400px;
+    margin:20px auto;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:10px;
+}
+
+.score-detail h3{
+    margin-bottom:10px;
+    color:#0d6efd;
+}
+
+.score-detail table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.score-detail td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.score-detail td:first-child{
+    font-weight:bold;
+}
+
+.score-detail td:last-child{
+    text-align:right;
+}
+
+.total-score{
+    font-size:24px;
+    font-weight:bold;
+    color:#198754;
+    margin-top:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header-title">
+    <h2>📖 Latihan SKD 1</h2>
+    <div id="headerCategory" class="header-category twk">📍 TWK</div>
+</div>
+
+<div id="quiz">
+    <div class="info">
+        <span id="progress">Soal 1/110</span>
+        <span id="timer">100:00</span>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+
+    <div class="buttons">
+        <button class="prev" onclick="prevQuestion()">◀ Previous</button>
+        <button id="nextFinishBtn" class="next" onclick="nextQuestion()">Next ▶</button>
+    </div>
+</div>
+
+<div class="result" id="result">
+    <h1>📊 Hasil Kuis</h1>
+    <p>📝 Latihan SKD - TWK, TIU, TKP</p>
+    <div id="scoreDetail" class="score-detail"></div>
+    <div class="result-buttons">
+        <button class="finish" onclick="restartQuiz()">
+            🔄 Ulangi Kuis
+        </button>
+        <button class="back-home" onclick="goToHomePage()">
+            🏠 Kembali ke Menu Utama
+        </button>
+    </div>
+</div>
+
+</div>
+
+<div class="sidebar-toggle" id="sidebarToggle">
+    <button class="btn-sidebar" onclick="toggleSidebar()">
+        📋 Daftar Soal
+    </button>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>📋 Daftar Soal</h3>
+        <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+    </div>
+    <div class="sidebar-content">
+        <div class="soal-grid" id="soalGrid"></div>
+        
+        <div class="sidebar-info">
+            <p><strong>Informasi:</strong></p>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#0d6efd;"></div>
+                    <span>🔵 Soal Aktif</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#198754;"></div>
+                    <span>🟢 Sudah Dijawab</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#dc3545;"></div>
+                    <span>🔴 Belum Dijawab</span>
+                </div>
+            </div>
+            <div class="legend" style="margin-top:5px;">
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#6f42c1;"></div>
+                    <span>🟣 TWK (Soal 1-30) - Skor 5</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#8B4513;"></div>
+                    <span>🟤 TIU (Soal 31-65) - Skor 5</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#20c997;"></div>
+                    <span>🟢 TKP (Soal 66-110) - Skor 1-5</span>
+                </div>
+            </div>
+            <p style="margin-top:15px; font-size:12px; color:#666;">
+                💡 Klik nomor soal untuk langsung ke soal tersebut
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<script>
+
+function goToHomePage() {
+    window.location.href = "index.html";
+}
+
+function getCategory(soalNumber) {
+    if(soalNumber >= 1 && soalNumber <= 30) {
+        return { name: "TWK", class: "twk", range: "Soal 1-30" };
+    }
+    else if(soalNumber >= 31 && soalNumber <= 65) {
+        return { name: "TIU", class: "tiu", range: "Soal 31-65" };
+    }
+    else {
+        return { name: "TKP", class: "tkp", range: "Soal 66-110" };
+    }
+}
+
+function updateHeaderCategory(soalNumber) {
+    const category = getCategory(soalNumber);
+    const headerCategoryElem = document.getElementById("headerCategory");
+    headerCategoryElem.textContent = `📍 ${category.name}`;
+    headerCategoryElem.className = `header-category ${category.class}`;
+}
+
+function updateTimerColor(remainingTime) {
+    const timerElement = document.getElementById("timer");
+    timerElement.classList.remove("timer-warning", "timer-danger", "timer-blink");
+    
+    if(remainingTime <= 20) {
+        timerElement.classList.add("timer-blink");
+    } else if(remainingTime <= 120) {
+        timerElement.classList.add("timer-danger");
+    } else if(remainingTime <= 300) {
+        timerElement.classList.add("timer-warning");
+    }
+}
+
+// ========== FUNGSI MENYIMPAN PROGRES KE LOCALSTORAGE ==========
+function saveProgress() {
+    const progress = {
+        currentQuestion: currentQuestion,
+        userAnswers: userAnswers,
+        time: time,
+        questionsData: questions.map(q => ({
+            question: q.question,
+            options: q.options,
+            answer: q.answer
+        }))
+    };
+    localStorage.setItem('skdQuizProgress', JSON.stringify(progress));
+}
+
+// ========== FUNGSI MEMUAT PROGRES DARI LOCALSTORAGE ==========
+function loadProgress() {
+    const saved = localStorage.getItem('skdQuizProgress');
+    if(saved) {
+        try {
+            const progress = JSON.parse(saved);
+            currentQuestion = progress.currentQuestion;
+            userAnswers = progress.userAnswers;
+            time = progress.time;
+            
+            // Memuat ulang soal yang tersimpan
+            if(progress.questionsData && progress.questionsData.length === originalQuestions.length) {
+                questions = progress.questionsData;
+            } else {
+                // Jika tidak cocok, buat ulang dengan acak
+                shuffleAllQuestions();
+            }
+            return true;
+        } catch(e) {
+            console.log('Gagal memuat progres');
+            return false;
+        }
+    }
+    return false;
+}
+
+// ========== FUNGSI MENGHAPUS PROGRES ==========
+function clearProgress() {
+    localStorage.removeItem('skdQuizProgress');
+}
+
+// ========== FUNGSI MENGHITUNG SKOR ==========
+function hitungSkor() {
+    let twkScore = 0;
+    let tiuScore = 0;
+    let tkpScore = 0;
+    
+    for(let i = 0; i < questions.length; i++) {
+        const soalNumber = i + 1;
+        const userAnswer = userAnswers[i];
+        
+        if(soalNumber >= 1 && soalNumber <= 30) { // TWK
+            if(userAnswer !== null && userAnswer === questions[i].answer) {
+                twkScore += 5;
+            }
+        }
+        else if(soalNumber >= 31 && soalNumber <= 65) { // TIU
+            if(userAnswer !== null && userAnswer === questions[i].answer) {
+                tiuScore += 5;
+            }
+        }
+        else { // TKP (66-110)
+            if(userAnswer !== null) {
+                tkpScore += (userAnswer + 1);
+            }
+        }
+    }
+    
+    const totalScore = twkScore + tiuScore + tkpScore;
+    const maxTwk = 30 * 5;
+    const maxTiu = 35 * 5;
+    const maxTkp = 45 * 5;
+    const maxTotal = maxTwk + maxTiu + maxTkp;
+    
+    return {
+        twk: twkScore,
+        tiu: tiuScore,
+        tkp: tkpScore,
+        total: totalScore,
+        maxTwk: maxTwk,
+        maxTiu: maxTiu,
+        maxTkp: maxTkp,
+        maxTotal: maxTotal,
+        persen: Math.round((totalScore / maxTotal) * 100)
+    };
+}
+
+// ========== 110 SOAL ==========
+const originalQuestions = [];
+
+// TWK Soal 1-30
+const twkSoal = [
+    {q:"Pancasila sebagai dasar negara Indonesia terdiri dari berapa sila?", opt:["3","4","5","6","7"], a:2},
+    {q:"Siapa presiden pertama Indonesia?", opt:["Soeharto","Soekarno","Habibie","Gus Dur","Megawati"], a:1},
+    {q:"Bendera Indonesia berwarna?", opt:["Merah Putih","Merah Biru","Kuning Merah","Hijau Putih","Hitam Putih"], a:0},
+    {q:"Lagu kebangsaan Indonesia adalah?", opt:["Indonesia Pusaka","Indonesia Raya","Rayuan Pulau Kelapa","Tanah Airku","Garuda Pancasila"], a:1},
+    {q:"Semboyan negara Indonesia adalah?", opt:["Bersatu Kita Teguh","Bhinneka Tunggal Ika","Merdeka","Jayalah Indonesiaku","Indonesia Jaya"], a:1},
+    {q:"Hari Kemerdekaan RI diperingati tanggal?", opt:["17 Agustus","1 Juni","28 Oktober","10 November","20 Mei"], a:0},
+    {q:"Lambang negara Indonesia adalah?", opt:["Garuda","Banteng","Komodo","Elang","Merak"], a:0},
+    {q:"Bahasa resmi Indonesia adalah?", opt:["Jawa","Sunda","Indonesia","Melayu","Inggris"], a:2},
+    {q:"Ibukota Indonesia adalah?", opt:["Bandung","Jakarta","Surabaya","Medan","Makassar"], a:1},
+    {q:"BPUPKI dibentuk pada tanggal?", opt:["1 Maret 1945","29 April 1945","1 Juni 1945","17 Agustus 1945","18 Agustus 1945"], a:0},
+    {q:"Proklamasi Kemerdekaan dibacakan oleh?", opt:["Soekarno","Moh Hatta","Soeharto","Ki Hajar Dewantara","Jendral Sudirman"], a:0},
+    {q:"Sumpah Pemuda diperingati tanggal?", opt:["17 Agustus","28 Oktober","10 November","20 Mei","1 Juni"], a:1},
+    {q:"Konstitusi Indonesia adalah?", opt:["UUD 1945","UUD 1950","UUD Sementara","Proklamasi","Dekrit Presiden"], a:0},
+    {q:"Pahlawan wanita dari Aceh adalah?", opt:["RA Kartini","Cut Nyak Dien","Dewi Sartika","Martha Tiahahu","Christina Tiahahu"], a:1},
+    {q:"Gunung tertinggi di Indonesia?", opt:["Kerinci","Rinjani","Bromo","Jayawijaya","Merbabu"], a:3},
+    {q:"Danau terbesar di Indonesia?", opt:["Toba","Maninjau","Singkarak","Poso","Towuti"], a:0},
+    {q:"Pulau terpadat di Indonesia?", opt:["Jawa","Sumatra","Kalimantan","Sulawesi","Papua"], a:0},
+    {q:"Selat yang memisahkan Jawa dan Sumatra?", opt:["Selat Sunda","Selat Bali","Selat Lombok","Selat Malaka","Selat Makassar"], a:0},
+    {q:"Tarian dari Bali?", opt:["Jaipong","Kecak","Tor-tor","Saman","Piring"], a:1},
+    {q:"Alat musik tradisional dari Jawa Barat?", opt:["Angklung","Gamelan","Sasando","Tifa","Kolintang"], a:0},
+    {q:"Rumah adat Minangkabau?", opt:["Gadang","Joglo","Tongkonan","Honai","Lamin"], a:0},
+    {q:"Makanan khas dari Padang?", opt:["Rendang","Gudeg","Pempek","Sate Lilit","Ayam Betutu"], a:0},
+    {q:"Candi Borobudur terletak di?", opt:["Jawa Tengah","Jawa Timur","Yogyakarta","Bali","Lampung"], a:0},
+    {q:"Agama resmi yang diakui di Indonesia ada?", opt:["4","5","6","7","8"], a:1},
+    {q:"Bahasa pengantar di sekolah adalah?", opt:["Inggris","Indonesia","Daerah","Arab","Mandarin"], a:1},
+    {q:"Lembaga yang berwenang mengubah UUD?", opt:["DPR","MPR","MA","MK","Presiden"], a:1},
+    {q:"Hak angket DPR adalah hak untuk?", opt:["Menyelidiki","Mengajukan","Mengubah","Menghapus","Menolak"], a:0},
+    {q:"TNI singkatan dari?", opt:["Tentara Nasional Indonesia","Tentara Negara Indonesia","Tugas Nasional Indonesia","Tim Nasional Indonesia","Tentara Nusantara Indonesia"], a:0},
+    {q:"Polri singkatan dari?", opt:["Polisi Republik Indonesia","Polisi Negara Indonesia","Polisi Nasional Indonesia","Pasukan Republik Indonesia","Pengawal Republik Indonesia"], a:0},
+    {q:"Warna pada lambang Garuda Pancasila melambangkan?", opt:["Kemakmuran","Kesuburan","Keadilan","Persatuan","Kekuatan"], a:0}
+];
+
+// TIU Soal 31-65
+const tiuSoal = [
+    {q:"2 + 2 = ?", opt:["2","3","4","5","6"], a:2},
+    {q:"5 x 5 = ?", opt:["20","25","30","35","40"], a:1},
+    {q:"10 - 3 = ?", opt:["5","6","7","8","9"], a:2},
+    {q:"100 : 4 = ?", opt:["20","25","30","35","40"], a:1},
+    {q:"Akar dari 81 adalah?", opt:["7","8","9","10","11"], a:2},
+    {q:"3 x 7 = ?", opt:["18","20","21","22","24"], a:2},
+    {q:"12 + 8 = ?", opt:["18","19","20","21","22"], a:2},
+    {q:"6 x 6 = ?", opt:["30","32","34","36","38"], a:3},
+    {q:"15 - 7 = ?", opt:["6","7","8","9","10"], a:1},
+    {q:"2 x 8 = ?", opt:["14","15","16","17","18"], a:2},
+    {q:"Jika x = 5, maka 3x + 2 = ?", opt:["15","16","17","18","19"], a:2},
+    {q:"Jika 2a = 10, maka a = ?", opt:["2","3","4","5","6"], a:3},
+    {q:"Bilangan prima antara 10-20 adalah?", opt:["11,13,17,19","11,13,15,17","13,15,17,19","11,13,17,18","10,11,13,17"], a:0},
+    {q:"FPB dari 12 dan 18 adalah?", opt:["2","3","4","6","9"], a:3},
+    {q:"KPK dari 4 dan 6 adalah?", opt:["8","10","12","14","16"], a:2},
+    {q:"20% dari 500 adalah?", opt:["50","100","150","200","250"], a:1},
+    {q:"3/4 + 1/2 = ?", opt:["1","1/4","1 1/4","1 1/2","2"], a:0},
+    {q:"0,5 x 0,2 = ?", opt:["0,01","0,1","1","10","100"], a:1},
+    {q:"Jika hari ini Selasa, 10 hari lagi?", opt:["Senin","Selasa","Rabu","Kamis","Jumat"], a:4},
+    {q:"Semua kucing suka ikan. Si Belang adalah kucing. Maka?", opt:["Si Belang suka ikan","Si Belang tidak suka ikan","Si Belang mungkin suka ikan","Tidak tahu","Si Belang suka daging"], a:0},
+    {q:"Jika A > B dan B > C, maka?", opt:["A < C","A = C","A > C","A < B","B > A"], a:2},
+    {q:"Nilai dari 2^3 adalah?", opt:["4","6","8","9","12"], a:2},
+    {q:"Nilai dari 3^2 adalah?", opt:["5","6","8","9","12"], a:3},
+    {q:"Akar dari 144 adalah?", opt:["10","11","12","13","14"], a:2},
+    {q:"Luas persegi dengan sisi 5 cm?", opt:["10","15","20","25","30"], a:3},
+    {q:"Keliling persegi dengan sisi 7 cm?", opt:["14","21","28","35","42"], a:2},
+    {q:"Volume kubus dengan rusuk 3 cm?", opt:["9","18","27","36","45"], a:2},
+    {q:"Jika 4x = 20, maka x = ?", opt:["3","4","5","6","7"], a:2},
+    {q:"1 km = ... meter", opt:["10","100","1000","10000","100000"], a:2},
+    {q:"1 jam = ... menit", opt:["30","45","60","75","90"], a:2},
+    {q:"1 menit = ... detik", opt:["30","45","60","75","90"], a:2},
+    {q:"Jika p = 2, q = 3, maka p x q = ?", opt:["4","5","6","7","8"], a:2},
+    {q:"Jika 3x + 2 = 11, maka x = ?", opt:["2","3","4","5","6"], a:1},
+    {q:"Jika x + 5 = 10, maka x = ?", opt:["2","3","4","5","6"], a:3},
+    {q:"Jika 2x - 3 = 7, maka x = ?", opt:["3","4","5","6","7"], a:2}
+];
+
+// TKP Soal 66-110
+const tkpSoal = [
+    {q:"Saat bekerja dalam tim, sikap terbaik adalah?", opt:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"], a:2},
+    {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?", opt:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"], a:2},
+    {q:"Saat menghadapi tekanan kerja, sebaiknya?", opt:["Menyerah","Bersantai","Tetap fokus","Marah-marah","Menyalahkan orang lain"], a:2},
+    {q:"Pelayanan terbaik kepada pelanggan adalah?", opt:["Cepat","Ramah","Profesional","Tepat waktu","Semua benar"], a:4},
+    {q:"Saat diberi kritik, sebaiknya?", opt:["Marah","Menerima dengan lapang","Membantah","Mengabaikan","Menangis"], a:1},
+    {q:"Saat rapat berlangsung, sebaiknya?", opt:["Bermain HP","Mendengarkan","Mengobrol","Keluar masuk","Tidur"], a:1},
+    {q:"Jika ada janji, sebaiknya?", opt:["Batal","Datang terlambat","Tepat waktu","Mengganti hari","Lupa"], a:2},
+    {q:"Sikap terhadap atasan yang baik adalah?", opt:["Sombong","Acuh","Hormat","Menghindar","Melawan"], a:2},
+    {q:"Saat pekerjaan menumpuk, sebaiknya?", opt:["Liburan","Mengeluh","Prioritaskan","Menunda","Membiarkan"], a:2},
+    {q:"Sikap korupsi harus?", opt:["Didukung","Dibiarkan","Dilawan","Dicontoh","Dipuji"], a:2},
+    {q:"Kerja keras adalah kunci?", opt:["Kegagalan","Kemalasan","Kesuksesan","Kebosanan","Masalah"], a:2},
+    {q:"Disiplin sangat penting untuk?", opt:["Kekacauan","Keteraturan","Kebingungan","Kemalasan","Masalah"], a:1},
+    {q:"Jujur adalah sikap yang?", opt:["Buruk","Baik","Biasa","Sulit","Tidak penting"], a:1},
+    {q:"Tanggung jawab harus?", opt:["Dihindari","Diabaikan","Dilaksanakan","Ditunda","Dilupakan"], a:2},
+    {q:"Inovasi penting untuk?", opt:["Kemunduran","Kemajuan","Stagnasi","Kehancuran","Masalah"], a:1},
+    {q:"Belajar sepanjang hayat disebut?", opt:["Pendidikan formal","Pendidikan informal","Pendidikan seumur hidup","Pendidikan dasar","Pendidikan tinggi"], a:2},
+    {q:"Sikap terhadap perbedaan pendapat?", opt:["Menolak","Menghargai","Menghina","Mengolok","Membenci"], a:1},
+    {q:"Saat ada konflik, sebaiknya?", opt:["Dibiarkan","Diperparah","Didiamkan","Dimusyawarahkan","Dilupakan"], a:3},
+    {q:"Sikap hemat energi adalah?", opt:["Boros","Efisien","Berlebihan","Mubazir","Sia-sia"], a:1},
+    {q:"Menjaga kebersihan adalah tanggung jawab?", opt:["Petugas","Semua orang","Pemerintah","Anak-anak","Guru"], a:1},
+    {q:"Saat melihat pelanggaran lalu lintas, sikap Anda?", opt:["Mengabaikan","Melaporkan","Menegur","Merekam","Membiarkan"], a:1},
+    {q:"Sikap toleransi kepada beda agama?", opt:["Menghormati","Memusuhi","Mengolok","Menghina","Mengucilkan"], a:0},
+    {q:"Pengorbanan untuk kepentingan bersama disebut?", opt:["Egois","Individualis","Nasionalis","Patriot","Altruis"], a:3},
+    {q:"Saat ada bencana alam, sebaiknya?", opt:["Mengungsi","Membantu","Panik","Mengambil barang","Lari"], a:1},
+    {q:"Menjaga nama baik organisasi adalah?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
+    {q:"Kreativitas dapat meningkatkan?", opt:["Masalah","Produktivitas","Kebingungan","Kemalasan","Kekacauan"], a:1},
+    {q:"Efektivitas kerja diukur dari?", opt:["Waktu","Biaya","Hasil","Tenaga","Alat"], a:2},
+    {q:"Efisiensi kerja diukur dari?", opt:["Hasil maksimal dengan sumber daya minimal","Hasil minimal","Waktu lama","Biaya besar","Tenaga besar"], a:0},
+    {q:"Sikap optimis membawa?", opt:["Kegagalan","Kemajuan","Kemunduran","Masalah","Kebingungan"], a:1},
+    {q:"Kerjasama tim menghasilkan?", opt:["Konflik","Sinergi","Kekacauan","Kebingungan","Masalah"], a:1},
+    {q:"Gaya kepemimpinan ideal?", opt:["Otoriter","Demokratis","Bebas","Acuh","Tidak peduli"], a:1},
+    {q:"Kedisiplinan waktu mencerminkan?", opt:["Tanggung jawab","Ketidakpedulian","Kemalasan","Kebingungan","Kesombongan"], a:0},
+    {q:"Saat ada masalah, sebaiknya?", opt:["Cari kambing hitam","Cari solusi","Diam saja","Lari","Tunda"], a:1},
+    {q:"Pelayanan publik yang baik?", opt:["Berbelit","Cepat dan tepat","Mahal","Lambat","Tidak jelas"], a:1},
+    {q:"Sikap ramah kepada semua orang?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
+    {q:"Berbagi ilmu dengan rekan kerja?", opt:["Dilarang","Diperbolehkan","Sebaiknya dilakukan","Tidak perlu","Buang waktu"], a:2},
+    {q:"Saat tidak setuju dengan keputusan pimpinan?", opt:["Membangkang","Protes","Mengajukan saran baik","Diam saja","Keluar dari kantor"], a:2},
+    {q:"Menjaga rahasia perusahaan adalah?", opt:["Kewajiban","Hak","Bebas","Tidak penting","Terserah"], a:0},
+    {q:"Saat bekerja di bawah tekanan, sebaiknya?", opt:["Tetap tenang","Panik","Marah","Menyerah","Protes"], a:0},
+    {q:"Peningkatan kualitas diri dapat dilakukan dengan?", opt:["Bermalas-malasan","Belajar terus-menerus","Berhenti bekerja","Pindah kerja","Mengeluh"], a:1},
+    {q:"Sikap empati terhadap rekan kerja?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
+    {q:"Menyelesaikan pekerjaan tepat waktu disebut?", opt:["Profesional","Malas","Biasa","Lamban","Ceroboh"], a:0},
+    {q:"Saat ada perubahan kebijakan, sikap terbaik?", opt:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], a:1},
+    {q:"Integritas adalah?", opt:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"], a:1}
+];
+
+// Gabungkan semua soal
+for(let i=0; i<twkSoal.length; i++) {
+    originalQuestions.push({
+        question: twkSoal[i].q,
+        options: twkSoal[i].opt,
+        answer: twkSoal[i].a
+    });
+}
+for(let i=0; i<tiuSoal.length; i++) {
+    originalQuestions.push({
+        question: tiuSoal[i].q,
+        options: tiuSoal[i].opt,
+        answer: tiuSoal[i].a
+    });
+}
+for(let i=0; i<tkpSoal.length; i++) {
+    originalQuestions.push({
+        question: tkpSoal[i].q,
+        options: tkpSoal[i].opt,
+        answer: tkpSoal[i].a
+    });
+}
+
+let questions = [];
+let currentQuestion = 0;
+let userAnswers = [];
+let timerInterval = null;
+let time = 6000;
+const prefixes = ["A", "B", "C", "D", "E"];
+
+function shuffleOptions(questionData) {
+    const optionPairs = questionData.options.map((opt, idx) => ({
+        text: opt,
+        originalIndex: idx
+    }));
+    
+    for(let i = optionPairs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+    }
+    
+    const shuffledOptions = optionPairs.map(pair => pair.text);
+    const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
+    
+    return {
+        question: questionData.question,
+        options: shuffledOptions,
+        answer: newAnswerIndex
+    };
+}
+
+function shuffleAllQuestions() {
+    questions = originalQuestions.map(q => shuffleOptions(q));
+}
+
+function initQuiz() {
+    // Cek apakah ada progres tersimpan
+    const hasProgress = loadProgress();
+    
+    if(!hasProgress) {
+        // Jika tidak ada progres, buat baru
+        shuffleAllQuestions();
+        currentQuestion = 0;
+        userAnswers = Array(questions.length).fill(null);
+        time = 6000;
+    }
+    
+    loadQuestion();
+    updateSoalGrid();
+    startTimer();
+}
+
+function restartQuiz() {
+    if(timerInterval) clearInterval(timerInterval);
+    // Hapus progres lama
+    clearProgress();
+    // Buat ulang semua
+    shuffleAllQuestions();
+    currentQuestion = 0;
+    userAnswers = Array(questions.length).fill(null);
+    time = 6000;
+    
+    document.getElementById("result").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("sidebarToggle").style.display = "block";
+    loadQuestion();
+    updateSoalGrid();
+    startTimer();
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+function updateSoalGrid() {
+    const grid = document.getElementById('soalGrid');
+    if(!grid) return;
+    
+    let html = '';
+    for(let i = 0; i < questions.length; i++) {
+        let statusClass = 'unanswered';
+        if(userAnswers[i] !== null) statusClass = 'answered';
+        if(i === currentQuestion) statusClass = 'active';
+        
+        const category = getCategory(i+1);
+        
+        html += `<div class="grid-soal ${statusClass} ${category.class}" onclick="goToSoal(${i})">${i + 1}</div>`;
+    }
+    grid.innerHTML = html;
+}
+
+function goToSoal(soalIndex) {
+    saveAnswer();
+    currentQuestion = soalIndex;
+    loadQuestion();
+    toggleSidebar();
+    saveProgress(); // Simpan progres setelah pindah soal
+}
+
+function loadQuestion() {
+    const soalNumber = currentQuestion + 1;
+    
+    document.getElementById("progress").innerText = `Soal ${soalNumber}/${questions.length}`;
+    document.getElementById("question").innerText = questions[currentQuestion].question;
+    updateHeaderCategory(soalNumber);
+
+    let html = "";
+    questions[currentQuestion].options.forEach((opt, index) => {
+        let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
+        html += `
+        <label class="option">
+            <input type="radio" name="answer" value="${index}" ${isChecked}>
+            <span class="choice-letter">${prefixes[index]}</span>
+            <span class="choice-text">${opt}</span>
+        </label>
+        `;
+    });
+
+    document.getElementById("options").innerHTML = html;
+    updateSoalGrid();
+    updateButtonText();
+}
+
+function updateButtonText() {
+    const btn = document.getElementById("nextFinishBtn");
+    if(currentQuestion === questions.length-1) {
+        btn.innerText = "✅ Selesai";
+        btn.className = "finish";
+        btn.onclick = () => finishQuiz();
+    } else {
+        btn.innerText = "Next ▶";
+        btn.className = "next";
+        btn.onclick = () => nextQuestion();
+    }
+}
+
+function saveAnswer() {
+    const selected = document.querySelector('input[name="answer"]:checked');
+    if(selected) {
+        userAnswers[currentQuestion] = parseInt(selected.value);
+        updateSoalGrid();
+        saveProgress(); // Simpan progres setiap kali menjawab
+    }
+}
+
+function nextQuestion() {
+    saveAnswer();
+    if(currentQuestion < questions.length-1) {
+        currentQuestion++;
+        loadQuestion();
+        saveProgress(); // Simpan progres setelah pindah soal
+    }
+}
+
+function prevQuestion() {
+    saveAnswer();
+    if(currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+        saveProgress(); // Simpan progres setelah pindah soal
+    }
+}
+
+function finishQuiz() {
+    if(timerInterval) clearInterval(timerInterval);
+    saveAnswer();
+    
+    // Hapus progres karena kuis sudah selesai
+    clearProgress();
+
+    const skor = hitungSkor();
+    
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+    document.getElementById("sidebarToggle").style.display = "none";
+    
+    const scoreDetail = document.getElementById("scoreDetail");
+    scoreDetail.innerHTML = `
+        <h3>📊 Detail Skor</h3>
+        <table>
+            <tr><td>📚 TWK (30 soal)</td><td><strong>${skor.twk}</strong> / ${skor.maxTwk}</td></tr>
+            <tr><td>🔢 TIU (35 soal)</td><td><strong>${skor.tiu}</strong> / ${skor.maxTiu}</td></tr>
+            <tr><td>⭐ TKP (45 soal)</td><td><strong>${skor.tkp}</strong> / ${skor.maxTkp}</td></tr>
+            <tr style="border-top:2px solid #ddd;"><td><strong>✅ TOTAL SKOR</strong></td><td><strong>${skor.total}</strong> / ${skor.maxTotal}</td></tr>
+        </table>
+        <div class="total-score">
+            🎯 Nilai Akhir: ${skor.persen}
+        </div>
+        <p style="margin-top:15px; font-size:12px; color:#666;">
+            ℹ️ TWK & TIU: Benar = 5 poin, Salah/Tidak menjawab = 0<br>
+            ℹ️ TKP: Setiap jawaban memiliki skor 1-5 (semakin benar semakin tinggi)
+        </p>
+    `;
+}
+
+function startTimer() {
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        if(time <= 0) {
+            clearInterval(timerInterval);
+            finishQuiz();
+        } else {
+            time--;
+            let minutes = Math.floor(time/60);
+            let seconds = time%60;
+            document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+            updateTimerColor(time);
+            saveProgress(); // Simpan progres setiap detik (update timer)
+        }
+    }, 1000);
+}
+
+// Memulai kuis
+initQuiz();
+
+</script>
+
+</body>
+</html>
