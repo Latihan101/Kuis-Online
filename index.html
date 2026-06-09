@@ -48,12 +48,15 @@ h2{
 }
 
 .option{
-    display:block;
+    display:flex;
+    align-items:center;
+    gap:12px;
     margin-bottom:12px;
-    padding:12px;
+    padding:14px;
     border:1px solid #ddd;
     border-radius:10px;
     cursor:pointer;
+    transition:0.2s;
 }
 
 .option:hover{
@@ -61,16 +64,31 @@ h2{
 }
 
 .option input{
-    margin-right:12px;
-    transform:scale(1.1);
+    display:none;
 }
 
-.option span.prefix{
+.choice-letter{
+    width:40px;
+    height:40px;
+    min-width:40px;
+    border-radius:50%;
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-weight:bold;
-    margin-right:8px;
-    color:#0d6efd;
+    font-size:18px;
 }
 
+.choice-text{
+    flex:1;
+}
+
+.option input:checked + .choice-letter{
+    background:#198754;
+}
+    
 .buttons{
     display:flex;
     justify-content:space-between;
@@ -171,41 +189,151 @@ button{
 <script>
 
 const questions = [
-{ question:"Ibukota Indonesia adalah?", options:["Bandung","Jakarta","Medan","Surabaya"], answer:1 },
-{ question:"2 + 2 = ?", options:["2","3","4","5"], answer:2 },
-{ question:"Planet terbesar adalah?", options:["Mars","Jupiter","Venus","Bumi"], answer:1 },
-{ question:"Warna bendera Indonesia?", options:["Merah Putih","Merah Biru","Hijau Putih","Kuning Merah"], answer:0 },
-{ question:"5 x 5 = ?", options:["10","15","20","25"], answer:3 },
-{ question:"Bahasa resmi Indonesia?", options:["Jawa","Sunda","Indonesia","Melayu"], answer:2 },
-{ question:"Air membeku pada suhu?", options:["0°C","10°C","50°C","100°C"], answer:0 },
-{ question:"Pulau terbesar di Indonesia?", options:["Jawa","Bali","Kalimantan","Madura"], answer:2 },
-{ question:"Hari Kemerdekaan Indonesia?", options:["1 Juni","17 Agustus","28 Oktober","10 November"], answer:1 },
-{ question:"10 + 15 = ?", options:["20","25","30","35"], answer:1 }
+
+{
+question:"Ibukota Indonesia adalah?",
+options:["Bandung","Jakarta","Medan","Surabaya","Makassar"],
+answer:1
+},
+
+{
+question:"2 + 2 = ?",
+options:["1","2","3","4","5"],
+answer:3
+},
+
+{
+question:"Planet terbesar adalah?",
+options:["Mars","Jupiter","Venus","Bumi","Merkurius"],
+answer:1
+},
+
+{
+question:"Warna bendera Indonesia?",
+options:[
+"Merah Putih",
+"Merah Biru",
+"Hijau Putih",
+"Kuning Merah",
+"Hitam Putih"
+],
+answer:0
+},
+
+{
+question:"5 x 5 = ?",
+options:["10","15","20","25","30"],
+answer:3
+},
+
+{
+question:"Bahasa resmi Indonesia?",
+options:[
+"Jawa",
+"Sunda",
+"Indonesia",
+"Melayu",
+"Bugis"
+],
+answer:2
+},
+
+{
+question:"Air membeku pada suhu?",
+options:[
+"0°C",
+"10°C",
+"50°C",
+"100°C",
+"5°C"
+],
+answer:0
+},
+
+{
+question:"Pulau terbesar di Indonesia?",
+options:[
+"Jawa",
+"Bali",
+"Kalimantan",
+"Madura",
+"Lombok"
+],
+answer:2
+},
+
+{
+question:"Hari Kemerdekaan Indonesia?",
+options:[
+"1 Juni",
+"17 Agustus",
+"28 Oktober",
+"10 November",
+"20 Mei"
+],
+answer:1
+},
+
+{
+question:"10 + 15 = ?",
+options:[
+"20",
+"25",
+"30",
+"35",
+"40"
+],
+answer:1
+}
+
 ];
 
 let currentQuestion = 0;
 let userAnswers = Array(questions.length).fill(null);
 let timerInterval = null;
 
-// Huruf untuk prefix A, B, C, D
-const prefixes = ["A", "B", "C", "D"];
+// Huruf untuk prefix A, B, C, D, E
+const prefixes = ["A", "B", "C", "D", "E"];
 
 function loadQuestion(){
-    document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${questions.length}`;
-    document.getElementById("question").innerText = questions[currentQuestion].question;
 
-    let html = "";
-    questions[currentQuestion].options.forEach((opt, index) => {
-        let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
+    document.getElementById("progress").innerText =
+    `Soal ${currentQuestion+1}/${questions.length}`;
+
+    document.getElementById("question").innerText =
+    questions[currentQuestion].question;
+
+    let html="";
+
+    questions[currentQuestion].options.forEach((opt,index)=>{
+
+        let isChecked =
+        userAnswers[currentQuestion] === index
+        ? "checked"
+        : "";
+
         html += `
-            <label class="option">
-                <input type="radio" name="answer" value="${index}" ${isChecked}>
-                <span class="prefix">${prefixes[index]}.</span> ${opt}
-            </label>
+        <label class="option">
+            <input
+                type="radio"
+                name="answer"
+                value="${index}"
+                ${isChecked}
+            >
+
+            <span class="choice-letter">
+                ${prefixes[index]}
+            </span>
+
+            <span class="choice-text">
+                ${opt}
+            </span>
+        </label>
         `;
     });
 
     document.getElementById("options").innerHTML = html;
+
     updateButtons();
 }
 
