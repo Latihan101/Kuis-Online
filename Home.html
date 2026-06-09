@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:500px;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.screen{
+    display:none;
+}
+
+.active{
+    display:block;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo h1{
+    color:#0d6efd;
+    margin-bottom:10px;
+}
+
+.logo p{
+    color:#666;
+}
+
+.menu-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#0d6efd;
+    color:white;
+    font-size:18px;
+    margin-bottom:12px;
+    cursor:pointer;
+}
+
+.menu-btn:hover{
+    opacity:.9;
+}
+
+.back-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#6c757d;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+p{
+    line-height:1.7;
+    margin-bottom:10px;
+}
+
+.quiz-item{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#198754;
+    color:white;
+    font-size:16px;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+
+.version{
+    text-align:center;
+    margin-top:20px;
+    color:#999;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HOME -->
+    <div id="home" class="screen active">
+
+        <div class="logo">
+            <h1>📚 Quiz App</h1>
+            <p>Latihan Soal Pilihan Ganda</p>
+        </div>
+
+        <button class="menu-btn" onclick="showScreen('quizlist')">
+            📚 Pilih Kuis
+        </button>
+
+        <button class="menu-btn" onclick="showScreen('petunjuk')">
+            📖 Petunjuk
+        </button>
+
+        <button class="menu-btn" onclick="showScreen('tentang')">
+            ℹ️ Tentang
+        </button>
+
+        <div class="version">
+            Version 1.0
+        </div>
+
+    </div>
+
+    <!-- PILIH KUIS -->
+    <div id="quizlist" class="screen">
+
+        <h2>📚 Pilih Kuis</h2>
+
+        <button class="quiz-item">
+            Kuis Matematika
+        </button>
+
+        <button class="quiz-item">
+            Kuis IPA
+        </button>
+
+        <button class="quiz-item">
+            Kuis IPS
+        </button>
+
+        <button class="quiz-item">
+            Kuis Bahasa Indonesia
+        </button>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
+    </div>
+
+    <!-- PETUNJUK -->
+    <div id="petunjuk" class="screen">
+
+        <h2>📖 Petunjuk</h2>
+
+        <p>1. Pilih salah satu kuis yang tersedia.</p>
+        <p>2. Baca soal dengan teliti.</p>
+        <p>3. Pilih jawaban yang paling benar.</p>
+        <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
+        <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
+    </div>
+
+    <!-- TENTANG -->
+    <div id="tentang" class="screen">
+
+        <h2>ℹ️ Tentang</h2>
+
+        <p>
+            Quiz App adalah aplikasi latihan soal berbasis HTML,
+            CSS dan JavaScript yang dapat dijalankan secara offline
+            maupun online.
+        </p>
+
+        <p>
+            Aplikasi ini dibuat untuk membantu pengguna berlatih
+            mengerjakan soal pilihan ganda.
+        </p>
+
+        <p>
+            Versi : 1.0
+        </p>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function showScreen(id){
+
+    let screens =
+    document.querySelectorAll(".screen");
+
+    screens.forEach(screen=>{
+        screen.classList.remove("active");
+    });
+
+    document
+    .getElementById(id)
+    .classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
