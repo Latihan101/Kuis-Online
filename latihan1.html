@@ -226,6 +226,30 @@ body{
     font-weight:bold;
 }
 
+/* Timer normal (hitam) */
+#timer{
+    transition: color 0.3s ease;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Timer warna oranye (sisa 5 menit) */
+.timer-warning{
+    color: #fd7e14 !important;
+}
+
+/* Timer warna merah (sisa 2 menit) */
+.timer-danger{
+    color: #dc3545 !important;
+    animation: blink 1s ease infinite;
+}
+
+/* Efek blink untuk timer merah */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
 .question{
     font-size:20px;
     margin-bottom:20px;
@@ -372,11 +396,6 @@ button:hover{
         <span id="progress">Soal 1/10</span>
         <span id="timer">10:00</span>
     </div>
-
-    <!-- Hapus atau comment div acakInfo -->
-    <!-- <div class="acak-info" id="acakInfo">
-        🔄 Pilihan jawaban telah diacak!
-    </div> -->
 
     <div class="question" id="question"></div>
     <div id="options"></div>
@@ -560,6 +579,22 @@ function shuffleAllQuestions() {
     questions = originalQuestions.map(q => shuffleOptions(q));
 }
 
+// ========== FUNGSI UPDATE WARNA TIMER ==========
+function updateTimerColor(remainingTime) {
+    const timerElement = document.getElementById("timer");
+    
+    // Hapus kelas yang ada
+    timerElement.classList.remove("timer-warning", "timer-danger");
+    
+    // Cek sisa waktu
+    if(remainingTime <= 120) { // 2 menit (120 detik)
+        timerElement.classList.add("timer-danger");
+    } else if(remainingTime <= 300) { // 5 menit (300 detik)
+        timerElement.classList.add("timer-warning");
+    }
+    // Selain itu warna default (hitam)
+}
+
 // ========== INISIALISASI ==========
 function initQuiz() {
     // Acak pilihan (tanpa menampilkan notifikasi)
@@ -706,7 +741,13 @@ function startTimer() {
     timerInterval = setInterval(() => {
         let minutes = Math.floor(time/60);
         let seconds = time%60;
+        
+        // Update tampilan timer
         document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+        
+        // Update warna timer berdasarkan sisa waktu
+        updateTimerColor(time);
+        
         if(time <= 0) {
             clearInterval(timerInterval);
             finishQuiz();
