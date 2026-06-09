@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kuis Online - Dengan Gambar</title>
+<title>Kuis Online - Dengan Gambar & Pilihan Acak</title>
 
 <style>
 *{
@@ -23,13 +23,190 @@ body{
 
 .container{
     width:100%;
-    max-width:800px;
+    max-width:900px;
     background:white;
     padding:25px;
     border-radius:15px;
     box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
 
+/* Tombol Sidebar */
+.sidebar-toggle{
+    position:fixed;
+    bottom:30px;
+    right:30px;
+    z-index:1000;
+}
+
+.btn-sidebar{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    border-radius:50px;
+    padding:12px 24px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-sidebar:hover{
+    background:#0b5ed7;
+    transform:scale(1.05);
+}
+
+/* Sidebar */
+.sidebar{
+    position:fixed;
+    top:0;
+    right:-350px;
+    width:350px;
+    height:100vh;
+    background:white;
+    box-shadow:-2px 0 10px rgba(0,0,0,.1);
+    z-index:1001;
+    transition:right 0.3s ease;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+}
+
+.sidebar.open{
+    right:0;
+}
+
+.sidebar-header{
+    padding:20px;
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+}
+
+.sidebar-header h3{
+    margin:0;
+}
+
+.close-sidebar{
+    background:none;
+    border:none;
+    color:white;
+    font-size:28px;
+    cursor:pointer;
+    padding:0;
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.close-sidebar:hover{
+    background:rgba(255,255,255,.2);
+    border-radius:50%;
+}
+
+.sidebar-content{
+    padding:20px;
+}
+
+.soal-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.grid-soal{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:16px;
+    transition:0.2s;
+    border:2px solid #ddd;
+}
+
+.grid-soal:hover{
+    transform:scale(1.05);
+}
+
+.grid-soal.answered{
+    background:#198754;
+    color:white;
+    border-color:#198754;
+}
+
+.grid-soal.unanswered{
+    background:#dc3545;
+    color:white;
+    border-color:#dc3545;
+}
+
+.grid-soal.active{
+    background:#0d6efd;
+    color:white;
+    border-color:#0d6efd;
+    box-shadow:0 0 0 3px rgba(13,110,253,0.3);
+}
+
+.sidebar-info{
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid #ddd;
+}
+
+.sidebar-info p{
+    margin:8px 0;
+    font-size:14px;
+}
+
+.legend{
+    display:flex;
+    gap:15px;
+    margin-top:15px;
+    flex-wrap:wrap;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+}
+
+.legend-color{
+    width:20px;
+    height:20px;
+    border-radius:5px;
+}
+
+/* Overlay */
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.5);
+    z-index:1000;
+    display:none;
+}
+
+.overlay.show{
+    display:block;
+}
+
+/* Style Utama Kuis */
 h2{
     margin-bottom:15px;
 }
@@ -171,10 +348,31 @@ button:hover{
     flex-wrap:wrap;
 }
 
-.option-with-image{
-    display:flex;
-    align-items:center;
-    gap:12px;
+/* Responsive */
+@media (max-width: 768px){
+    .sidebar{
+        width:100%;
+        right:-100%;
+    }
+    
+    .soal-grid{
+        grid-template-columns:repeat(5,1fr);
+    }
+    
+    .btn-sidebar{
+        padding:10px 18px;
+        font-size:14px;
+    }
+}
+
+.acak-info{
+    background:#e9ecef;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:12px;
+    color:#495057;
+    text-align:center;
+    margin-bottom:15px;
 }
 </style>
 </head>
@@ -189,6 +387,9 @@ button:hover{
     </p>
     <p style="margin-bottom:20px;color:#dc3545;">
         ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
+    </p>
+    <p style="margin-bottom:20px;color:#0d6efd; background:#e9ecef; padding:10px; border-radius:8px;">
+        🔄 Setiap memulai kuis, pilihan jawaban akan diacak!
     </p>
     <button class="finish" onclick="startQuiz()">
         Mulai
@@ -218,7 +419,7 @@ button:hover{
     <p>Nilai: <span id="score"></span></p>
     <br />
     <div class="result-buttons">
-        <button class="finish" onclick="location.reload()">
+        <button class="finish" onclick="restartQuiz()">
             🔄 Ulangi Kuis
         </button>
         <button class="back-home" onclick="goToHomePage()">
@@ -229,28 +430,57 @@ button:hover{
 
 </div>
 
+<!-- Tombol Sidebar -->
+<div class="sidebar-toggle">
+    <button class="btn-sidebar" onclick="toggleSidebar()">
+        📋 Daftar Soal
+    </button>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>📋 Daftar Soal</h3>
+        <button class="close-sidebar" onclick="toggleSidebar()">&times;</button>
+    </div>
+    <div class="sidebar-content">
+        <div class="soal-grid" id="soalGrid"></div>
+        
+        <div class="sidebar-info">
+            <p><strong>Informasi:</strong></p>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#0d6efd;"></div>
+                    <span>Soal Aktif</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#198754;"></div>
+                    <span>Sudah Dijawab</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:#dc3545;"></div>
+                    <span>Belum Dijawab</span>
+                </div>
+            </div>
+            <p style="margin-top:15px; font-size:12px; color:#666;">
+                💡 Klik nomor soal untuk langsung ke soal tersebut
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
 <script>
 
-// ========== FUNGSI UNTUK KEMBALI KE HALAMAN LAIN ==========
+// ========== FUNGSI KEMBALI KE HALAMAN UTAMA ==========
 function goToHomePage() {
-    // Ganti URL ini dengan halaman yang Anda tuju
-    // Contoh beberapa pilihan:
-    
-    // Opsi 1: Kembali ke halaman sebelumnya (browser back)
-    // window.history.back();
-    
-    // Opsi 2: Kembali ke halaman tertentu (ganti dengan URL Anda)
-    window.location.href = "index.html";  // Ganti sesuai kebutuhan
-    
-    // Opsi 3: Jika ingin membuka di tab baru
-    // window.open("https://www.google.com", "_blank");
-    
-    // Opsi 4: Jika ingin reload halaman saat ini saja
-    // location.reload();
+    window.location.href = "index.html";
 }
 
-// ========== DATA SOAL DENGAN GAMBAR ==========
-const questions = [
+// ========== DATA SOAL ASLI (TIDAK BERUBAH) ==========
+const originalQuestions = [
 
 {
     question:"Apa nama hewan ini?",
@@ -306,7 +536,7 @@ const questions = [
 
 ];
 
-const moreQuestions = [
+const moreOriginalQuestions = [
 {
     question:"Ibukota Indonesia adalah?",
     questionImage:null,
@@ -393,20 +623,129 @@ const moreQuestions = [
 }
 ];
 
-const allQuestions = [...questions, ...moreQuestions];
+const allOriginalQuestions = [...originalQuestions, ...moreOriginalQuestions];
 
+// Variabel untuk menyimpan soal yang sudah diacak
+let questions = [];
 let currentQuestion = 0;
-let userAnswers = Array(allQuestions.length).fill(null);
+let userAnswers = [];
 let timerInterval = null;
 
 const prefixes = ["A", "B", "C", "D", "E"];
 
+// ========== FUNGSI UNTUK MENGACAK PILIHAN ==========
+function shuffleOptions(questionData) {
+    // Buat array yang berisi pasangan (text, image, originalIndex)
+    const optionPairs = questionData.options.map((opt, idx) => ({
+        text: opt.text,
+        image: opt.image,
+        originalIndex: idx
+    }));
+    
+    // Acak array
+    for(let i = optionPairs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+    }
+    
+    // Buat options baru yang sudah diacak
+    const shuffledOptions = optionPairs.map(pair => ({
+        text: pair.text,
+        image: pair.image
+    }));
+    
+    // Cari index baru dari jawaban benar
+    const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
+    
+    return {
+        question: questionData.question,
+        questionImage: questionData.questionImage,
+        options: shuffledOptions,
+        answer: newAnswerIndex
+    };
+}
+
+// ========== FUNGSI UNTUK MENGACAK SEMUA SOAL ==========
+function shuffleAllQuestions() {
+    questions = allOriginalQuestions.map(q => shuffleOptions(q));
+}
+
+// ========== RESTART KUIS (tanpa reload halaman) ==========
+function restartQuiz() {
+    // Hentikan timer lama
+    if(timerInterval) clearInterval(timerInterval);
+    
+    // Acak ulang semua pilihan
+    shuffleAllQuestions();
+    
+    // Reset variabel
+    currentQuestion = 0;
+    userAnswers = Array(questions.length).fill(null);
+    
+    // Sembunyikan result, tampilkan quiz
+    document.getElementById("result").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    document.querySelector('.sidebar-toggle').style.display = "block";
+    
+    // Load soal pertama
+    loadQuestion();
+    updateSoalGrid();
+    
+    // Start timer baru
+    startTimer();
+}
+
+// ========== FUNGSI SIDEBAR ==========
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+}
+
+function updateSoalGrid() {
+    const grid = document.getElementById('soalGrid');
+    if(!grid) return;
+    
+    let html = '';
+    
+    for(let i = 0; i < questions.length; i++) {
+        let statusClass = '';
+        
+        if(userAnswers[i] !== null) {
+            statusClass = 'answered';
+        } else {
+            statusClass = 'unanswered';
+        }
+        
+        if(i === currentQuestion) {
+            statusClass = 'active';
+        }
+        
+        html += `
+            <div class="grid-soal ${statusClass}" onclick="goToSoal(${i})">
+                ${i + 1}
+            </div>
+        `;
+    }
+    
+    grid.innerHTML = html;
+}
+
+function goToSoal(soalIndex) {
+    saveAnswer();
+    currentQuestion = soalIndex;
+    loadQuestion();
+    toggleSidebar();
+}
+
 function loadQuestion(){
-    document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${allQuestions.length}`;
-    document.getElementById("question").innerText = allQuestions[currentQuestion].question;
+    document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${questions.length}`;
+    document.getElementById("question").innerText = questions[currentQuestion].question;
     
     const questionImageDiv = document.getElementById("questionImage");
-    const qImage = allQuestions[currentQuestion].questionImage;
+    const qImage = questions[currentQuestion].questionImage;
     if(qImage && qImage !== null){
         questionImageDiv.innerHTML = `<img src="${qImage}" alt="Gambar soal">`;
         questionImageDiv.style.display = "block";
@@ -416,7 +755,7 @@ function loadQuestion(){
     }
     
     let html = "";
-    const currentOptions = allQuestions[currentQuestion].options;
+    const currentOptions = questions[currentQuestion].options;
     
     currentOptions.forEach((opt, index) => {
         let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
@@ -435,6 +774,7 @@ function loadQuestion(){
     });
     
     document.getElementById("options").innerHTML = html;
+    updateSoalGrid();
     updateButtons();
 }
 
@@ -442,12 +782,13 @@ function saveAnswer(){
     const selected = document.querySelector('input[name="answer"]:checked');
     if(selected){
         userAnswers[currentQuestion] = parseInt(selected.value);
+        updateSoalGrid();
     }
 }
 
 function nextQuestion(){
     saveAnswer();
-    if(currentQuestion < allQuestions.length-1){
+    if(currentQuestion < questions.length-1){
         currentQuestion++;
         loadQuestion();
     }
@@ -463,7 +804,7 @@ function prevQuestion(){
 
 function updateButtons(){
     const btnArea = document.querySelector(".buttons");
-    if(currentQuestion === allQuestions.length-1){
+    if(currentQuestion === questions.length-1){
         btnArea.innerHTML = `
             <button class="prev" onclick="prevQuestion()">Previous</button>
             <button class="finish" onclick="finishQuiz()">Selesai</button>
@@ -481,26 +822,35 @@ function finishQuiz(){
     saveAnswer();
 
     let correct = 0;
-    allQuestions.forEach((q, index) => {
+    questions.forEach((q, index) => {
         if(userAnswers[index] === q.answer) correct++;
     });
 
-    let wrong = allQuestions.length - correct;
-    let score = Math.round((correct/allQuestions.length)*100);
+    let wrong = questions.length - correct;
+    let score = Math.round((correct/questions.length)*100);
 
     document.getElementById("quiz").style.display = "none";
     document.getElementById("result").style.display = "block";
     document.getElementById("correct").innerText = correct;
     document.getElementById("wrong").innerText = wrong;
     document.getElementById("score").innerText = score;
+    
+    document.querySelector('.sidebar-toggle').style.display = "none";
 }
 
 function startQuiz(){
+    // Acak pilihan saat pertama kali mulai
+    shuffleAllQuestions();
+    
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("quiz").style.display = "block";
+    document.querySelector('.sidebar-toggle').style.display = "block";
+    
     currentQuestion = 0;
-    userAnswers = Array(allQuestions.length).fill(null);
+    userAnswers = Array(questions.length).fill(null);
+    
     loadQuestion();
+    updateSoalGrid();
     startTimer();
 }
 
@@ -519,6 +869,9 @@ function startTimer(){
         time--;
     }, 1000);
 }
+
+// Inisialisasi awal
+document.querySelector('.sidebar-toggle').style.display = "none";
 
 </script>
 
