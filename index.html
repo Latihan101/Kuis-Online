@@ -1,15 +1,17 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kuis Online - Pilihan ABCDE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 body{
@@ -23,403 +25,211 @@ body{
 
 .container{
     width:100%;
-    max-width:700px;
-    background:white;
+    max-width:500px;
+    background:#fff;
     padding:25px;
     border-radius:15px;
     box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.screen{
+    display:none;
+}
+
+.active{
+    display:block;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.logo h1{
+    color:#0d6efd;
+    margin-bottom:10px;
+}
+
+.logo p{
+    color:#666;
+}
+
+.menu-btn{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#0d6efd;
+    color:white;
+    font-size:18px;
+    margin-bottom:12px;
+    cursor:pointer;
+}
+
+.menu-btn:hover{
+    opacity:.9;
+}
+
+.back-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#6c757d;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
 }
 
 h2{
     margin-bottom:15px;
 }
 
-.info{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:20px;
-    font-weight:bold;
+p{
+    line-height:1.7;
+    margin-bottom:10px;
 }
 
-.question{
-    font-size:20px;
-    margin-bottom:20px;
-    font-weight:bold;
-}
-
-.option{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:12px;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.option:hover{
-    background:#f2f2f2;
-}
-
-.option input{
-    display:none;
-}
-
-.choice-letter{
-    width:40px;
-    height:40px;
-    min-width:40px;
-    border-radius:50%;
-    background:#0d6efd;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:18px;
-}
-
-.choice-text{
-    flex:1;
-}
-
-.option input:checked + .choice-letter{
-    background:#198754;
-}
-    
-.buttons{
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-}
-
-button{
-    padding:10px 20px;
+.quiz-item{
+    width:100%;
+    padding:15px;
     border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-.prev{
-    background:#6c757d;
-    color:white;
-}
-
-.next{
-    background:#0d6efd;
-    color:white;
-}
-
-.finish{
+    border-radius:10px;
     background:#198754;
     color:white;
+    font-size:16px;
+    margin-bottom:10px;
+    cursor:pointer;
 }
 
-.result{
-    display:none;
+.version{
     text-align:center;
+    margin-top:20px;
+    color:#999;
 }
 
-.result h1{
-    margin-bottom:20px;
-}
-
-.result p{
-    margin:10px 0;
-    font-size:18px;
-}
-
-.correct{
-    color:green;
-}
-
-.wrong{
-    color:red;
-}
 </style>
 </head>
 <body>
 
 <div class="container">
 
-<div id="startScreen" style="text-align:center;">
-    <h2>Selamat Datang</h2>
-    <p style="margin:20px 0;font-size:18px;">
-        Silahkan tekan tombol <b>Mulai</b> jika Anda telah siap untuk menjawab.
-    </p>
-    <p style="margin-bottom:20px;color:#dc3545;">
-        ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
-    </p>
-    <button class="finish" onclick="startQuiz()">
-        Mulai
-    </button>
-</div>
+    <!-- HOME -->
+    <div id="home" class="screen active">
 
-<div id="quiz" style="display:none;">
-    <div class="info">
-        <span id="progress">Soal 1/10</span>
-        <span id="timer">10:00</span>
+        <div class="logo">
+            <h1>📚 Quiz App</h1>
+            <p>Latihan Soal Pilihan Ganda</p>
+        </div>
+
+        <button class="menu-btn" onclick="showScreen('quizlist')">
+            📚 Pilih Kuis
+        </button>
+
+        <button class="menu-btn" onclick="showScreen('petunjuk')">
+            📖 Petunjuk
+        </button>
+
+        <button class="menu-btn" onclick="showScreen('tentang')">
+            ℹ️ Tentang
+        </button>
+
+        <div class="version">
+            Version 1.0
+        </div>
+
     </div>
 
-    <div class="question" id="question"></div>
-    <div id="options"></div>
+    <!-- PILIH KUIS -->
+    <div id="quizlist" class="screen">
 
-    <div class="buttons">
-        <button class="prev" onclick="prevQuestion()">Previous</button>
-        <button class="next" onclick="nextQuestion()">Next</button>
+        <h2>📚 Pilih Kuis</h2>
+
+        <button class="quiz-item">
+            Kuis Matematika
+        </button>
+
+        <button class="quiz-item">
+            Kuis IPA
+        </button>
+
+        <button class="quiz-item">
+            Kuis IPS
+        </button>
+
+        <button class="quiz-item">
+            Kuis Bahasa Indonesia
+        </button>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
     </div>
-</div>
 
-<div class="result" id="result">
-    <h1>Hasil Kuis</h1>
-    <p>Jawaban Benar: <span id="correct"></span></p>
-    <p>Jawaban Salah: <span id="wrong"></span></p>
-    <p>Nilai: <span id="score"></span></p>
-    <br />
-    <button class="finish" onclick="location.reload()">
-        Ulangi Kuis
-    </button>
-</div>
+    <!-- PETUNJUK -->
+    <div id="petunjuk" class="screen">
+
+        <h2>📖 Petunjuk</h2>
+
+        <p>1. Pilih salah satu kuis yang tersedia.</p>
+        <p>2. Baca soal dengan teliti.</p>
+        <p>3. Pilih jawaban yang paling benar.</p>
+        <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
+        <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
+    </div>
+
+    <!-- TENTANG -->
+    <div id="tentang" class="screen">
+
+        <h2>ℹ️ Tentang</h2>
+
+        <p>
+            Quiz App adalah aplikasi latihan soal berbasis HTML,
+            CSS dan JavaScript yang dapat dijalankan secara offline
+            maupun online.
+        </p>
+
+        <p>
+            Aplikasi ini dibuat untuk membantu pengguna berlatih
+            mengerjakan soal pilihan ganda.
+        </p>
+
+        <p>
+            Versi : 1.0
+        </p>
+
+        <button class="back-btn" onclick="showScreen('home')">
+            Kembali
+        </button>
+
+    </div>
 
 </div>
 
 <script>
 
-const questions = [
+function showScreen(id){
 
-{
-question:"Ibukota Indonesia adalah?",
-options:["Bandung","Jakarta","Medan","Surabaya","Makassar"],
-answer:1
-},
+    let screens =
+    document.querySelectorAll(".screen");
 
-{
-question:"2 + 2 = ?",
-options:["1","2","3","4","5"],
-answer:3
-},
-
-{
-question:"Planet terbesar adalah?",
-options:["Mars","Jupiter","Venus","Bumi","Merkurius"],
-answer:1
-},
-
-{
-question:"Warna bendera Indonesia?",
-options:[
-"Merah Putih",
-"Merah Biru",
-"Hijau Putih",
-"Kuning Merah",
-"Hitam Putih"
-],
-answer:0
-},
-
-{
-question:"5 x 5 = ?",
-options:["10","15","20","25","30"],
-answer:3
-},
-
-{
-question:"Bahasa resmi Indonesia?",
-options:[
-"Jawa",
-"Sunda",
-"Indonesia",
-"Melayu",
-"Bugis"
-],
-answer:2
-},
-
-{
-question:"Air membeku pada suhu?",
-options:[
-"0°C",
-"10°C",
-"50°C",
-"100°C",
-"5°C"
-],
-answer:0
-},
-
-{
-question:"Pulau terbesar di Indonesia?",
-options:[
-"Jawa",
-"Bali",
-"Kalimantan",
-"Madura",
-"Lombok"
-],
-answer:2
-},
-
-{
-question:"Hari Kemerdekaan Indonesia?",
-options:[
-"1 Juni",
-"17 Agustus",
-"28 Oktober",
-"10 November",
-"20 Mei"
-],
-answer:1
-},
-
-{
-question:"10 + 15 = ?",
-options:[
-"20",
-"25",
-"30",
-"35",
-"40"
-],
-answer:1
-}
-
-];
-
-let currentQuestion = 0;
-let userAnswers = Array(questions.length).fill(null);
-let timerInterval = null;
-
-// Huruf untuk prefix A, B, C, D, E
-const prefixes = ["A", "B", "C", "D", "E"];
-
-function loadQuestion(){
-
-    document.getElementById("progress").innerText =
-    `Soal ${currentQuestion+1}/${questions.length}`;
-
-    document.getElementById("question").innerText =
-    questions[currentQuestion].question;
-
-    let html="";
-
-    questions[currentQuestion].options.forEach((opt,index)=>{
-
-        let isChecked =
-        userAnswers[currentQuestion] === index
-        ? "checked"
-        : "";
-
-        html += `
-        <label class="option">
-            <input
-                type="radio"
-                name="answer"
-                value="${index}"
-                ${isChecked}
-            >
-
-            <span class="choice-letter">
-                ${prefixes[index]}
-            </span>
-
-            <span class="choice-text">
-                ${opt}
-            </span>
-        </label>
-        `;
+    screens.forEach(screen=>{
+        screen.classList.remove("active");
     });
 
-    document.getElementById("options").innerHTML = html;
-
-    updateButtons();
-}
-
-function saveAnswer(){
-    const selected = document.querySelector('input[name="answer"]:checked');
-    if(selected){
-        userAnswers[currentQuestion] = parseInt(selected.value);
-    }
-}
-
-function nextQuestion(){
-    saveAnswer();
-    if(currentQuestion < questions.length-1){
-        currentQuestion++;
-        loadQuestion();
-    }
-}
-
-function prevQuestion(){
-    saveAnswer();
-    if(currentQuestion > 0){
-        currentQuestion--;
-        loadQuestion();
-    }
-}
-
-function updateButtons(){
-    const btnArea = document.querySelector(".buttons");
-    if(currentQuestion === questions.length-1){
-        btnArea.innerHTML = `
-            <button class="prev" onclick="prevQuestion()">Previous</button>
-            <button class="finish" onclick="finishQuiz()">Selesai</button>
-        `;
-    } else {
-        btnArea.innerHTML = `
-            <button class="prev" onclick="prevQuestion()">Previous</button>
-            <button class="next" onclick="nextQuestion()">Next</button>
-        `;
-    }
-}
-
-function finishQuiz(){
-    if(timerInterval) clearInterval(timerInterval);
-    saveAnswer();
-
-    let correct = 0;
-    questions.forEach((q, index) => {
-        if(userAnswers[index] === q.answer) correct++;
-    });
-
-    let wrong = questions.length - correct;
-    let score = Math.round((correct/questions.length)*100);
-
-    document.getElementById("quiz").style.display = "none";
-    document.getElementById("result").style.display = "block";
-    document.getElementById("correct").innerText = correct;
-    document.getElementById("wrong").innerText = wrong;
-    document.getElementById("score").innerText = score;
-}
-
-function startQuiz(){
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("quiz").style.display = "block";
-    currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
-    loadQuestion();
-    startTimer();
-}
-
-let time = 600;
-function startTimer(){
-    if(timerInterval) clearInterval(timerInterval);
-    time = 600;
-    timerInterval = setInterval(() => {
-        let minutes = Math.floor(time/60);
-        let seconds = time%60;
-        document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-        if(time <= 0){
-            clearInterval(timerInterval);
-            finishQuiz();
-        }
-        time--;
-    }, 1000);
+    document
+    .getElementById(id)
+    .classList.add("active");
 }
 
 </script>
 
 </body>
 </html>
+
