@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kuis Online - Dengan Gambar & Pilihan Acak</title>
+<title>Latihan 2 - Quiz Gambar</title>
 
 <style>
 *{
@@ -207,8 +208,15 @@ body{
 }
 
 /* Style Utama Kuis */
-h2{
-    margin-bottom:15px;
+.header-title{
+    text-align:center;
+    margin-bottom:20px;
+    padding-bottom:10px;
+    border-bottom:2px solid #0d6efd;
+}
+
+.header-title h2{
+    color:#0d6efd;
 }
 
 .info{
@@ -222,6 +230,7 @@ h2{
     font-size:20px;
     margin-bottom:15px;
     font-weight:bold;
+    text-align:center;
 }
 
 .question-image{
@@ -333,6 +342,7 @@ button:hover{
 
 .result h1{
     margin-bottom:20px;
+    color:#0d6efd;
 }
 
 .result p{
@@ -363,6 +373,11 @@ button:hover{
         padding:10px 18px;
         font-size:14px;
     }
+    
+    .choice-image{
+        width:45px;
+        height:45px;
+    }
 }
 
 .acak-info{
@@ -380,26 +395,18 @@ button:hover{
 
 <div class="container">
 
-<div id="startScreen" style="text-align:center;">
-    <h2>Selamat Datang</h2>
-    <p style="margin:20px 0;font-size:18px;">
-        Silahkan tekan tombol <b>Mulai</b> jika Anda telah siap untuk menjawab.
-    </p>
-    <p style="margin-bottom:20px;color:#dc3545;">
-        ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
-    </p>
-    <p style="margin-bottom:20px;color:#0d6efd; background:#e9ecef; padding:10px; border-radius:8px;">
-        🔄 Setiap memulai kuis, pilihan jawaban akan diacak!
-    </p>
-    <button class="finish" onclick="startQuiz()">
-        Mulai
-    </button>
+<div class="header-title">
+    <h2>🖼️ Latihan 2 - Tebak Gambar</h2>
 </div>
 
-<div id="quiz" style="display:none;">
+<div id="quiz">
     <div class="info">
         <span id="progress">Soal 1/10</span>
         <span id="timer">10:00</span>
+    </div>
+
+    <div class="acak-info" id="acakInfo">
+        🔄 Pilihan jawaban telah diacak!
     </div>
 
     <div class="question" id="question"></div>
@@ -407,23 +414,24 @@ button:hover{
     <div id="options"></div>
 
     <div class="buttons">
-        <button class="prev" onclick="prevQuestion()">Previous</button>
-        <button class="next" onclick="nextQuestion()">Next</button>
+        <button class="prev" onclick="prevQuestion()">◀ Previous</button>
+        <button id="nextFinishBtn" class="next" onclick="nextQuestion()">Next ▶</button>
     </div>
 </div>
 
 <div class="result" id="result">
-    <h1>Hasil Kuis</h1>
-    <p>Jawaban Benar: <span id="correct"></span></p>
-    <p>Jawaban Salah: <span id="wrong"></span></p>
-    <p>Nilai: <span id="score"></span></p>
+    <h1>📊 Hasil Kuis</h1>
+    <p>📝 Latihan 2 - Tebak Gambar</p>
+    <p>✅ Jawaban Benar: <span id="correct"></span></p>
+    <p>❌ Jawaban Salah: <span id="wrong"></span></p>
+    <p>⭐ Nilai: <span id="score"></span></p>
     <br />
     <div class="result-buttons">
         <button class="finish" onclick="restartQuiz()">
             🔄 Ulangi Kuis
         </button>
         <button class="back-home" onclick="goToHomePage()">
-            🏠 Kembali ke Halaman Utama
+            🏠 Kembali ke Menu Utama
         </button>
     </div>
 </div>
@@ -431,7 +439,7 @@ button:hover{
 </div>
 
 <!-- Tombol Sidebar -->
-<div class="sidebar-toggle">
+<div class="sidebar-toggle" id="sidebarToggle">
     <button class="btn-sidebar" onclick="toggleSidebar()">
         📋 Daftar Soal
     </button>
@@ -474,12 +482,13 @@ button:hover{
 
 <script>
 
-// ========== FUNGSI KEMBALI KE HALAMAN UTAMA ==========
+// ========== FUNGSI KEMBALI KE MENU UTAMA ==========
 function goToHomePage() {
     window.location.href = "index.html";
 }
 
-// ========== DATA SOAL ASLI (TIDAK BERUBAH) ==========
+// ========== DATA SOAL LATIHAN 2 (GAMBAR) ==========
+// Ganti URL gambar sesuai dengan yang Anda miliki
 const originalQuestions = [
 
 {
@@ -492,7 +501,7 @@ const originalQuestions = [
         {text:"Hamster", image:"https://i.pinimg.com/736x/50/3b/98/503b98c96e10c5d83665d7e3b7ea9282.jpg"},
         {text:"Kura-kura", image:"https://i.pinimg.com/736x/c1/bf/d9/c1bfd9bfeb58229d7eedb983fbb6a995.jpg"}
     ],
-    answer:0
+    answer:0  // Kucing
 },
 
 {
@@ -505,7 +514,7 @@ const originalQuestions = [
         {text:"Semangka", image:"https://i.pinimg.com/736x/96/07/bd/9607bd0f8d18a4b307aa5d2e5e76ee3c.jpg"},
         {text:"Strawberry", image:"https://i.pinimg.com/736x/98/2c/7a/982c7a55cef284ae2b57c565cd68f64b.jpg"}
     ],
-    answer:0
+    answer:0  // Apel
 },
 
 {
@@ -518,7 +527,7 @@ const originalQuestions = [
         {text:"Kuning", image:"https://i.pinimg.com/736x/09/87/bb/0987bbdc73414823a5b7407ac77bc9dc.jpg"},
         {text:"Ungu", image:"https://i.pinimg.com/736x/7d/4c/3e/7d4c3e724d30215b9c6c381150360117.jpg"}
     ],
-    answer:0
+    answer:0  // Merah
 },
 
 {
@@ -531,130 +540,121 @@ const originalQuestions = [
         {text:"Kapal", image:"https://i.pinimg.com/736x/34/cc/86/34cc86f74db46e9b9f439965791b5c21.jpg"},
         {text:"Sepeda", image:"https://i.pinimg.com/736x/b6/f7/bd/b6f7bd931f9fa33c1e7dab74118a6847.jpg"}
     ],
-    answer:3
+    answer:3  // Kapal
+},
+
+{
+    question:"Hewan apa yang memiliki belalai?",
+    questionImage:"https://i.pinimg.com/736x/1f/8e/0b/1f8e0b8b8b8b8b8b8b8b8b8b8b8b8b8.jpg",
+    options:[
+        {text:"Gajah", image:"https://i.pinimg.com/736x/1f/8e/0b/1f8e0b8b8b8b8b8b8b8b8b8b8b8b8b8.jpg"},
+        {text:"Jerapah", image:"https://i.pinimg.com/736x/2c/3d/4e/2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f.jpg"},
+        {text:"Singa", image:"https://i.pinimg.com/736x/3d/4e/5f/3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8g.jpg"},
+        {text:"Harimau", image:"https://i.pinimg.com/736x/4e/5f/6a/4e5f6a7b8c9d0e1f2a3b4c5d6e7f8g9h.jpg"},
+        {text:"Zebra", image:"https://i.pinimg.com/736x/5f/6a/7b/5f6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i.jpg"}
+    ],
+    answer:0  // Gajah
+},
+
+{
+    question:"Makanan khas Indonesia ini adalah?",
+    questionImage:"https://i.pinimg.com/736x/6a/7b/8c/6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j.jpg",
+    options:[
+        {text:"Rendang", image:"https://i.pinimg.com/736x/6a/7b/8c/6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j.jpg"},
+        {text:"Sate", image:"https://i.pinimg.com/736x/7b/8c/9d/7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j2k.jpg"},
+        {text:"Nasi Goreng", image:"https://i.pinimg.com/736x/8c/9d/0e/8c9d0e1f2a3b4c5d6e7f8g9h0i1j2k3l.jpg"},
+        {text:"Gado-gado", image:"https://i.pinimg.com/736x/9d/0e/1f/9d0e1f2a3b4c5d6e7f8g9h0i1j2k3l4m.jpg"},
+        {text:"Bakso", image:"https://i.pinimg.com/736x/0e/1f/2a/0e1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n.jpg"}
+    ],
+    answer:0  // Rendang
+},
+
+{
+    question:"Alat musik tradisional ini berasal dari?",
+    questionImage:"https://i.pinimg.com/736x/1f/2a/3b/1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o.jpg",
+    options:[
+        {text:"Jawa Barat", image:"https://i.pinimg.com/736x/1f/2a/3b/1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o.jpg"},
+        {text:"Bali", image:"https://i.pinimg.com/736x/2a/3b/4c/2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p.jpg"},
+        {text:"Sumatera", image:"https://i.pinimg.com/736x/3b/4c/5d/3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q.jpg"},
+        {text:"Sulawesi", image:"https://i.pinimg.com/736x/4c/5d/6e/4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r.jpg"},
+        {text:"Papua", image:"https://i.pinimg.com/736x/5d/6e/7f/5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s.jpg"}
+    ],
+    answer:0  // Jawa Barat (Angklung)
+},
+
+{
+    question:"Pakaian adat ini berasal dari?",
+    questionImage:"https://i.pinimg.com/736x/6e/7f/8g/6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t.jpg",
+    options:[
+        {text:"Jawa", image:"https://i.pinimg.com/736x/6e/7f/8g/6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t.jpg"},
+        {text:"Bali", image:"https://i.pinimg.com/736x/7f/8g/9h/7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u.jpg"},
+        {text:"Sumatera", image:"https://i.pinimg.com/736x/8g/9h/0i/8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v.jpg"},
+        {text:"Kalimantan", image:"https://i.pinimg.com/736x/9h/0i/1j/9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w.jpg"},
+        {text:"Papua", image:"https://i.pinimg.com/736x/0i/1j/2k/0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x.jpg"}
+    ],
+    answer:0  // Jawa (Kebaya/Batik)
+},
+
+{
+    question:"Tari tradisional ini berasal dari?",
+    questionImage:"https://i.pinimg.com/736x/1j/2k/3l/1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y.jpg",
+    options:[
+        {text:"Aceh", image:"https://i.pinimg.com/736x/1j/2k/3l/1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y.jpg"},
+        {text:"Bali", image:"https://i.pinimg.com/736x/2k/3l/4m/2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z.jpg"},
+        {text:"Jawa", image:"https://i.pinimg.com/736x/3l/4m/5n/3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a.jpg"},
+        {text:"Papua", image:"https://i.pinimg.com/736x/4m/5n/6o/4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b.jpg"},
+        {text:"Sumatera", image:"https://i.pinimg.com/736x/5n/6o/7p/5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c.jpg"}
+    ],
+    answer:0  // Aceh (Tari Saman)
+},
+
+{
+    question:"Rumah adat ini disebut?",
+    questionImage:"https://i.pinimg.com/736x/6o/7p/8q/6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d.jpg",
+    options:[
+        {text:"Gadang", image:"https://i.pinimg.com/736x/6o/7p/8q/6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d.jpg"},
+        {text:"Joglo", image:"https://i.pinimg.com/736x/7p/8q/9r/7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e.jpg"},
+        {text:"Tongkonan", image:"https://i.pinimg.com/736x/8q/9r/0s/8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f.jpg"},
+        {text:"Honai", image:"https://i.pinimg.com/736x/9r/0s/1t/9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g.jpg"},
+        {text:"Lamin", image:"https://i.pinimg.com/736x/0s/1t/2u/0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h.jpg"}
+    ],
+    answer:0  // Gadang (Minangkabau)
 }
 
 ];
-
-const moreOriginalQuestions = [
-{
-    question:"Ibukota Indonesia adalah?",
-    questionImage:null,
-    options:[
-        {text:"Bandung", image:null},
-        {text:"Jakarta", image:null},
-        {text:"Medan", image:null},
-        {text:"Surabaya", image:null},
-        {text:"Makassar", image:null}
-    ],
-    answer:1
-},
-{
-    question:"2 + 2 = ?",
-    questionImage:null,
-    options:[
-        {text:"1", image:null},
-        {text:"2", image:null},
-        {text:"3", image:null},
-        {text:"4", image:null},
-        {text:"5", image:null}
-    ],
-    answer:3
-},
-{
-    question:"Planet terbesar adalah?",
-    questionImage:null,
-    options:[
-        {text:"Mars", image:null},
-        {text:"Jupiter", image:null},
-        {text:"Venus", image:null},
-        {text:"Bumi", image:null},
-        {text:"Merkurius", image:null}
-    ],
-    answer:1
-},
-{
-    question:"Warna bendera Indonesia?",
-    questionImage:null,
-    options:[
-        {text:"Merah Putih", image:null},
-        {text:"Merah Biru", image:null},
-        {text:"Hijau Putih", image:null},
-        {text:"Kuning Merah", image:null},
-        {text:"Hitam Putih", image:null}
-    ],
-    answer:0
-},
-{
-    question:"5 x 5 = ?",
-    questionImage:null,
-    options:[
-        {text:"10", image:null},
-        {text:"15", image:null},
-        {text:"20", image:null},
-        {text:"25", image:null},
-        {text:"30", image:null}
-    ],
-    answer:3
-},
-{
-    question:"Bahasa resmi Indonesia?",
-    questionImage:null,
-    options:[
-        {text:"Jawa", image:null},
-        {text:"Sunda", image:null},
-        {text:"Indonesia", image:null},
-        {text:"Melayu", image:null},
-        {text:"Bugis", image:null}
-    ],
-    answer:2
-},
-{
-    question:"Air membeku pada suhu?",
-    questionImage:null,
-    options:[
-        {text:"0°C", image:null},
-        {text:"10°C", image:null},
-        {text:"50°C", image:null},
-        {text:"100°C", image:null},
-        {text:"5°C", image:null}
-    ],
-    answer:0
-}
-];
-
-const allOriginalQuestions = [...originalQuestions, ...moreOriginalQuestions];
 
 // Variabel untuk menyimpan soal yang sudah diacak
 let questions = [];
 let currentQuestion = 0;
 let userAnswers = [];
 let timerInterval = null;
-
+let time = 600;
 const prefixes = ["A", "B", "C", "D", "E"];
 
-// ========== FUNGSI UNTUK MENGACAK PILIHAN ==========
+// Cek apakah ada parameter seed dari index.html
+function getParameter(nama) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(nama);
+}
+
+// ========== FUNGSI MENGACAK PILIHAN ==========
 function shuffleOptions(questionData) {
-    // Buat array yang berisi pasangan (text, image, originalIndex)
     const optionPairs = questionData.options.map((opt, idx) => ({
         text: opt.text,
         image: opt.image,
         originalIndex: idx
     }));
     
-    // Acak array
     for(let i = optionPairs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
     }
     
-    // Buat options baru yang sudah diacak
     const shuffledOptions = optionPairs.map(pair => ({
         text: pair.text,
         image: pair.image
     }));
     
-    // Cari index baru dari jawaban benar
     const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
     
     return {
@@ -665,33 +665,36 @@ function shuffleOptions(questionData) {
     };
 }
 
-// ========== FUNGSI UNTUK MENGACAK SEMUA SOAL ==========
 function shuffleAllQuestions() {
-    questions = allOriginalQuestions.map(q => shuffleOptions(q));
+    questions = originalQuestions.map(q => shuffleOptions(q));
 }
 
-// ========== RESTART KUIS (tanpa reload halaman) ==========
-function restartQuiz() {
-    // Hentikan timer lama
-    if(timerInterval) clearInterval(timerInterval);
-    
-    // Acak ulang semua pilihan
+// ========== INISIALISASI ==========
+function initQuiz() {
     shuffleAllQuestions();
+    document.getElementById("acakInfo").style.display = "block";
     
-    // Reset variabel
     currentQuestion = 0;
     userAnswers = Array(questions.length).fill(null);
     
-    // Sembunyikan result, tampilkan quiz
-    document.getElementById("result").style.display = "none";
-    document.getElementById("quiz").style.display = "block";
-    document.querySelector('.sidebar-toggle').style.display = "block";
-    
-    // Load soal pertama
     loadQuestion();
     updateSoalGrid();
+    startTimer();
+}
+
+function restartQuiz() {
+    if(timerInterval) clearInterval(timerInterval);
+    shuffleAllQuestions();
     
-    // Start timer baru
+    currentQuestion = 0;
+    userAnswers = Array(questions.length).fill(null);
+    
+    document.getElementById("result").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("sidebarToggle").style.display = "block";
+    
+    loadQuestion();
+    updateSoalGrid();
     startTimer();
 }
 
@@ -699,7 +702,6 @@ function restartQuiz() {
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    
     sidebar.classList.toggle('open');
     overlay.classList.toggle('show');
 }
@@ -709,27 +711,13 @@ function updateSoalGrid() {
     if(!grid) return;
     
     let html = '';
-    
     for(let i = 0; i < questions.length; i++) {
-        let statusClass = '';
+        let statusClass = 'unanswered';
+        if(userAnswers[i] !== null) statusClass = 'answered';
+        if(i === currentQuestion) statusClass = 'active';
         
-        if(userAnswers[i] !== null) {
-            statusClass = 'answered';
-        } else {
-            statusClass = 'unanswered';
-        }
-        
-        if(i === currentQuestion) {
-            statusClass = 'active';
-        }
-        
-        html += `
-            <div class="grid-soal ${statusClass}" onclick="goToSoal(${i})">
-                ${i + 1}
-            </div>
-        `;
+        html += `<div class="grid-soal ${statusClass}" onclick="goToSoal(${i})">${i + 1}</div>`;
     }
-    
     grid.innerHTML = html;
 }
 
@@ -740,7 +728,7 @@ function goToSoal(soalIndex) {
     toggleSidebar();
 }
 
-function loadQuestion(){
+function loadQuestion() {
     document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${questions.length}`;
     document.getElementById("question").innerText = questions[currentQuestion].question;
     
@@ -775,49 +763,47 @@ function loadQuestion(){
     
     document.getElementById("options").innerHTML = html;
     updateSoalGrid();
-    updateButtons();
+    updateButtonText();
 }
 
-function saveAnswer(){
+function updateButtonText() {
+    const btn = document.getElementById("nextFinishBtn");
+    if(currentQuestion === questions.length-1) {
+        btn.innerText = "✅ Selesai";
+        btn.className = "finish";
+        btn.onclick = () => finishQuiz();
+    } else {
+        btn.innerText = "Next ▶";
+        btn.className = "next";
+        btn.onclick = () => nextQuestion();
+    }
+}
+
+function saveAnswer() {
     const selected = document.querySelector('input[name="answer"]:checked');
-    if(selected){
+    if(selected) {
         userAnswers[currentQuestion] = parseInt(selected.value);
         updateSoalGrid();
     }
 }
 
-function nextQuestion(){
+function nextQuestion() {
     saveAnswer();
-    if(currentQuestion < questions.length-1){
+    if(currentQuestion < questions.length-1) {
         currentQuestion++;
         loadQuestion();
     }
 }
 
-function prevQuestion(){
+function prevQuestion() {
     saveAnswer();
-    if(currentQuestion > 0){
+    if(currentQuestion > 0) {
         currentQuestion--;
         loadQuestion();
     }
 }
 
-function updateButtons(){
-    const btnArea = document.querySelector(".buttons");
-    if(currentQuestion === questions.length-1){
-        btnArea.innerHTML = `
-            <button class="prev" onclick="prevQuestion()">Previous</button>
-            <button class="finish" onclick="finishQuiz()">Selesai</button>
-        `;
-    } else {
-        btnArea.innerHTML = `
-            <button class="prev" onclick="prevQuestion()">Previous</button>
-            <button class="next" onclick="nextQuestion()">Next</button>
-        `;
-    }
-}
-
-function finishQuiz(){
+function finishQuiz() {
     if(timerInterval) clearInterval(timerInterval);
     saveAnswer();
 
@@ -835,34 +821,17 @@ function finishQuiz(){
     document.getElementById("wrong").innerText = wrong;
     document.getElementById("score").innerText = score;
     
-    document.querySelector('.sidebar-toggle').style.display = "none";
+    document.getElementById("sidebarToggle").style.display = "none";
 }
 
-function startQuiz(){
-    // Acak pilihan saat pertama kali mulai
-    shuffleAllQuestions();
-    
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("quiz").style.display = "block";
-    document.querySelector('.sidebar-toggle').style.display = "block";
-    
-    currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
-    
-    loadQuestion();
-    updateSoalGrid();
-    startTimer();
-}
-
-let time = 600;
-function startTimer(){
+function startTimer() {
     if(timerInterval) clearInterval(timerInterval);
     time = 600;
     timerInterval = setInterval(() => {
         let minutes = Math.floor(time/60);
         let seconds = time%60;
         document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-        if(time <= 0){
+        if(time <= 0) {
             clearInterval(timerInterval);
             finishQuiz();
         }
@@ -870,8 +839,8 @@ function startTimer(){
     }, 1000);
 }
 
-// Inisialisasi awal
-document.querySelector('.sidebar-toggle').style.display = "none";
+// Jalankan quiz saat halaman dimuat
+initQuiz();
 
 </script>
 
