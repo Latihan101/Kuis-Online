@@ -1,0 +1,408 @@
+
+<html lang="id">
+<head>
+<meta charset="UTF-8"></meta>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+<title>Kuis Online</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+
+.question{
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+.option{
+    display:block;
+    margin-bottom:12px;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.option:hover{
+    background:#f2f2f2;
+}
+
+.buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.prev{
+    background:#6c757d;
+    color:white;
+}
+
+.next{
+    background:#0d6efd;
+    color:white;
+}
+
+.finish{
+    background:#198754;
+    color:white;
+}
+
+.result{
+    display:none;
+    text-align:center;
+}
+
+.result h1{
+    margin-bottom:20px;
+}
+
+.result p{
+    margin:10px 0;
+    font-size:18px;
+}
+
+.correct{
+    color:green;
+}
+
+.wrong{
+    color:red;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div id="startScreen" style="text-align:center;">
+    <h2>Selamat Datang</h2>
+
+    <p style="margin:20px 0;font-size:18px;">
+        Silahkan tekan tombol <b>Mulai</b> jika Anda telah siap untuk menjawab.
+    </p>
+
+    <p style="margin-bottom:20px;color:#dc3545;">
+        ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
+    </p>
+
+    <button class="finish" onclick="startQuiz()">
+        Mulai
+    </button>
+</div>
+
+<div id="quiz" style="display:none;">
+
+
+<div class="info">
+    <span id="progress">Soal 1/10</span>
+    <span id="timer">10:00</span>
+</div>
+
+<div class="question" id="question"></div>
+
+<div id="options"></div>
+
+<div class="buttons">
+    <button class="prev" onclick="prevQuestion()">Previous</button>
+    <button class="next" onclick="nextQuestion()">Next</button>
+</div>
+
+</div>
+
+<div class="result" id="result">
+    <h1>Hasil Kuis</h1>
+
+    <p>Jawaban Benar: <span id="correct"></span></p>
+    <p>Jawaban Salah: <span id="wrong"></span></p>
+    <p>Nilai: <span id="score"></span></p>
+
+    <br />
+
+    <button class="finish" onclick="location.reload()">
+        Ulangi Kuis
+    </button>
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"Ibukota Indonesia adalah?",
+options:["Bandung","Jakarta","Medan","Surabaya"],
+answer:1
+},
+
+{
+question:"2 + 2 = ?",
+options:["2","3","4","5"],
+answer:2
+},
+
+{
+question:"Planet terbesar adalah?",
+options:["Mars","Jupiter","Venus","Bumi"],
+answer:1
+},
+
+{
+question:"Warna bendera Indonesia?",
+options:["Merah Putih","Merah Biru","Hijau Putih","Kuning Merah"],
+answer:0
+},
+
+{
+question:"5 x 5 = ?",
+options:["10","15","20","25"],
+answer:3
+},
+
+{
+question:"Bahasa resmi Indonesia?",
+options:["Jawa","Sunda","Indonesia","Melayu"],
+answer:2
+},
+
+{
+question:"Air membeku pada suhu?",
+options:["0°C","10°C","50°C","100°C"],
+answer:0
+},
+
+{
+question:"Pulau terbesar di Indonesia?",
+options:["Jawa","Bali","Kalimantan","Madura"],
+answer:2
+},
+
+{
+question:"Hari Kemerdekaan Indonesia?",
+options:["1 Juni","17 Agustus","28 Oktober","10 November"],
+answer:1
+},
+
+{
+question:"10 + 15 = ?",
+options:["20","25","30","35"],
+answer:1
+}
+
+];
+
+let currentQuestion = 0;
+let userAnswers = Array(questions.length).fill(null);
+
+function loadQuestion(){
+
+document.getElementById("progress").innerText =
+`Soal ${currentQuestion+1}/${questions.length}`;
+
+document.getElementById("question").innerText =
+questions[currentQuestion].question;
+
+let html="";
+
+questions[currentQuestion].options.forEach((opt,index)=>{
+
+html += `
+<label class="option">
+<input type="radio"
+name="answer"
+value="${index}"
+${userAnswers[currentQuestion]==index ? "checked" : ""}>
+ ${opt}
+</label>
+`;
+
+});
+
+document.getElementById("options").innerHTML=html;
+
+updateButtons();
+
+}
+
+function saveAnswer(){
+
+const selected =
+document.querySelector('input[name="answer"]:checked');
+
+if(selected){
+userAnswers[currentQuestion] =
+parseInt(selected.value);
+}
+
+}
+
+function nextQuestion(){
+
+saveAnswer();
+
+if(currentQuestion < questions.length-1){
+currentQuestion++;
+loadQuestion();
+}
+
+}
+
+function prevQuestion(){
+
+saveAnswer();
+
+if(currentQuestion > 0){
+currentQuestion--;
+loadQuestion();
+}
+
+}
+
+function updateButtons(){
+
+const btnArea =
+document.querySelector(".buttons");
+
+if(currentQuestion === questions.length-1){
+
+btnArea.innerHTML=`
+<button class="prev"
+onclick="prevQuestion()">
+Previous
+</button>
+
+<button class="finish"
+onclick="finishQuiz()">
+Selesai
+</button>
+`;
+
+}else{
+
+btnArea.innerHTML=`
+<button class="prev"
+onclick="prevQuestion()">
+Previous
+</button>
+
+<button class="next"
+onclick="nextQuestion()">
+Next
+</button>
+`;
+
+}
+
+}
+
+function finishQuiz(){
+
+saveAnswer();
+
+let correct=0;
+
+questions.forEach((q,index)=>{
+if(userAnswers[index]===q.answer){
+correct++;
+}
+});
+
+let wrong =
+questions.length-correct;
+
+let score =
+Math.round((correct/questions.length)*100);
+
+document.getElementById("quiz").style.display="none";
+document.getElementById("result").style.display="block";
+
+document.getElementById("correct").innerText=correct;
+document.getElementById("wrong").innerText=wrong;
+document.getElementById("score").innerText=score;
+
+}
+
+function startQuiz(){
+
+    document.getElementById("startScreen").style.display = "none";
+
+    document.getElementById("quiz").style.display = "block";
+
+    loadQuestion();
+
+    startTimer();
+
+}
+  
+let time = 600;
+
+function startTimer(){
+
+setInterval(()=>{
+
+let minutes =
+Math.floor(time/60);
+
+let seconds =
+time%60;
+
+document.getElementById("timer").innerText =
+`${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+
+if(time<=0){
+finishQuiz();
+}
+
+time--;
+
+},1000);
+
+}
+
+
+</script>
+
+</body>
+</html>
