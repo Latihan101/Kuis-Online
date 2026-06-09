@@ -405,9 +405,9 @@ button:hover{
         <span id="timer">10:00</span>
     </div>
 
-    <div class="acak-info" id="acakInfo">
+    <!--<div class="acak-info" id="acakInfo">
         🔄 Pilihan jawaban telah diacak!
-    </div>
+    </div>-->
 
     <div class="question" id="question"></div>
     <div id="questionImage" class="question-image"></div>
@@ -672,7 +672,7 @@ function shuffleAllQuestions() {
 // ========== INISIALISASI ==========
 function initQuiz() {
     shuffleAllQuestions();
-    document.getElementById("acakInfo").style.display = "block";
+    //document.getElementById("acakInfo").style.display = "block";
     
     currentQuestion = 0;
     userAnswers = Array(questions.length).fill(null);
