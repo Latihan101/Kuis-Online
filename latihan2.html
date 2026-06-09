@@ -122,6 +122,11 @@ button{
     border-radius:8px;
     cursor:pointer;
     font-size:16px;
+    transition:0.2s;
+}
+
+button:hover{
+    opacity:0.85;
 }
 
 .prev{
@@ -139,6 +144,11 @@ button{
     color:white;
 }
 
+.back-home{
+    background:#fd7e14;
+    color:white;
+}
+
 .result{
     display:none;
     text-align:center;
@@ -151,6 +161,14 @@ button{
 .result p{
     margin:10px 0;
     font-size:18px;
+}
+
+.result-buttons{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    margin-top:25px;
+    flex-wrap:wrap;
 }
 
 .option-with-image{
@@ -199,19 +217,39 @@ button{
     <p>Jawaban Salah: <span id="wrong"></span></p>
     <p>Nilai: <span id="score"></span></p>
     <br />
-    <button class="finish" onclick="location.reload()">
-        Ulangi Kuis
-    </button>
+    <div class="result-buttons">
+        <button class="finish" onclick="location.reload()">
+            🔄 Ulangi Kuis
+        </button>
+        <button class="back-home" onclick="goToHomePage()">
+            🏠 Kembali ke Halaman Utama
+        </button>
+    </div>
 </div>
 
 </div>
 
 <script>
 
-// ========== DATA SOAL DENGAN GAMBAR ==========
-// Ganti URL gambar sesuai dengan gambar yang Anda miliki
-// Gunakan gambar dari internet atau simpan gambar di folder yang sama
+// ========== FUNGSI UNTUK KEMBALI KE HALAMAN LAIN ==========
+function goToHomePage() {
+    // Ganti URL ini dengan halaman yang Anda tuju
+    // Contoh beberapa pilihan:
+    
+    // Opsi 1: Kembali ke halaman sebelumnya (browser back)
+    // window.history.back();
+    
+    // Opsi 2: Kembali ke halaman tertentu (ganti dengan URL Anda)
+    window.location.href = "index.html";  // Ganti sesuai kebutuhan
+    
+    // Opsi 3: Jika ingin membuka di tab baru
+    // window.open("https://www.google.com", "_blank");
+    
+    // Opsi 4: Jika ingin reload halaman saat ini saja
+    // location.reload();
+}
 
+// ========== DATA SOAL DENGAN GAMBAR ==========
 const questions = [
 
 {
@@ -224,7 +262,7 @@ const questions = [
         {text:"Hamster", image:"https://i.pinimg.com/736x/50/3b/98/503b98c96e10c5d83665d7e3b7ea9282.jpg"},
         {text:"Kura-kura", image:"https://i.pinimg.com/736x/c1/bf/d9/c1bfd9bfeb58229d7eedb983fbb6a995.jpg"}
     ],
-    answer:0  // Kucing (index 0)
+    answer:0
 },
 
 {
@@ -237,7 +275,7 @@ const questions = [
         {text:"Semangka", image:"https://i.pinimg.com/736x/96/07/bd/9607bd0f8d18a4b307aa5d2e5e76ee3c.jpg"},
         {text:"Strawberry", image:"https://i.pinimg.com/736x/98/2c/7a/982c7a55cef284ae2b57c565cd68f64b.jpg"}
     ],
-    answer:0  // Apel (index 0)
+    answer:0
 },
 
 {
@@ -250,7 +288,7 @@ const questions = [
         {text:"Kuning", image:"https://i.pinimg.com/736x/09/87/bb/0987bbdc73414823a5b7407ac77bc9dc.jpg"},
         {text:"Ungu", image:"https://i.pinimg.com/736x/7d/4c/3e/7d4c3e724d30215b9c6c381150360117.jpg"}
     ],
-    answer:0  // Merah (index 0)
+    answer:0
 },
 
 {
@@ -263,16 +301,10 @@ const questions = [
         {text:"Kapal", image:"https://i.pinimg.com/736x/34/cc/86/34cc86f74db46e9b9f439965791b5c21.jpg"},
         {text:"Sepeda", image:"https://i.pinimg.com/736x/b6/f7/bd/b6f7bd931f9fa33c1e7dab74118a6847.jpg"}
     ],
-    answer:3  // Kapal (index 3)
+    answer:3
 }
 
 ];
-
-// ========== SISA SOAL (TANPA GAMBAR) ==========
-// Bisa ditambahkan soal tanpa gambar dengan questionImage: null
-
-// Untuk demo, kita hanya pakai 4 soal bergambar
-// Jika ingin 10 soal, tambahkan sisanya seperti ini:
 
 const moreQuestions = [
 {
@@ -361,7 +393,6 @@ const moreQuestions = [
 }
 ];
 
-// Gabungkan semua soal
 const allQuestions = [...questions, ...moreQuestions];
 
 let currentQuestion = 0;
@@ -374,7 +405,6 @@ function loadQuestion(){
     document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${allQuestions.length}`;
     document.getElementById("question").innerText = allQuestions[currentQuestion].question;
     
-    // Tampilkan gambar soal (jika ada)
     const questionImageDiv = document.getElementById("questionImage");
     const qImage = allQuestions[currentQuestion].questionImage;
     if(qImage && qImage !== null){
@@ -385,14 +415,12 @@ function loadQuestion(){
         questionImageDiv.style.display = "none";
     }
     
-    // Tampilkan pilihan jawaban dengan gambar
     let html = "";
     const currentOptions = allQuestions[currentQuestion].options;
     
     currentOptions.forEach((opt, index) => {
         let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
         
-        // Cek apakah pilihan ini memiliki gambar
         const hasImage = opt.image && opt.image !== null;
         const imageHtml = hasImage ? `<img class="choice-image" src="${opt.image}" alt="${opt.text}">` : "";
         
