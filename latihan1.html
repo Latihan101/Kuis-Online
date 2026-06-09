@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kuis Online - Dengan Sidebar Soal</title>
+<title>Kuis Online - Pilihan Acak</title>
 
 <style>
 *{
@@ -343,6 +343,16 @@ button:hover{
         font-size:14px;
     }
 }
+
+.acak-info{
+    background:#e9ecef;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:12px;
+    color:#495057;
+    text-align:center;
+    margin-bottom:15px;
+}
 </style>
 </head>
 <body>
@@ -356,6 +366,9 @@ button:hover{
     </p>
     <p style="margin-bottom:20px;color:#dc3545;">
         ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
+    </p>
+    <p style="margin-bottom:20px;color:#0d6efd; background:#e9ecef; padding:10px; border-radius:8px;">
+        🔄 Setiap memulai kuis, pilihan jawaban akan diacak!
     </p>
     <button class="finish" onclick="startQuiz()">
         Mulai
@@ -384,7 +397,7 @@ button:hover{
     <p>Nilai: <span id="score"></span></p>
     <br />
     <div class="result-buttons">
-        <button class="finish" onclick="location.reload()">
+        <button class="finish" onclick="restartQuiz()">
             🔄 Ulangi Kuis
         </button>
         <button class="back-home" onclick="goToHomePage()">
@@ -444,111 +457,135 @@ function goToHomePage() {
     window.location.href = "index.html";
 }
 
-const questions = [
+// Data soal asli (tidak berubah)
+const originalQuestions = [
 
 {
 question:"Ibukota Indonesia adalah?",
 options:["Bandung","Jakarta","Medan","Surabaya","Makassar"],
-answer:1
+answer:1  // Jakarta (index ke-1 dari options asli)
 },
 
 {
 question:"2 + 2 = ?",
 options:["1","2","3","4","5"],
-answer:3
+answer:3  // 4 (index ke-3)
 },
 
 {
 question:"Planet terbesar adalah?",
 options:["Mars","Jupiter","Venus","Bumi","Merkurius"],
-answer:1
+answer:1  // Jupiter (index ke-1)
 },
 
 {
 question:"Warna bendera Indonesia?",
-options:[
-"Merah Putih",
-"Merah Biru",
-"Hijau Putih",
-"Kuning Merah",
-"Hitam Putih"
-],
-answer:0
+options:["Merah Putih","Merah Biru","Hijau Putih","Kuning Merah","Hitam Putih"],
+answer:0  // Merah Putih (index ke-0)
 },
 
 {
 question:"5 x 5 = ?",
 options:["10","15","20","25","30"],
-answer:3
+answer:3  // 25 (index ke-3)
 },
 
 {
 question:"Bahasa resmi Indonesia?",
-options:[
-"Jawa",
-"Sunda",
-"Indonesia",
-"Melayu",
-"Bugis"
-],
-answer:2
+options:["Jawa","Sunda","Indonesia","Melayu","Bugis"],
+answer:2  // Indonesia (index ke-2)
 },
 
 {
 question:"Air membeku pada suhu?",
-options:[
-"0°C",
-"10°C",
-"50°C",
-"100°C",
-"5°C"
-],
-answer:0
+options:["0°C","10°C","50°C","100°C","5°C"],
+answer:0  // 0°C (index ke-0)
 },
 
 {
 question:"Pulau terbesar di Indonesia?",
-options:[
-"Jawa",
-"Bali",
-"Kalimantan",
-"Madura",
-"Lombok"
-],
-answer:2
+options:["Jawa","Bali","Kalimantan","Madura","Lombok"],
+answer:2  // Kalimantan (index ke-2)
 },
 
 {
 question:"Hari Kemerdekaan Indonesia?",
-options:[
-"1 Juni",
-"17 Agustus",
-"28 Oktober",
-"10 November",
-"20 Mei"
-],
-answer:1
+options:["1 Juni","17 Agustus","28 Oktober","10 November","20 Mei"],
+answer:1  // 17 Agustus (index ke-1)
 },
 
 {
 question:"10 + 15 = ?",
-options:[
-"20",
-"25",
-"30",
-"35",
-"40"
-],
-answer:1
+options:["20","25","30","35","40"],
+answer:1  // 25 (index ke-1)
 }
 
 ];
 
+// Variabel untuk menyimpan soal yang sudah diacak pilihannya
+let questions = [];
 let currentQuestion = 0;
-let userAnswers = Array(questions.length).fill(null);
+let userAnswers = Array(originalQuestions.length).fill(null);
 let timerInterval = null;
 
 const prefixes = ["A", "B", "C", "D", "E"];
+
+// ========== FUNGSI UNTUK MENGACAK PILIHAN ==========
+function shuffleOptions(questionData) {
+    // Buat array yang berisi pasangan (teks, index asli)
+    const optionPairs = questionData.options.map((opt, idx) => ({
+        text: opt,
+        originalIndex: idx
+    }));
+    
+    // Acak array
+    for(let i = optionPairs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+    }
+    
+    // Buat options baru yang sudah diacak
+    const shuffledOptions = optionPairs.map(pair => pair.text);
+    
+    // Cari index baru dari jawaban benar
+    const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
+    
+    return {
+        question: questionData.question,
+        options: shuffledOptions,
+        answer: newAnswerIndex
+    };
+}
+
+// ========== FUNGSI UNTUK MENGACAK SEMUA SOAL ==========
+function shuffleAllQuestions() {
+    questions = originalQuestions.map(q => shuffleOptions(q));
+}
+
+// ========== RESTART KUIS (tanpa reload halaman) ==========
+function restartQuiz() {
+    // Hentikan timer lama jika ada
+    if(timerInterval) clearInterval(timerInterval);
+    
+    // Acak ulang semua pilihan
+    shuffleAllQuestions();
+    
+    // Reset variabel
+    currentQuestion = 0;
+    userAnswers = Array(originalQuestions.length).fill(null);
+    
+    // Sembunyikan result, tampilkan quiz
+    document.getElementById("result").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    document.querySelector('.sidebar-toggle').style.display = "block";
+    
+    // Load soal pertama
+    loadQuestion();
+    updateSoalGrid();
+    
+    // Start timer baru
+    startTimer();
+}
 
 // ========== FUNGSI SIDEBAR ==========
 function toggleSidebar() {
@@ -589,14 +626,9 @@ function updateSoalGrid() {
 }
 
 function goToSoal(soalIndex) {
-    // Simpan jawaban soal sebelumnya
     saveAnswer();
-    
-    // Pindah ke soal yang dipilih
     currentQuestion = soalIndex;
     loadQuestion();
-    
-    // Tutup sidebar setelah klik
     toggleSidebar();
 }
 
@@ -638,9 +670,7 @@ function loadQuestion(){
 
     document.getElementById("options").innerHTML = html;
     
-    // Update grid soal
     updateSoalGrid();
-    
     updateButtons();
 }
 
@@ -648,7 +678,7 @@ function saveAnswer(){
     const selected = document.querySelector('input[name="answer"]:checked');
     if(selected){
         userAnswers[currentQuestion] = parseInt(selected.value);
-        updateSoalGrid(); // Update grid setelah menjawab
+        updateSoalGrid();
     }
 }
 
@@ -701,16 +731,20 @@ function finishQuiz(){
     document.getElementById("wrong").innerText = wrong;
     document.getElementById("score").innerText = score;
     
-    // Sembunyikan tombol sidebar saat hasil muncul
     document.querySelector('.sidebar-toggle').style.display = "none";
 }
 
 function startQuiz(){
+    // Acak pilihan saat pertama kali mulai
+    shuffleAllQuestions();
+    
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("quiz").style.display = "block";
     document.querySelector('.sidebar-toggle').style.display = "block";
+    
     currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
+    userAnswers = Array(originalQuestions.length).fill(null);
+    
     loadQuestion();
     updateSoalGrid();
     startTimer();
