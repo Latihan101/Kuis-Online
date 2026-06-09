@@ -1,0 +1,498 @@
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kuis Online - Dengan Gambar</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:800px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+
+.question{
+    font-size:20px;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+.question-image{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.question-image img{
+    max-width:100%;
+    max-height:200px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f2f2f2;
+}
+
+.option input{
+    display:none;
+}
+
+.choice-letter{
+    width:40px;
+    height:40px;
+    min-width:40px;
+    border-radius:50%;
+    background:#0d6efd;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.choice-image{
+    width:60px;
+    height:60px;
+    min-width:60px;
+    border-radius:8px;
+    object-fit:cover;
+    background:#f0f0f0;
+}
+
+.choice-text{
+    flex:1;
+}
+
+.option input:checked + .choice-letter{
+    background:#198754;
+}
+    
+.buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.prev{
+    background:#6c757d;
+    color:white;
+}
+
+.next{
+    background:#0d6efd;
+    color:white;
+}
+
+.finish{
+    background:#198754;
+    color:white;
+}
+
+.result{
+    display:none;
+    text-align:center;
+}
+
+.result h1{
+    margin-bottom:20px;
+}
+
+.result p{
+    margin:10px 0;
+    font-size:18px;
+}
+
+.option-with-image{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div id="startScreen" style="text-align:center;">
+    <h2>Selamat Datang</h2>
+    <p style="margin:20px 0;font-size:18px;">
+        Silahkan tekan tombol <b>Mulai</b> jika Anda telah siap untuk menjawab.
+    </p>
+    <p style="margin-bottom:20px;color:#dc3545;">
+        ⚠️ Setelah tombol Mulai ditekan, timer akan berjalan hingga kuis selesai.
+    </p>
+    <button class="finish" onclick="startQuiz()">
+        Mulai
+    </button>
+</div>
+
+<div id="quiz" style="display:none;">
+    <div class="info">
+        <span id="progress">Soal 1/10</span>
+        <span id="timer">10:00</span>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div id="questionImage" class="question-image"></div>
+    <div id="options"></div>
+
+    <div class="buttons">
+        <button class="prev" onclick="prevQuestion()">Previous</button>
+        <button class="next" onclick="nextQuestion()">Next</button>
+    </div>
+</div>
+
+<div class="result" id="result">
+    <h1>Hasil Kuis</h1>
+    <p>Jawaban Benar: <span id="correct"></span></p>
+    <p>Jawaban Salah: <span id="wrong"></span></p>
+    <p>Nilai: <span id="score"></span></p>
+    <br />
+    <button class="finish" onclick="location.reload()">
+        Ulangi Kuis
+    </button>
+</div>
+
+</div>
+
+<script>
+
+// ========== DATA SOAL DENGAN GAMBAR ==========
+// Ganti URL gambar sesuai dengan gambar yang Anda miliki
+// Gunakan gambar dari internet atau simpan gambar di folder yang sama
+
+const questions = [
+
+{
+    question:"Apa nama hewan ini?",
+    questionImage:"https://i.pinimg.com/736x/2a/b2/1c/2ab21c138f40f7cf267f3c83d8bcf325.jpg",
+    options:[
+        {text:"Kucing", image:"https://i.pinimg.com/736x/1b/f5/43/1bf543d1275b87da5e436697c6e1a13c.jpg"},
+        {text:"Anjing", image:"https://i.pinimg.com/736x/e1/6a/71/e16a71a06bdbdd0f072b51aab8746bf4.jpg"},
+        {text:"Kelinci", image:"https://i.pinimg.com/736x/6b/21/6a/6b216a4902b0d73f196f4ae68074a0d1.jpg"},
+        {text:"Hamster", image:"https://i.pinimg.com/736x/50/3b/98/503b98c96e10c5d83665d7e3b7ea9282.jpg"},
+        {text:"Kura-kura", image:"https://i.pinimg.com/736x/c1/bf/d9/c1bfd9bfeb58229d7eedb983fbb6a995.jpg"}
+    ],
+    answer:0  // Kucing (index 0)
+},
+
+{
+    question:"Buah apa yang berwarna merah ini?",
+    questionImage:"https://i.pinimg.com/736x/1d/73/34/1d73348a8954dd8975aa14b8ecbeacf9.jpg",
+    options:[
+        {text:"Apel", image:"https://i.pinimg.com/736x/91/1b/01/911b01b87bdaac1e15c45f3680640236.jpg"},
+        {text:"Jeruk", image:"https://i.pinimg.com/736x/93/7e/1d/937e1d79e3c95c99edd8a1131d9a90f4.jpg"},
+        {text:"Mangga", image:"https://i.pinimg.com/736x/1f/2c/fe/1f2cfe603541dfa053b366f6ff894128.jpg"},
+        {text:"Semangka", image:"https://i.pinimg.com/736x/96/07/bd/9607bd0f8d18a4b307aa5d2e5e76ee3c.jpg"},
+        {text:"Strawberry", image:"https://i.pinimg.com/736x/98/2c/7a/982c7a55cef284ae2b57c565cd68f64b.jpg"}
+    ],
+    answer:0  // Apel (index 0)
+},
+
+{
+    question:"Gambar ini adalah warna?",
+    questionImage:"https://i.pinimg.com/736x/d7/dc/e4/d7dce4c61a078e2ee46a2fd2d332d3eb.jpg",
+    options:[
+        {text:"Merah", image:"https://i.pinimg.com/736x/d7/dc/e4/d7dce4c61a078e2ee46a2fd2d332d3eb.jpg"},
+        {text:"Biru", image:"https://i.pinimg.com/736x/77/93/2c/77932c0b1c236fc2a4c6374708fb5d39.jpg"},
+        {text:"Hijau", image:"https://i.pinimg.com/736x/a8/7e/d9/a87ed9316213bd890a6381988a4731a5.jpg"},
+        {text:"Kuning", image:"https://i.pinimg.com/736x/09/87/bb/0987bbdc73414823a5b7407ac77bc9dc.jpg"},
+        {text:"Ungu", image:"https://i.pinimg.com/736x/7d/4c/3e/7d4c3e724d30215b9c6c381150360117.jpg"}
+    ],
+    answer:0  // Merah (index 0)
+},
+
+{
+    question:"Kendaraan apa yang digunakan untuk perjalanan laut?",
+    questionImage:"https://i.pinimg.com/736x/ae/ae/f0/aeaef0a275688e72953d7606c47c7232.jpg",
+    options:[
+        {text:"Mobil", image:"https://i.pinimg.com/736x/94/05/cf/9405cfc7523526a1aed1cb71ad03f0f7.jpg"},
+        {text:"Pesawat", image:"https://i.pinimg.com/736x/84/5d/6e/845d6e1d1dd846ae2d64fde63ed65ef3.jpg"},
+        {text:"Kereta", image:"https://i.pinimg.com/736x/10/6a/f1/106af1ba274c377429cb55b37298b917.jpg"},
+        {text:"Kapal", image:"https://i.pinimg.com/736x/34/cc/86/34cc86f74db46e9b9f439965791b5c21.jpg"},
+        {text:"Sepeda", image:"https://i.pinimg.com/736x/b6/f7/bd/b6f7bd931f9fa33c1e7dab74118a6847.jpg"}
+    ],
+    answer:3  // Kapal (index 3)
+}
+
+];
+
+// ========== SISA SOAL (TANPA GAMBAR) ==========
+// Bisa ditambahkan soal tanpa gambar dengan questionImage: null
+
+// Untuk demo, kita hanya pakai 4 soal bergambar
+// Jika ingin 10 soal, tambahkan sisanya seperti ini:
+
+const moreQuestions = [
+{
+    question:"Ibukota Indonesia adalah?",
+    questionImage:null,
+    options:[
+        {text:"Bandung", image:null},
+        {text:"Jakarta", image:null},
+        {text:"Medan", image:null},
+        {text:"Surabaya", image:null},
+        {text:"Makassar", image:null}
+    ],
+    answer:1
+},
+{
+    question:"2 + 2 = ?",
+    questionImage:null,
+    options:[
+        {text:"1", image:null},
+        {text:"2", image:null},
+        {text:"3", image:null},
+        {text:"4", image:null},
+        {text:"5", image:null}
+    ],
+    answer:3
+},
+{
+    question:"Planet terbesar adalah?",
+    questionImage:null,
+    options:[
+        {text:"Mars", image:null},
+        {text:"Jupiter", image:null},
+        {text:"Venus", image:null},
+        {text:"Bumi", image:null},
+        {text:"Merkurius", image:null}
+    ],
+    answer:1
+},
+{
+    question:"Warna bendera Indonesia?",
+    questionImage:null,
+    options:[
+        {text:"Merah Putih", image:null},
+        {text:"Merah Biru", image:null},
+        {text:"Hijau Putih", image:null},
+        {text:"Kuning Merah", image:null},
+        {text:"Hitam Putih", image:null}
+    ],
+    answer:0
+},
+{
+    question:"5 x 5 = ?",
+    questionImage:null,
+    options:[
+        {text:"10", image:null},
+        {text:"15", image:null},
+        {text:"20", image:null},
+        {text:"25", image:null},
+        {text:"30", image:null}
+    ],
+    answer:3
+},
+{
+    question:"Bahasa resmi Indonesia?",
+    questionImage:null,
+    options:[
+        {text:"Jawa", image:null},
+        {text:"Sunda", image:null},
+        {text:"Indonesia", image:null},
+        {text:"Melayu", image:null},
+        {text:"Bugis", image:null}
+    ],
+    answer:2
+},
+{
+    question:"Air membeku pada suhu?",
+    questionImage:null,
+    options:[
+        {text:"0°C", image:null},
+        {text:"10°C", image:null},
+        {text:"50°C", image:null},
+        {text:"100°C", image:null},
+        {text:"5°C", image:null}
+    ],
+    answer:0
+}
+];
+
+// Gabungkan semua soal
+const allQuestions = [...questions, ...moreQuestions];
+
+let currentQuestion = 0;
+let userAnswers = Array(allQuestions.length).fill(null);
+let timerInterval = null;
+
+const prefixes = ["A", "B", "C", "D", "E"];
+
+function loadQuestion(){
+    document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${allQuestions.length}`;
+    document.getElementById("question").innerText = allQuestions[currentQuestion].question;
+    
+    // Tampilkan gambar soal (jika ada)
+    const questionImageDiv = document.getElementById("questionImage");
+    const qImage = allQuestions[currentQuestion].questionImage;
+    if(qImage && qImage !== null){
+        questionImageDiv.innerHTML = `<img src="${qImage}" alt="Gambar soal">`;
+        questionImageDiv.style.display = "block";
+    } else {
+        questionImageDiv.innerHTML = "";
+        questionImageDiv.style.display = "none";
+    }
+    
+    // Tampilkan pilihan jawaban dengan gambar
+    let html = "";
+    const currentOptions = allQuestions[currentQuestion].options;
+    
+    currentOptions.forEach((opt, index) => {
+        let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
+        
+        // Cek apakah pilihan ini memiliki gambar
+        const hasImage = opt.image && opt.image !== null;
+        const imageHtml = hasImage ? `<img class="choice-image" src="${opt.image}" alt="${opt.text}">` : "";
+        
+        html += `
+        <label class="option">
+            <input type="radio" name="answer" value="${index}" ${isChecked}>
+            <span class="choice-letter">${prefixes[index]}</span>
+            ${imageHtml}
+            <span class="choice-text">${opt.text}</span>
+        </label>
+        `;
+    });
+    
+    document.getElementById("options").innerHTML = html;
+    updateButtons();
+}
+
+function saveAnswer(){
+    const selected = document.querySelector('input[name="answer"]:checked');
+    if(selected){
+        userAnswers[currentQuestion] = parseInt(selected.value);
+    }
+}
+
+function nextQuestion(){
+    saveAnswer();
+    if(currentQuestion < allQuestions.length-1){
+        currentQuestion++;
+        loadQuestion();
+    }
+}
+
+function prevQuestion(){
+    saveAnswer();
+    if(currentQuestion > 0){
+        currentQuestion--;
+        loadQuestion();
+    }
+}
+
+function updateButtons(){
+    const btnArea = document.querySelector(".buttons");
+    if(currentQuestion === allQuestions.length-1){
+        btnArea.innerHTML = `
+            <button class="prev" onclick="prevQuestion()">Previous</button>
+            <button class="finish" onclick="finishQuiz()">Selesai</button>
+        `;
+    } else {
+        btnArea.innerHTML = `
+            <button class="prev" onclick="prevQuestion()">Previous</button>
+            <button class="next" onclick="nextQuestion()">Next</button>
+        `;
+    }
+}
+
+function finishQuiz(){
+    if(timerInterval) clearInterval(timerInterval);
+    saveAnswer();
+
+    let correct = 0;
+    allQuestions.forEach((q, index) => {
+        if(userAnswers[index] === q.answer) correct++;
+    });
+
+    let wrong = allQuestions.length - correct;
+    let score = Math.round((correct/allQuestions.length)*100);
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+    document.getElementById("correct").innerText = correct;
+    document.getElementById("wrong").innerText = wrong;
+    document.getElementById("score").innerText = score;
+}
+
+function startQuiz(){
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    currentQuestion = 0;
+    userAnswers = Array(allQuestions.length).fill(null);
+    loadQuestion();
+    startTimer();
+}
+
+let time = 600;
+function startTimer(){
+    if(timerInterval) clearInterval(timerInterval);
+    time = 600;
+    timerInterval = setInterval(() => {
+        let minutes = Math.floor(time/60);
+        let seconds = time%60;
+        document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+        if(time <= 0){
+            clearInterval(timerInterval);
+            finishQuiz();
+        }
+        time--;
+    }, 1000);
+}
+
+</script>
+
+</body>
+</html>
