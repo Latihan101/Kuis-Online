@@ -618,11 +618,25 @@ function startQuiz(setId){
   goTo('quizPage');
   loadQuestion();
   updateGrid();
-  if(getTimerEnabled()){startTimer();}
-  else{
-    document.getElementById('timerDisplay').style.opacity='.5';
-    document.getElementById('timerBadge').textContent='⏸️ Timer OFF';
-    document.getElementById('timerBadge').className='timer-badge off';
+  
+  // ✅ RESET timer display & badge berdasarkan state terbaru
+  const timerOn = getTimerEnabled();
+  const timerDisplay = document.getElementById('timerDisplay');
+  const timerBadge = document.getElementById('timerBadge');
+  
+  if(timerOn){
+    timerDisplay.textContent = '100:00';
+    timerDisplay.style.opacity = '1';
+    timerDisplay.classList.remove('timer-warning','timer-danger','timer-blink');
+    timerBadge.textContent = '⏱️ Timer ON';
+    timerBadge.className = 'timer-badge on';
+    startTimer();
+  } else {
+    timerDisplay.textContent = '100:00';
+    timerDisplay.style.opacity = '.5';
+    timerDisplay.classList.remove('timer-warning','timer-danger','timer-blink');
+    timerBadge.textContent = '⏸️ Timer OFF';
+    timerBadge.className = 'timer-badge off';
   }
 }
 
