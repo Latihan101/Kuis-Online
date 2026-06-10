@@ -868,7 +868,49 @@ function updateButtonText(){let btn=document.getElementById("nextFinishBtn");if(
 function saveAnswer(){let sel=document.querySelector('input[name="answer"]:checked');if(sel){let idx=parseInt(sel.value);if(questions[currentQuestion].isTKP)userScores[currentQuestion]=questions[currentQuestion].optionScores[idx];else userAnswers[currentQuestion]=idx;updateSoalGrid();saveProgress();}}
 function nextQuestion(){saveAnswer();if(currentQuestion<questions.length-1){currentQuestion++;loadQuestion();saveProgress();}}
 function prevQuestion(){saveAnswer();if(currentQuestion>0){currentQuestion--;loadQuestion();saveProgress();}}
-function finishQuiz(){if(timerInterval)clearInterval(timerInterval);saveAnswer();clearProgress();let s=hitungSkor();document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="block";document.getElementById("sidebarToggle").style.display="none";document.getElementById("scoreDetail").innerHTML=`<h3>📊 Detail Skor</h3><table style="width:100%"><tr><td>📚 TWK (30 soal)</td><td align="right"><strong>${s.twk}</strong> / ${s.maxTwk}</td></tr><tr><td>🔢 TIU (35 soal)</td><td align="right"><strong>${s.tiu}</strong> / ${s.maxTiu}</td></tr><tr><td>⭐ TKP (45 soal)</td><td align="right"><strong>${s.tkp}</strong> / ${s.maxTkp}</td></tr><tr style="border-top:2px solid #ddd;"><td><strong>✅ TOTAL SKOR</strong></td><td align="right"><strong>${s.total}</strong> / ${s.maxTotal}</td></tr></table><div class="total-score">🎯 Nilai Akhir: ${s.persen}</div>`;let stat=checkPassingGrade(s.twk,s.tiu,s.tkp);document.getElementById("passingGradeStatus").innerHTML=`<div style="margin-bottom:10px;font-weight:bold;">📋 STATUS PASSING GRADE:</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.twk?'#d4edda':'#f8d7da'}">📚 TWK: ${s.twk}/65<br>${stat.twk?'✅ LULUS':'❌ TIDAK LULUS'}</div><div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tiu?'#d4edda':'#f8d7da'}">🔢 TIU: ${s.tiu}/80<br>${stat.tiu?'✅ LULUS':'❌ TIDAK LULUS'}</div><div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tkp?'#d4edda':'#f8d7da'}">⭐ TKP: ${s.tkp}/166<br>${stat.tkp?'✅ LULUS':'❌ TIDAK LULUS'}</div></div><div style="margin-top:15px;padding:10px;border-radius:8px;text-align:center;font-weight:bold;background:${stat.semua?'#c3e6cb':'#f5c6cb'}">${stat.semua?'🎉 SELAMAT! Anda LULUS Passing Grade SKD! 🎉':'⚠️ MAAF! Anda BELUM LULUS Passing Grade SKD. Silakan coba lagi! ⚠️'}</div>`;}
+function finishQuiz(){
+    if(timerInterval)clearInterval(timerInterval);
+    saveAnswer();
+    clearProgress();
+    let s=hitungSkor();
+    
+    // ========== SIMPAN SKOR TERBAIK KE LOCALSTORAGE ==========
+    let latihanKe = 1;
+    const judul = document.querySelector('.header-title h2')?.innerText || '';
+    if(judul.includes('Latihan SKD 2')) latihanKe = 2;
+    else if(judul.includes('Latihan SKD 3')) latihanKe = 3;
+    else if(judul.includes('Latihan SKD 4')) latihanKe = 4;
+    
+    const skorAkhir = s.persen;
+    const keySkor = `bestScore_latihan${latihanKe}`;
+    const savedScore = localStorage.getItem(keySkor);
+    
+    if(savedScore === null || skorAkhir > parseInt(savedScore)) {
+        localStorage.setItem(keySkor, skorAkhir);
+        console.log(`✅ Skor terbaik Latihan ${latihanKe} disimpan: ${skorAkhir}`);
+    } else {
+        console.log(`📊 Skor saat ini: ${skorAkhir}, Skor terbaik: ${savedScore}`);
+    }
+    // ========== END SIMPAN SKOR ==========
+    
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+    document.getElementById("sidebarToggle").style.display = "none";
+    document.getElementById("scoreDetail").innerHTML = `<h3>📊 Detail Skor</h3><table style="width:100%"><tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">📚 TWK (30 soal)</td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.twk}</strong> / ${s.maxTwk}<\/td></tr>
+    <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">🔢 TIU (35 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.tiu}</strong> / ${s.maxTiu}<\/td></tr>
+    <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">⭐ TKP (45 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.tkp}</strong> / ${s.maxTkp}<\/td></tr>
+    <tr style="border-top:2px solid #ddd;"><td style="padding:8px; font-weight:bold;">✅ TOTAL SKOR<\/td><td style="padding:8px; text-align:right;"><strong>${s.total}</strong> / ${s.maxTotal}<\/td></tr>
+    </table><div class="total-score">🎯 Nilai Akhir: ${s.persen}</div>`;
+    
+    let stat = checkPassingGrade(s.twk, s.tiu, s.tkp);
+    document.getElementById("passingGradeStatus").innerHTML = `<div style="margin-bottom:10px;font-weight:bold;">📋 STATUS PASSING GRADE:</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.twk?'#d4edda':'#f8d7da'}">📚 TWK: ${s.twk}/65<br>${stat.twk?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tiu?'#d4edda':'#f8d7da'}">🔢 TIU: ${s.tiu}/80<br>${stat.tiu?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tkp?'#d4edda':'#f8d7da'}">⭐ TKP: ${s.tkp}/166<br>${stat.tkp?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+    </div>
+    <div style="margin-top:15px;padding:10px;border-radius:8px;text-align:center;font-weight:bold;background:${stat.semua?'#c3e6cb':'#f5c6cb'}">${stat.semua?'🎉 SELAMAT! Anda LULUS Passing Grade SKD! 🎉':'⚠️ MAAF! Anda BELUM LULUS Passing Grade SKD. Silakan coba lagi! ⚠️'}</div>`;
+}
 function startTimer(){if(timerInterval)clearInterval(timerInterval);timerInterval=setInterval(()=>{if(time<=0){clearInterval(timerInterval);finishQuiz();}else{time--;let m=Math.floor(time/60),s=time%60;document.getElementById("timer").innerText=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;updateTimerColor(time);saveProgress();}},1000);}
 function goToHomePage(){window.location.href="index.html";}
 function showEvaluasi(){let panel=document.getElementById('evaluasiPanel'),closeBtn=document.getElementById('closeEvaluasiBtn');let html='<h3 style="color:#0d6efd;margin-bottom:15px;">📝 Evaluasi Jawaban</h3>';for(let i=0;i<questions.length;i++){let n=i+1,cat=getCategory(n),userJ=questions[i].isTKP?userScores[i]:userAnswers[i],isJ=(questions[i].isTKP?userScores[i]!==null:userAnswers[i]!==null);let status='belum dijawab',jawUser='Tidak dijawab',jawBenar='',pembahasan='',isBenar=false;if(questions[i].isTKP){if(isJ){let idx=questions[i].optionScores.findIndex(s=>s===userJ);jawUser=`${prefixes[idx]}. ${questions[i].options[idx]}`;let maxS=Math.max(...questions[i].optionScores),bestIdx=questions[i].optionScores.findIndex(s=>s===maxS);jawBenar=`Jawaban terbaik: ${prefixes[bestIdx]}. ${questions[i].options[bestIdx]} (Skor ${maxS})`;isBenar=userJ===maxS;status=isBenar?'benar':'salah';pembahasan=`Jawaban Anda mendapat skor ${userJ} dari maksimal ${maxS}. ${isBenar?'Jawaban Anda sudah tepat.':'Coba evaluasi kembali pilihan Anda.'}`;}else{pembahasan='Soal ini belum Anda jawab.';}}else{if(isJ){jawUser=`${prefixes[userJ]}. ${questions[i].options[userJ]}`;jawBenar=`Jawaban benar: ${prefixes[questions[i].answer]}. ${questions[i].options[questions[i].answer]}`;isBenar=userJ===questions[i].answer;status=isBenar?'benar':'salah';pembahasan=`${isBenar?'✅ Jawaban Anda benar!':'❌ Jawaban Anda kurang tepat.'} ${jawBenar}. ${isBenar?'Pertahankan pemahaman Anda!':'Pelajari kembali materi terkait.'}`;}else{pembahasan='Soal ini belum Anda jawab.';}}let icon=(status==='benar'?'✅':(status==='salah'?'❌':'⏳'));html+=`<div class="evaluasi-item ${status==='benar'?'benar':(status==='salah'?'salah':'')}"><div class="soal-teks">${icon} Soal ${n} [${cat.name}]</div><div class="soal-teks" style="font-size:16px;margin-top:5px;">${questions[i].question}</div><div class="jawaban-user">📌 Jawaban Anda: ${jawUser}</div>${jawBenar?`<div class="jawaban-benar">✅ ${jawBenar}</div>`:''}<div class="pembahasan">💡 ${pembahasan}</div></div>`;}panel.innerHTML=html;panel.style.display='block';closeBtn.style.display='block';panel.scrollIntoView({behavior:'smooth',block:'start'});}
