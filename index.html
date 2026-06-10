@@ -386,8 +386,8 @@ document.getElementById('timerToggle').addEventListener('change',function(){
 });
 syncTimerToggle();
 
-// ==================== QUIZ DATA ====================
-const twkBank=[
+// ==================== QUIZ DATA 1====================
+const twkBank1=[
   {q:"Pancasila sebagai dasar negara Indonesia terdiri dari berapa sila?",opt:["3","4","5","6","7"],a:2},
   {q:"Siapa presiden pertama Indonesia?",opt:["Soeharto","Soekarno","Habibie","Gus Dur","Megawati"],a:1},
   {q:"Bendera Indonesia berwarna?",opt:["Merah Putih","Merah Biru","Kuning Merah","Hijau Putih","Hitam Putih"],a:0},
@@ -420,7 +420,7 @@ const twkBank=[
   {q:"Warna pada lambang Garuda Pancasila melambangkan?",opt:["Kemakmuran","Kesuburan","Keadilan","Persatuan","Kekuatan"],a:0}
 ];
 
-const tiuBank=[
+const tiuBank1=[
   {q:"2 + 2 = ?",opt:["2","3","4","5","6"],a:2},
   {q:"5 x 5 = ?",opt:["20","25","30","35","40"],a:1},
   {q:"10 - 3 = ?",opt:["5","6","7","8","9"],a:2},
@@ -458,7 +458,7 @@ const tiuBank=[
   {q:"Jika 2x - 3 = 7, maka x = ?",opt:["3","4","5","6","7"],a:2}
 ];
 
-const tkpBank=[
+const tkpBank1=[
   {q:"Saat bekerja dalam tim, sikap terbaik adalah?",opts:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"],scores:[1,2,5,3,4]},
   {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?",opts:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"],scores:[1,4,5,2,3]},
   {q:"Saat menghadapi tekanan kerja, sebaiknya?",opts:["Menyerah","Bersantai","Tetap fokus","Marah-marah","Menyalahkan orang lain"],scores:[1,3,5,2,4]},
@@ -505,6 +505,34 @@ const tkpBank=[
   {q:"Integritas adalah?",opts:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"],scores:[1,5,2,3,4]},
   {q:"Sikap terhadap rekan kerja yang berbeda pendapat?",opts:["Memusuhi","Menghargai","Mengabaikan","Mengolok","Mengancam"],scores:[1,5,2,3,4]}
 ];
+// ==================== QUIZ DATA 2====================
+const twkBank2=[
+];
+const tiuBank2=[
+];
+const tkpBank2=[
+];
+// ==================== QUIZ DATA 3====================
+const twkBank3=[
+];
+const tiuBank3=[
+];
+const tkpBank3=[
+];
+// ==================== QUIZ DATA 4====================
+const twkBank4=[
+];
+const tiuBank4=[
+];
+const tkpBank4=[
+];
+// ==================== QUIZ DATA 5====================
+const twkBank5=[
+];
+const tiuBank5=[
+];
+const tkpBank5=[
+];
 
 // ==================== QUIZ STATE ====================
 let activeSet=1;
@@ -538,14 +566,26 @@ function shuffleOpts(q){
   }
 }
 
+// Menambah soal
+const soalPerLatihan = {
+  1: { twk: twkBank1, tiu: tiuBank1, tkp: tkpBank1 },
+  2: { twk: twkBank2, tiu: tiuBank2, tkp: tkpBank2 },
+  3: { twk: twkBank3, tiu: tiuBank3, tkp: tkpBank3 },
+  4: { twk: twkBank4, tiu: tiuBank4, tkp: tkpBank4 },
+  5: { twk: twkBank5, tiu: tiuBank5, tkp: tkpBank5 },
+  // dst...
+};
+
 function buildOriginals(){
+  const bank = soalPerLatihan[activeSet];
   const orig=[];
-  twkBank.forEach(d=>orig.push({question:d.q,options:[...d.opt],answer:d.a,isTKP:false,optionScores:null}));
-  tiuBank.forEach(d=>orig.push({question:d.q,options:[...d.opt],answer:d.a,isTKP:false,optionScores:null}));
-  tkpBank.forEach(d=>orig.push({question:d.q,options:[...d.opts],answer:null,isTKP:true,optionScores:[...d.scores]}));
+  bank.twk.forEach(d=>orig.push({question:d.q,options:[...d.opt],answer:d.a,isTKP:false,optionScores:null}));
+  bank.tiu.forEach(d=>orig.push({question:d.q,options:[...d.opt],answer:d.a,isTKP:false,optionScores:null}));
+  bank.tkp.forEach(d=>orig.push({question:d.q,options:[...d.opts],answer:null,isTKP:true,optionScores:[...d.scores]}));
   return orig;
 }
-
+// Menambah soal...
+  
 function hitungSkor(){
   let twk=0,tiu=0,tkp=0;
   for(let i=0;i<questions.length;i++){
