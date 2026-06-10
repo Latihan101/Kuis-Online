@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Latihan SKD 1 - Sistem Skor</title>
+<title>Latihan SKD 3 - Sistem Skor</title>
 
 <style>
 *{
@@ -13,6 +13,7 @@
     font-family:Arial, sans-serif;
 }
 
+/* Anti seleksi teks */
 body{
     background:#f4f6f9;
     display:flex;
@@ -20,6 +21,10 @@ body{
     align-items:center;
     min-height:100vh;
     padding:20px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .container{
@@ -498,6 +503,29 @@ button:hover{
     color:#198754;
     margin-top:15px;
 }
+
+/* Anti screenshot overlay */
+.screenshot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 99999;
+    display: none;
+    pointer-events: none;
+}
+
+.watermark {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    font-size: 8px;
+    color: rgba(0,0,0,0.1);
+    z-index: 100;
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -505,7 +533,7 @@ button:hover{
 <div class="container">
 
 <div class="header-title">
-    <h2>📖 Latihan SKD 1</h2>
+    <h2>📖 Latihan SKD 3</h2>
     <div id="headerCategory" class="header-category twk">📍 TWK</div>
 </div>
 
@@ -592,9 +620,131 @@ button:hover{
 </div>
 
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div id="screenshotOverlay" class="screenshot-overlay"></div>
+<div class="watermark">© Quiz App - Hak Cipta Dilindungi</div>
 
 <script>
+// ========== PERLINDUNGAN ==========
 
+// 1. Mencegah klik kanan
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 2. Mencegah shortcut developer tools
+document.addEventListener('keydown', function(e) {
+    const key = e.key;
+    const ctrl = e.ctrlKey;
+    const shift = e.shiftKey;
+    
+    // F12
+    if(key === 'F12') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+Shift+I
+    if(ctrl && shift && key === 'I') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+Shift+J
+    if(ctrl && shift && key === 'J') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+Shift+C
+    if(ctrl && shift && key === 'C') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+U
+    if(ctrl && key === 'u') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+S
+    if(ctrl && key === 's') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // Ctrl+P
+    if(ctrl && key === 'p') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+    // PrintScreen
+    if(key === 'PrintScreen') {
+        e.preventDefault();
+        showScreenshotWarning();
+        return false;
+    }
+});
+
+// 3. Mencegah drag
+document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 4. Mencegah copy
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 5. Mencegah cut
+document.addEventListener('cut', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 6. Fungsi peringatan screenshot
+let lastWarningTime = 0;
+function showScreenshotWarning() {
+    const now = Date.now();
+    if(now - lastWarningTime > 3000) {
+        lastWarningTime = now;
+        const overlay = document.getElementById('screenshotOverlay');
+        if(overlay) {
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        }
+        console.warn('⚠️ Percobaan screenshot/inspect terdeteksi!');
+    }
+}
+
+// 7. Deteksi keyup PrintScreen
+window.addEventListener('keyup', function(e) {
+    if(e.key === 'PrintScreen') {
+        showScreenshotWarning();
+    }
+});
+
+// 8. Proteksi pada semua tombol
+document.querySelectorAll('button, .btn-sidebar, .grid-soal, .prev, .next, .finish, .back-home').forEach(el => {
+    if(el) {
+        el.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    }
+});
+
+// 9. Peringatan di console
+console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
+console.log("%cKonten ini dilindungi. Copy, screenshot, dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
+
+// ========== FUNGSI UTAMA (TIDAK BERUBAH) ==========
 function goToHomePage() {
     window.location.href = "index.html";
 }
@@ -636,11 +786,14 @@ function saveProgress() {
     const progress = {
         currentQuestion: currentQuestion,
         userAnswers: userAnswers,
+        userScores: userScores,
         time: time,
         questionsData: questions.map(q => ({
             question: q.question,
             options: q.options,
-            answer: q.answer
+            answer: q.answer,
+            optionScores: q.optionScores,
+            isTKP: q.isTKP
         }))
     };
     localStorage.setItem('skdQuizProgress', JSON.stringify(progress));
@@ -654,13 +807,12 @@ function loadProgress() {
             const progress = JSON.parse(saved);
             currentQuestion = progress.currentQuestion;
             userAnswers = progress.userAnswers;
+            userScores = progress.userScores || Array(originalQuestions.length).fill(null);
             time = progress.time;
             
-            // Memuat ulang soal yang tersimpan
             if(progress.questionsData && progress.questionsData.length === originalQuestions.length) {
                 questions = progress.questionsData;
             } else {
-                // Jika tidak cocok, buat ulang dengan acak
                 shuffleAllQuestions();
             }
             return true;
@@ -685,21 +837,20 @@ function hitungSkor() {
     
     for(let i = 0; i < questions.length; i++) {
         const soalNumber = i + 1;
-        const userAnswer = userAnswers[i];
         
         if(soalNumber >= 1 && soalNumber <= 30) { // TWK
-            if(userAnswer !== null && userAnswer === questions[i].answer) {
+            if(userAnswers[i] !== null && userAnswers[i] === questions[i].answer) {
                 twkScore += 5;
             }
         }
         else if(soalNumber >= 31 && soalNumber <= 65) { // TIU
-            if(userAnswer !== null && userAnswer === questions[i].answer) {
+            if(userAnswers[i] !== null && userAnswers[i] === questions[i].answer) {
                 tiuScore += 5;
             }
         }
         else { // TKP (66-110)
-            if(userAnswer !== null) {
-                tkpScore += (userAnswer + 1);
+            if(userScores[i] !== null) {
+                tkpScore += userScores[i];
             }
         }
     }
@@ -723,7 +874,56 @@ function hitungSkor() {
     };
 }
 
-// ========== 110 SOAL ==========
+// ========== DATA TKP DENGAN SKOR 1-5 YANG UNIK ==========
+const tkpQuestionsData = [
+    {q:"Saat bekerja dalam tim, sikap terbaik adalah?", opts:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"], scores:[1,2,5,3,4]},
+    {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?", opts:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"], scores:[1,4,5,2,3]},
+    {q:"Saat menghadapi tekanan kerja, sebaiknya?", opts:["Menyerah","Bersantai","Tetap fokus","Marah-marah","Menyalahkan orang lain"], scores:[1,3,5,2,4]},
+    {q:"Pelayanan terbaik kepada pelanggan adalah?", opts:["Cepat","Ramah","Profesional","Tepat waktu","Semua benar"], scores:[2,3,4,1,5]},
+    {q:"Saat diberi kritik, sebaiknya?", opts:["Marah","Menerima dengan lapang","Membantah","Mengabaikan","Menangis"], scores:[1,5,2,3,4]},
+    {q:"Saat rapat berlangsung, sebaiknya?", opts:["Bermain HP","Mendengarkan","Mengobrol","Keluar masuk","Tidur"], scores:[1,5,2,3,4]},
+    {q:"Jika ada janji, sebaiknya?", opts:["Batal","Datang terlambat","Tepat waktu","Mengganti hari","Lupa"], scores:[1,2,5,3,4]},
+    {q:"Sikap terhadap atasan yang baik adalah?", opts:["Sombong","Acuh","Hormat","Menghindar","Melawan"], scores:[1,2,5,3,4]},
+    {q:"Saat pekerjaan menumpuk, sebaiknya?", opts:["Liburan","Mengeluh","Prioritaskan","Menunda","Membiarkan"], scores:[1,2,5,3,4]},
+    {q:"Sikap korupsi harus?", opts:["Didukung","Dibiarkan","Dilawan","Dicontoh","Dipuji"], scores:[1,2,5,3,4]},
+    {q:"Kerja keras adalah kunci?", opts:["Kegagalan","Kemalasan","Kesuksesan","Kebosanan","Masalah"], scores:[1,2,5,3,4]},
+    {q:"Disiplin sangat penting untuk?", opts:["Kekacauan","Keteraturan","Kebingungan","Kemalasan","Masalah"], scores:[1,5,2,3,4]},
+    {q:"Jujur adalah sikap yang?", opts:["Buruk","Baik","Biasa","Sulit","Tidak penting"], scores:[1,5,3,2,4]},
+    {q:"Tanggung jawab harus?", opts:["Dihindari","Diabaikan","Dilaksanakan","Ditunda","Dilupakan"], scores:[1,2,5,3,4]},
+    {q:"Inovasi penting untuk?", opts:["Kemunduran","Kemajuan","Stagnasi","Kehancuran","Masalah"], scores:[1,5,2,3,4]},
+    {q:"Belajar sepanjang hayat disebut?", opts:["Pendidikan formal","Pendidikan informal","Pendidikan seumur hidup","Pendidikan dasar","Pendidikan tinggi"], scores:[2,3,5,1,4]},
+    {q:"Sikap terhadap perbedaan pendapat?", opts:["Menolak","Menghargai","Menghina","Mengolok","Membenci"], scores:[1,5,2,3,4]},
+    {q:"Saat ada konflik, sebaiknya?", opts:["Dibiarkan","Diperparah","Didiamkan","Dimusyawarahkan","Dilupakan"], scores:[1,2,3,5,4]},
+    {q:"Sikap hemat energi adalah?", opts:["Boros","Efisien","Berlebihan","Mubazir","Sia-sia"], scores:[1,5,2,3,4]},
+    {q:"Menjaga kebersihan adalah tanggung jawab?", opts:["Petugas","Semua orang","Pemerintah","Anak-anak","Guru"], scores:[2,5,3,1,4]},
+    {q:"Saat melihat pelanggaran lalu lintas, sikap Anda?", opts:["Mengabaikan","Melaporkan","Menegur","Merekam","Membiarkan"], scores:[1,5,4,2,3]},
+    {q:"Sikap toleransi kepada beda agama?", opts:["Menghormati","Memusuhi","Mengolok","Menghina","Mengucilkan"], scores:[5,1,2,3,4]},
+    {q:"Pengorbanan untuk kepentingan bersama disebut?", opts:["Egois","Individualis","Nasionalis","Patriot","Altruis"], scores:[1,2,3,5,4]},
+    {q:"Saat ada bencana alam, sebaiknya?", opts:["Mengungsi","Membantu","Panik","Mengambil barang","Lari"], scores:[3,5,1,2,4]},
+    {q:"Menjaga nama baik organisasi adalah?", opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], scores:[5,1,3,2,4]},
+    {q:"Kreativitas dapat meningkatkan?", opts:["Masalah","Produktivitas","Kebingungan","Kemalasan","Kekacauan"], scores:[1,5,2,3,4]},
+    {q:"Efektivitas kerja diukur dari?", opts:["Waktu","Biaya","Hasil","Tenaga","Alat"], scores:[2,3,5,1,4]},
+    {q:"Efisiensi kerja diukur dari?", opts:["Hasil maksimal dengan sumber daya minimal","Hasil minimal","Waktu lama","Biaya besar","Tenaga besar"], scores:[5,1,2,3,4]},
+    {q:"Sikap optimis membawa?", opts:["Kegagalan","Kemajuan","Kemunduran","Masalah","Kebingungan"], scores:[1,5,2,3,4]},
+    {q:"Kerjasama tim menghasilkan?", opts:["Konflik","Sinergi","Kekacauan","Kebingungan","Masalah"], scores:[1,5,2,3,4]},
+    {q:"Gaya kepemimpinan ideal?", opts:["Otoriter","Demokratis","Bebas","Acuh","Tidak peduli"], scores:[2,5,3,1,4]},
+    {q:"Kedisiplinan waktu mencerminkan?", opts:["Tanggung jawab","Ketidakpedulian","Kemalasan","Kebingungan","Kesombongan"], scores:[5,1,2,3,4]},
+    {q:"Saat ada masalah, sebaiknya?", opts:["Cari kambing hitam","Cari solusi","Diam saja","Lari","Tunda"], scores:[1,5,2,3,4]},
+    {q:"Pelayanan publik yang baik?", opts:["Berbelit","Cepat dan tepat","Mahal","Lambat","Tidak jelas"], scores:[1,5,2,3,4]},
+    {q:"Sikap ramah kepada semua orang?", opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], scores:[5,1,3,2,4]},
+    {q:"Berbagi ilmu dengan rekan kerja?", opts:["Dilarang","Diperbolehkan","Sebaiknya dilakukan","Tidak perlu","Buang waktu"], scores:[1,3,5,2,4]},
+    {q:"Saat tidak setuju dengan keputusan pimpinan?", opts:["Membangkang","Protes","Mengajukan saran baik","Diam saja","Keluar dari kantor"], scores:[1,2,5,3,4]},
+    {q:"Menjaga rahasia perusahaan adalah?", opts:["Kewajiban","Hak","Bebas","Tidak penting","Terserah"], scores:[5,3,2,1,4]},
+    {q:"Saat bekerja di bawah tekanan, sebaiknya?", opts:["Tetap tenang","Panik","Marah","Menyerah","Protes"], scores:[5,1,2,3,4]},
+    {q:"Peningkatan kualitas diri dapat dilakukan dengan?", opts:["Bermalas-malasan","Belajar terus-menerus","Berhenti bekerja","Pindah kerja","Mengeluh"], scores:[1,5,2,3,4]},
+    {q:"Sikap empati terhadap rekan kerja?", opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], scores:[5,1,3,2,4]},
+    {q:"Menyelesaikan pekerjaan tepat waktu disebut?", opts:["Profesional","Malas","Biasa","Lamban","Ceroboh"], scores:[5,1,3,2,4]},
+    {q:"Saat ada perubahan kebijakan, sikap terbaik?", opts:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], scores:[1,5,2,3,4]},
+    {q:"Integritas adalah?", opts:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"], scores:[1,5,2,3,4]},
+    {q:"Sikap terhadap rekan kerja yang berbeda pendapat?", opts:["Memusuhi","Menghargai","Mengabaikan","Mengolok","Mengancam"], scores:[1,5,2,3,4]}
+];
+
+// ========== MEMBANGUN 110 SOAL ==========
 const originalQuestions = [];
 
 // TWK Soal 1-30
@@ -799,104 +999,90 @@ const tiuSoal = [
     {q:"Jika 2x - 3 = 7, maka x = ?", opt:["3","4","5","6","7"], a:2}
 ];
 
-// TKP Soal 66-110
-const tkpSoal = [
-    {q:"Saat bekerja dalam tim, sikap terbaik adalah?", opt:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"], a:2},
-    {q:"Jika rekan kerja melakukan kesalahan, sebaiknya?", opt:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"], a:2},
-    {q:"Saat menghadapi tekanan kerja, sebaiknya?", opt:["Menyerah","Bersantai","Tetap fokus","Marah-marah","Menyalahkan orang lain"], a:2},
-    {q:"Pelayanan terbaik kepada pelanggan adalah?", opt:["Cepat","Ramah","Profesional","Tepat waktu","Semua benar"], a:4},
-    {q:"Saat diberi kritik, sebaiknya?", opt:["Marah","Menerima dengan lapang","Membantah","Mengabaikan","Menangis"], a:1},
-    {q:"Saat rapat berlangsung, sebaiknya?", opt:["Bermain HP","Mendengarkan","Mengobrol","Keluar masuk","Tidur"], a:1},
-    {q:"Jika ada janji, sebaiknya?", opt:["Batal","Datang terlambat","Tepat waktu","Mengganti hari","Lupa"], a:2},
-    {q:"Sikap terhadap atasan yang baik adalah?", opt:["Sombong","Acuh","Hormat","Menghindar","Melawan"], a:2},
-    {q:"Saat pekerjaan menumpuk, sebaiknya?", opt:["Liburan","Mengeluh","Prioritaskan","Menunda","Membiarkan"], a:2},
-    {q:"Sikap korupsi harus?", opt:["Didukung","Dibiarkan","Dilawan","Dicontoh","Dipuji"], a:2},
-    {q:"Kerja keras adalah kunci?", opt:["Kegagalan","Kemalasan","Kesuksesan","Kebosanan","Masalah"], a:2},
-    {q:"Disiplin sangat penting untuk?", opt:["Kekacauan","Keteraturan","Kebingungan","Kemalasan","Masalah"], a:1},
-    {q:"Jujur adalah sikap yang?", opt:["Buruk","Baik","Biasa","Sulit","Tidak penting"], a:1},
-    {q:"Tanggung jawab harus?", opt:["Dihindari","Diabaikan","Dilaksanakan","Ditunda","Dilupakan"], a:2},
-    {q:"Inovasi penting untuk?", opt:["Kemunduran","Kemajuan","Stagnasi","Kehancuran","Masalah"], a:1},
-    {q:"Belajar sepanjang hayat disebut?", opt:["Pendidikan formal","Pendidikan informal","Pendidikan seumur hidup","Pendidikan dasar","Pendidikan tinggi"], a:2},
-    {q:"Sikap terhadap perbedaan pendapat?", opt:["Menolak","Menghargai","Menghina","Mengolok","Membenci"], a:1},
-    {q:"Saat ada konflik, sebaiknya?", opt:["Dibiarkan","Diperparah","Didiamkan","Dimusyawarahkan","Dilupakan"], a:3},
-    {q:"Sikap hemat energi adalah?", opt:["Boros","Efisien","Berlebihan","Mubazir","Sia-sia"], a:1},
-    {q:"Menjaga kebersihan adalah tanggung jawab?", opt:["Petugas","Semua orang","Pemerintah","Anak-anak","Guru"], a:1},
-    {q:"Saat melihat pelanggaran lalu lintas, sikap Anda?", opt:["Mengabaikan","Melaporkan","Menegur","Merekam","Membiarkan"], a:1},
-    {q:"Sikap toleransi kepada beda agama?", opt:["Menghormati","Memusuhi","Mengolok","Menghina","Mengucilkan"], a:0},
-    {q:"Pengorbanan untuk kepentingan bersama disebut?", opt:["Egois","Individualis","Nasionalis","Patriot","Altruis"], a:3},
-    {q:"Saat ada bencana alam, sebaiknya?", opt:["Mengungsi","Membantu","Panik","Mengambil barang","Lari"], a:1},
-    {q:"Menjaga nama baik organisasi adalah?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
-    {q:"Kreativitas dapat meningkatkan?", opt:["Masalah","Produktivitas","Kebingungan","Kemalasan","Kekacauan"], a:1},
-    {q:"Efektivitas kerja diukur dari?", opt:["Waktu","Biaya","Hasil","Tenaga","Alat"], a:2},
-    {q:"Efisiensi kerja diukur dari?", opt:["Hasil maksimal dengan sumber daya minimal","Hasil minimal","Waktu lama","Biaya besar","Tenaga besar"], a:0},
-    {q:"Sikap optimis membawa?", opt:["Kegagalan","Kemajuan","Kemunduran","Masalah","Kebingungan"], a:1},
-    {q:"Kerjasama tim menghasilkan?", opt:["Konflik","Sinergi","Kekacauan","Kebingungan","Masalah"], a:1},
-    {q:"Gaya kepemimpinan ideal?", opt:["Otoriter","Demokratis","Bebas","Acuh","Tidak peduli"], a:1},
-    {q:"Kedisiplinan waktu mencerminkan?", opt:["Tanggung jawab","Ketidakpedulian","Kemalasan","Kebingungan","Kesombongan"], a:0},
-    {q:"Saat ada masalah, sebaiknya?", opt:["Cari kambing hitam","Cari solusi","Diam saja","Lari","Tunda"], a:1},
-    {q:"Pelayanan publik yang baik?", opt:["Berbelit","Cepat dan tepat","Mahal","Lambat","Tidak jelas"], a:1},
-    {q:"Sikap ramah kepada semua orang?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
-    {q:"Berbagi ilmu dengan rekan kerja?", opt:["Dilarang","Diperbolehkan","Sebaiknya dilakukan","Tidak perlu","Buang waktu"], a:2},
-    {q:"Saat tidak setuju dengan keputusan pimpinan?", opt:["Membangkang","Protes","Mengajukan saran baik","Diam saja","Keluar dari kantor"], a:2},
-    {q:"Menjaga rahasia perusahaan adalah?", opt:["Kewajiban","Hak","Bebas","Tidak penting","Terserah"], a:0},
-    {q:"Saat bekerja di bawah tekanan, sebaiknya?", opt:["Tetap tenang","Panik","Marah","Menyerah","Protes"], a:0},
-    {q:"Peningkatan kualitas diri dapat dilakukan dengan?", opt:["Bermalas-malasan","Belajar terus-menerus","Berhenti bekerja","Pindah kerja","Mengeluh"], a:1},
-    {q:"Sikap empati terhadap rekan kerja?", opt:["Penting","Tidak penting","Biasa","Terserah","Membosankan"], a:0},
-    {q:"Menyelesaikan pekerjaan tepat waktu disebut?", opt:["Profesional","Malas","Biasa","Lamban","Ceroboh"], a:0},
-    {q:"Saat ada perubahan kebijakan, sikap terbaik?", opt:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], a:1},
-    {q:"Saat ada perubahan kebijakan, sikap terbaik?", opt:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"], a:1},
-    {q:"Integritas adalah?", opt:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"], a:1}
-];
-
-// Gabungkan semua soal
+// TWK
 for(let i=0; i<twkSoal.length; i++) {
     originalQuestions.push({
         question: twkSoal[i].q,
         options: twkSoal[i].opt,
-        answer: twkSoal[i].a
+        answer: twkSoal[i].a,
+        isTKP: false,
+        optionScores: null
     });
 }
+// TIU
 for(let i=0; i<tiuSoal.length; i++) {
     originalQuestions.push({
         question: tiuSoal[i].q,
         options: tiuSoal[i].opt,
-        answer: tiuSoal[i].a
+        answer: tiuSoal[i].a,
+        isTKP: false,
+        optionScores: null
     });
 }
-for(let i=0; i<tkpSoal.length; i++) {
+// TKP
+for(let i=0; i<tkpQuestionsData.length; i++) {
     originalQuestions.push({
-        question: tkpSoal[i].q,
-        options: tkpSoal[i].opt,
-        answer: tkpSoal[i].a
+        question: tkpQuestionsData[i].q,
+        options: tkpQuestionsData[i].opts,
+        answer: null,
+        isTKP: true,
+        optionScores: tkpQuestionsData[i].scores
     });
 }
 
 let questions = [];
 let currentQuestion = 0;
 let userAnswers = [];
+let userScores = [];
 let timerInterval = null;
 let time = 6000;
 const prefixes = ["A", "B", "C", "D", "E"];
 
 function shuffleOptions(questionData) {
-    const optionPairs = questionData.options.map((opt, idx) => ({
-        text: opt,
-        originalIndex: idx
-    }));
-    
-    for(let i = optionPairs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+    if(questionData.isTKP) {
+        const optionPairs = questionData.options.map((opt, idx) => ({
+            text: opt,
+            score: questionData.optionScores[idx],
+            originalIndex: idx
+        }));
+        
+        for(let i = optionPairs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+        }
+        
+        const shuffledOptions = optionPairs.map(pair => pair.text);
+        const shuffledScores = optionPairs.map(pair => pair.score);
+        
+        return {
+            question: questionData.question,
+            options: shuffledOptions,
+            answer: null,
+            isTKP: true,
+            optionScores: shuffledScores
+        };
+    } else {
+        const optionPairs = questionData.options.map((opt, idx) => ({
+            text: opt,
+            originalIndex: idx
+        }));
+        
+        for(let i = optionPairs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
+        }
+        
+        const shuffledOptions = optionPairs.map(pair => pair.text);
+        const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
+        
+        return {
+            question: questionData.question,
+            options: shuffledOptions,
+            answer: newAnswerIndex,
+            isTKP: false,
+            optionScores: null
+        };
     }
-    
-    const shuffledOptions = optionPairs.map(pair => pair.text);
-    const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
-    
-    return {
-        question: questionData.question,
-        options: shuffledOptions,
-        answer: newAnswerIndex
-    };
 }
 
 function shuffleAllQuestions() {
@@ -904,14 +1090,13 @@ function shuffleAllQuestions() {
 }
 
 function initQuiz() {
-    // Cek apakah ada progres tersimpan
     const hasProgress = loadProgress();
     
     if(!hasProgress) {
-        // Jika tidak ada progres, buat baru
         shuffleAllQuestions();
         currentQuestion = 0;
         userAnswers = Array(questions.length).fill(null);
+        userScores = Array(questions.length).fill(null);
         time = 6000;
     }
     
@@ -922,12 +1107,11 @@ function initQuiz() {
 
 function restartQuiz() {
     if(timerInterval) clearInterval(timerInterval);
-    // Hapus progres lama
     clearProgress();
-    // Buat ulang semua
     shuffleAllQuestions();
     currentQuestion = 0;
     userAnswers = Array(questions.length).fill(null);
+    userScores = Array(questions.length).fill(null);
     time = 6000;
     
     document.getElementById("result").style.display = "none";
@@ -952,7 +1136,11 @@ function updateSoalGrid() {
     let html = '';
     for(let i = 0; i < questions.length; i++) {
         let statusClass = 'unanswered';
-        if(userAnswers[i] !== null) statusClass = 'answered';
+        if(questions[i].isTKP) {
+            if(userScores[i] !== null) statusClass = 'answered';
+        } else {
+            if(userAnswers[i] !== null) statusClass = 'answered';
+        }
         if(i === currentQuestion) statusClass = 'active';
         
         const category = getCategory(i+1);
@@ -967,7 +1155,7 @@ function goToSoal(soalIndex) {
     currentQuestion = soalIndex;
     loadQuestion();
     toggleSidebar();
-    saveProgress(); // Simpan progres setelah pindah soal
+    saveProgress();
 }
 
 function loadQuestion() {
@@ -979,10 +1167,15 @@ function loadQuestion() {
 
     let html = "";
     questions[currentQuestion].options.forEach((opt, index) => {
-        let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
+        let isChecked = false;
+        if(questions[currentQuestion].isTKP) {
+            isChecked = (userScores[currentQuestion] === questions[currentQuestion].optionScores[index]);
+        } else {
+            isChecked = (userAnswers[currentQuestion] === index);
+        }
         html += `
         <label class="option">
-            <input type="radio" name="answer" value="${index}" ${isChecked}>
+            <input type="radio" name="answer" value="${index}" ${isChecked ? "checked" : ""}>
             <span class="choice-letter">${prefixes[index]}</span>
             <span class="choice-text">${opt}</span>
         </label>
@@ -1010,9 +1203,14 @@ function updateButtonText() {
 function saveAnswer() {
     const selected = document.querySelector('input[name="answer"]:checked');
     if(selected) {
-        userAnswers[currentQuestion] = parseInt(selected.value);
+        const selectedIndex = parseInt(selected.value);
+        if(questions[currentQuestion].isTKP) {
+            userScores[currentQuestion] = questions[currentQuestion].optionScores[selectedIndex];
+        } else {
+            userAnswers[currentQuestion] = selectedIndex;
+        }
         updateSoalGrid();
-        saveProgress(); // Simpan progres setiap kali menjawab
+        saveProgress();
     }
 }
 
@@ -1021,7 +1219,7 @@ function nextQuestion() {
     if(currentQuestion < questions.length-1) {
         currentQuestion++;
         loadQuestion();
-        saveProgress(); // Simpan progres setelah pindah soal
+        saveProgress();
     }
 }
 
@@ -1030,15 +1228,13 @@ function prevQuestion() {
     if(currentQuestion > 0) {
         currentQuestion--;
         loadQuestion();
-        saveProgress(); // Simpan progres setelah pindah soal
+        saveProgress();
     }
 }
 
 function finishQuiz() {
     if(timerInterval) clearInterval(timerInterval);
     saveAnswer();
-    
-    // Hapus progres karena kuis sudah selesai
     clearProgress();
 
     const skor = hitungSkor();
@@ -1051,22 +1247,10 @@ function finishQuiz() {
     scoreDetail.innerHTML = `
         <h3>📊 Detail Skor</h3>
         <table style="width:100%; border-collapse:collapse;">
-            <tr>
-                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">📚 TWK (30 soal)</td>
-                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.twk}</strong> / ${skor.maxTwk}</td>
-            </tr>
-            <tr>
-                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">🔢 TIU (35 soal)</td>
-                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tiu}</strong> / ${skor.maxTiu}</td>
-            </tr>
-            <tr>
-                <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">⭐ TKP (45 soal)</td>
-                <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tkp}</strong> / ${skor.maxTkp}</td>
-            </tr>
-            <tr style="border-top:2px solid #ddd;">
-                <td style="padding:8px; font-weight:bold;">✅ TOTAL SKOR</td>
-                <td style="padding:8px; text-align:right;"><strong>${skor.total}</strong> / ${skor.maxTotal}</td>
-            </tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">📚 TWK (30 soal)</td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.twk}</strong> / ${skor.maxTwk}<\/td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">🔢 TIU (35 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tiu}</strong> / ${skor.maxTiu}<\/td></tr>
+            <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">⭐ TKP (45 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${skor.tkp}</strong> / ${skor.maxTkp}<\/td></tr>
+            <tr style="border-top:2px solid #ddd;"><td style="padding:8px; font-weight:bold;">✅ TOTAL SKOR<\/td><td style="padding:8px; text-align:right;"><strong>${skor.total}</strong> / ${skor.maxTotal}<\/td></tr>
         </table>
         <div class="total-score">
             🎯 Nilai Akhir: ${skor.persen}
@@ -1090,12 +1274,11 @@ function startTimer() {
             let seconds = time%60;
             document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
             updateTimerColor(time);
-            saveProgress(); // Simpan progres setiap detik (update timer)
+            saveProgress();
         }
     }, 1000);
 }
 
-// Memulai kuis
 initQuiz();
 
 </script>
