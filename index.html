@@ -28,7 +28,7 @@ body{
 
 .container{
     width:100%;
-    max-width:550px;
+    max-width:580px;
     background:rgba(255,255,255,0.98);
     backdrop-filter: blur(10px);
     padding:20px;
@@ -157,7 +157,7 @@ p{
     color:#555;
 }
 
-/* Quiz Item dengan skor - DESAIN BARU */
+/* Quiz Item dengan skor */
 .quiz-item {
     width:100%;
     background: white;
@@ -229,7 +229,7 @@ p{
     color: white;
 }
 
-/* Detail skor di dalam card */
+/* Detail skor di dalam card - lebih sederhana */
 .quiz-detail {
     padding:12px 15px;
     background: #f8f9fa;
@@ -239,18 +239,29 @@ p{
     border-top:1px solid #e9ecef;
 }
 
-.skor-detail {
+.total-skor-container {
     display:flex;
-    gap:15px;
+    align-items:center;
+    gap:8px;
+}
+
+.total-skor-label {
     font-size:12px;
+    color:#666;
 }
 
-.skor-detail span {
-    color:#495057;
-}
-
-.skor-detail strong {
+.total-skor-value {
+    font-size:14px;
+    font-weight:bold;
+    background:#e9ecef;
+    padding:4px 12px;
+    border-radius:20px;
     color:#0d6efd;
+}
+
+.total-skor-value.completed {
+    background: #d4edda;
+    color: #155724;
 }
 
 .status-badge {
@@ -547,13 +558,12 @@ input:checked + .slider:before {
                     <span class="skor-badge belum">-</span>
                 </div>
             </div>
-            <div class="quiz-detail" id="detailLatihan1">
-                <div class="skor-detail">
-                    <span>📊 <strong id="twk1">-</strong> / 150</span>
-                    <span>🔢 <strong id="tiu1">-</strong> / 175</span>
-                    <span>⭐ <strong id="tkp1">-</strong> / 225</span>
+            <div class="quiz-detail">
+                <div class="total-skor-container">
+                    <span class="total-skor-label">Total Skor:</span>
+                    <span class="total-skor-value" id="total1">0 / 550</span>
                 </div>
-                <div class="status-badge belum" id="status1">Belum dikerjakan</div>
+                <span class="status-badge belum" id="status1">⏳ Belum</span>
             </div>
         </div>
 
@@ -570,13 +580,12 @@ input:checked + .slider:before {
                     <span class="skor-badge belum">-</span>
                 </div>
             </div>
-            <div class="quiz-detail" id="detailLatihan2">
-                <div class="skor-detail">
-                    <span>📊 <strong id="twk2">-</strong> / 150</span>
-                    <span>🔢 <strong id="tiu2">-</strong> / 175</span>
-                    <span>⭐ <strong id="tkp2">-</strong> / 225</span>
+            <div class="quiz-detail">
+                <div class="total-skor-container">
+                    <span class="total-skor-label">Total Skor:</span>
+                    <span class="total-skor-value" id="total2">0 / 550</span>
                 </div>
-                <div class="status-badge belum" id="status2">Belum dikerjakan</div>
+                <span class="status-badge belum" id="status2">⏳ Belum</span>
             </div>
         </div>
 
@@ -593,13 +602,12 @@ input:checked + .slider:before {
                     <span class="skor-badge belum">-</span>
                 </div>
             </div>
-            <div class="quiz-detail" id="detailLatihan3">
-                <div class="skor-detail">
-                    <span>📊 <strong id="twk3">-</strong> / 150</span>
-                    <span>🔢 <strong id="tiu3">-</strong> / 175</span>
-                    <span>⭐ <strong id="tkp3">-</strong> / 225</span>
+            <div class="quiz-detail">
+                <div class="total-skor-container">
+                    <span class="total-skor-label">Total Skor:</span>
+                    <span class="total-skor-value" id="total3">0 / 550</span>
                 </div>
-                <div class="status-badge belum" id="status3">Belum dikerjakan</div>
+                <span class="status-badge belum" id="status3">⏳ Belum</span>
             </div>
         </div>
 
@@ -616,13 +624,12 @@ input:checked + .slider:before {
                     <span class="skor-badge belum">-</span>
                 </div>
             </div>
-            <div class="quiz-detail" id="detailLatihan4">
-                <div class="skor-detail">
-                    <span>📊 <strong id="twk4">-</strong> / 150</span>
-                    <span>🔢 <strong id="tiu4">-</strong> / 175</span>
-                    <span>⭐ <strong id="tkp4">-</strong> / 225</span>
+            <div class="quiz-detail">
+                <div class="total-skor-container">
+                    <span class="total-skor-label">Total Skor:</span>
+                    <span class="total-skor-value" id="total4">0 / 550</span>
                 </div>
-                <div class="status-badge belum" id="status4">Belum dikerjakan</div>
+                <span class="status-badge belum" id="status4">⏳ Belum</span>
             </div>
         </div>
 
@@ -639,13 +646,12 @@ input:checked + .slider:before {
                     <span class="skor-badge belum">-</span>
                 </div>
             </div>
-            <div class="quiz-detail" id="detailLatihan5">
-                <div class="skor-detail">
-                    <span>📊 <strong id="twk5">-</strong> / 150</span>
-                    <span>🔢 <strong id="tiu5">-</strong> / 175</span>
-                    <span>⭐ <strong id="tkp5">-</strong> / 225</span>
+            <div class="quiz-detail">
+                <div class="total-skor-container">
+                    <span class="total-skor-label">Total Skor:</span>
+                    <span class="total-skor-value" id="total5">0 / 550</span>
                 </div>
-                <div class="status-badge belum" id="status5">Belum dikerjakan</div>
+                <span class="status-badge belum" id="status5">⏳ Belum</span>
             </div>
         </div>
 
@@ -836,6 +842,12 @@ function bukaKuis(halaman) {
     window.location.href = `${halaman}?seed=${Date.now()}&timer=${getTimerStatus() ? 'on' : 'off'}`;
 }
 
+// ========== HITUNG TOTAL SKOR ==========
+function hitungTotal(twk, tiu, tkp) {
+    const t = (parseInt(twk) || 0) + (parseInt(tiu) || 0) + (parseInt(tkp) || 0);
+    return `${t} / 550`;
+}
+
 // ========== AMBIL SKOR DARI LOCALSTORAGE ==========
 function loadAllScores() {
     const maxScores = { twk: 150, tiu: 175, tkp: 225 };
@@ -858,10 +870,19 @@ function loadAllScores() {
             }
         }
         
-        // Update detail skor di bawah
-        if(twk) document.getElementById(`twk${i}`).innerText = twk;
-        if(tiu) document.getElementById(`tiu${i}`).innerText = tiu;
-        if(tkp) document.getElementById(`tkp${i}`).innerText = tkp;
+        // Update total skor di bagian bawah
+        const totalEl = document.getElementById(`total${i}`);
+        if(totalEl) {
+            const totalText = hitungTotal(twk, tiu, tkp);
+            totalEl.innerText = totalText;
+            
+            // Ubah warna jika semua skor terisi
+            if(twk && tiu && tkp) {
+                totalEl.classList.add('completed');
+            } else {
+                totalEl.classList.remove('completed');
+            }
+        }
         
         // Update status badge
         const statusEl = document.getElementById(`status${i}`);
@@ -870,7 +891,7 @@ function loadAllScores() {
             statusEl.innerText = '✅ Selesai';
         } else {
             statusEl.className = 'status-badge belum';
-            statusEl.innerText = '⏳ Belum dikerjakan';
+            statusEl.innerText = '⏳ Belum';
         }
     }
 }
@@ -890,7 +911,7 @@ loadBestScores();
 initTimerToggle();
 
 console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
-console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
+console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px");
 </script>
 </body>
 </html>
