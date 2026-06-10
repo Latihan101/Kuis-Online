@@ -2,11 +2,10 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Latihan SKD - Menu Utama</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
@@ -14,9 +13,8 @@
     font-family:Arial,sans-serif;
 }
 
-/* Menonaktifkan seleksi teks */
 body{
-    background:#f4f6f9;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -31,10 +29,12 @@ body{
 .container{
     width:100%;
     max-width:500px;
-    background:#fff;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
     padding:25px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
+    border-radius:25px;
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+    border:1px solid rgba(255,255,255,.2);
 }
 
 .screen{
@@ -43,6 +43,12 @@ body{
 
 .active{
     display:block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .logo{
@@ -51,46 +57,58 @@ body{
 }
 
 .logo h1{
-    color:#0d6efd;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 28px;
     margin-bottom:10px;
 }
 
 .logo p{
     color:#666;
+    font-size:14px;
 }
 
 .menu-btn{
     width:100%;
     padding:15px;
     border:none;
-    border-radius:10px;
-    background:#0d6efd;
+    border-radius:15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color:white;
     font-size:18px;
     margin-bottom:12px;
     cursor:pointer;
     transition:0.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-weight:bold;
 }
 
 .menu-btn:hover{
-    opacity:0.9;
     transform:scale(1.02);
+    box-shadow:0 5px 20px rgba(102,126,234,0.4);
 }
 
 .back-btn{
     width:100%;
     padding:12px;
     border:none;
-    border-radius:10px;
+    border-radius:15px;
     background:#6c757d;
     color:white;
     cursor:pointer;
     margin-top:20px;
     transition:0.2s;
+    font-weight:bold;
 }
 
 .back-btn:hover{
-    opacity:0.9;
+    background:#5a6268;
+    transform:scale(1.02);
 }
 
 h2{
@@ -100,45 +118,54 @@ h2{
     justify-content:space-between;
     flex-wrap:wrap;
     gap:10px;
+    color:#333;
+    font-size:20px;
 }
 
 p{
     line-height:1.7;
     margin-bottom:10px;
+    color:#555;
 }
 
 .quiz-item{
     width:100%;
     padding:15px;
     border:none;
-    border-radius:10px;
-    background:#198754;
+    border-radius:15px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     color:white;
     font-size:16px;
     margin-bottom:10px;
     cursor:pointer;
     transition:0.2s;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
 }
 
 .quiz-item:hover{
-    opacity:0.9;
     transform:scale(1.02);
+    box-shadow:0 5px 20px rgba(17,153,142,0.4);
 }
 
 .version{
     text-align:center;
     margin-top:20px;
-    color:#999;
+    color:#aaa;
+    font-size:12px;
 }
 
 .info-acak{
-    background:#e9ecef;
-    padding:10px;
-    border-radius:8px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    padding:12px;
+    border-radius:12px;
     font-size:12px;
-    color:#495057;
+    color:white;
     text-align:center;
     margin-top:15px;
+    font-weight:bold;
 }
 
 /* Toggle Switch */
@@ -146,14 +173,17 @@ p{
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
+    font-size: 12px;
+    background: #e9ecef;
+    padding: 5px 12px;
+    border-radius: 30px;
 }
 
 .switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 24px;
+    width: 45px;
+    height: 22px;
 }
 
 .switch input {
@@ -171,14 +201,14 @@ p{
     bottom: 0;
     background-color: #ccc;
     transition: .3s;
-    border-radius: 24px;
+    border-radius: 22px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
+    height: 16px;
+    width: 16px;
     left: 3px;
     bottom: 3px;
     background-color: white;
@@ -191,11 +221,12 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px);
+    transform: translateX(23px);
 }
 
 .timer-status {
     font-weight: bold;
+    font-size: 11px;
 }
 
 .timer-status.on {
@@ -222,10 +253,53 @@ input:checked + .slider:before {
     position: fixed;
     bottom: 10px;
     left: 10px;
-    font-size: 10px;
-    color: rgba(0,0,0,0.15);
+    font-size: 8px;
+    color: rgba(255,255,255,0.3);
     z-index: 100;
     pointer-events: none;
+}
+
+/* Statistik Card */
+.stats-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.stat-item {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Animasi loading */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 </head>
@@ -237,8 +311,25 @@ input:checked + .slider:before {
     <div id="home" class="screen active">
 
         <div class="logo">
+            <div style="font-size: 50px; margin-bottom: 10px;">📚</div>
             <h1>Latihan SKD CPNS</h1>
             <p>Latihan Soal TWK, TIU dan TKP</p>
+        </div>
+
+        <!-- Statistik -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <div class="stat-number" id="totalLatihan">4</div>
+                <div class="stat-label">Total Latihan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalSoal">110</div>
+                <div class="stat-label">Soal/Latihan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="skorTerbaik">-</div>
+                <div class="stat-label">Skor Terbaik</div>
+            </div>
         </div>
 
         <button class="menu-btn" onclick="showScreen('quizlist')">
@@ -258,7 +349,7 @@ input:checked + .slider:before {
         </div>
 
         <div class="version">
-            Version 2.0
+            Version 2.0 | © 2024 Latihan SKD
         </div>
 
     </div>
@@ -269,7 +360,7 @@ input:checked + .slider:before {
         <h2>
             📚 Pilih Soal SKD
             <div class="toggle-container">
-                <span class="timer-status" id="timerStatusLabel">⏱️ Timer ON</span>
+                <span class="timer-status" id="timerStatusLabel">⏱️ ON</span>
                 <label class="switch">
                     <input type="checkbox" id="timerToggle" checked>
                     <span class="slider"></span>
@@ -294,7 +385,7 @@ input:checked + .slider:before {
         </button>
 
         <button class="back-btn" onclick="showScreen('home')">
-            Kembali
+            ← Kembali
         </button>
 
     </div>
@@ -304,16 +395,26 @@ input:checked + .slider:before {
 
         <h2>📖 Petunjuk</h2>
 
-        <p>1. Pilih salah satu soal latihan yang tersedia.</p>
-        <p>2. Baca soal dengan teliti.</p>
-        <p>3. Pilih jawaban yang paling benar.</p>
-        <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
-        <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
-        <p>6. Setiap soal memiliki timer 100 menit (bisa dimatikan).</p>
-        <p>7. Gunakan tombol 📋 Daftar Soal untuk navigasi cepat.</p>
+        <div style="background:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px;">
+            <p><strong>📌 Cara Menggunakan:</strong></p>
+            <p>1. Pilih salah satu soal latihan yang tersedia.</p>
+            <p>2. Baca soal dengan teliti.</p>
+            <p>3. Pilih jawaban yang paling benar.</p>
+            <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
+            <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
+            <p>6. Setiap soal memiliki timer 100 menit (bisa dimatikan).</p>
+            <p>7. Gunakan tombol 📋 Daftar Soal untuk navigasi cepat.</p>
+        </div>
+
+        <div style="background:#fff3cd; border-radius:12px; padding:15px;">
+            <p><strong>💡 Tips:</strong></p>
+            <p>• Kerjakan soal dengan tenang dan fokus</p>
+            <p>• Manfaatkan fitur timer untuk mengatur waktu</p>
+            <p>• Gunakan fitur evaluasi untuk mengetahui pembahasan</p>
+        </div>
 
         <button class="back-btn" onclick="showScreen('home')">
-            Kembali
+            ← Kembali
         </button>
 
     </div>
@@ -323,26 +424,38 @@ input:checked + .slider:before {
 
         <h2>ℹ️ Tentang</h2>
 
-        <p>
-            Latihan SKD adalah aplikasi latihan soal berbasis HTML,
-            CSS dan JavaScript yang dapat dijalankan secara offline
-            maupun online.
-        </p>
+        <div style="background:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px;">
+            <p><strong>📱 Aplikasi Latihan SKD</strong></p>
+            <p>
+                Latihan SKD adalah aplikasi latihan soal berbasis HTML,
+                CSS dan JavaScript yang dapat dijalankan secara offline
+                maupun online.
+            </p>
+        </div>
 
-        <p>
-            Fitur unggulan:
-            • Pengacakan pilihan jawaban setiap soal dibuka
-            • Timer 100 menit (dapat dimatikan)
-            • Sidebar grid soal untuk navigasi
-            • Hasil nilai/skor otomatis
-        </p>
+        <div style="background:#d1ecf1; border-radius:12px; padding:15px; margin-bottom:15px;">
+            <p><strong>⭐ Fitur Unggulan:</strong></p>
+            <p>• Pengacakan pilihan jawaban setiap soal dibuka</p>
+            <p>• Timer 100 menit (dapat dimatikan/dinyalakan)</p>
+            <p>• Sidebar grid soal untuk navigasi cepat</p>
+            <p>• Hasil nilai/skor otomatis dengan passing grade</p>
+            <p>• Evaluasi jawaban lengkap dengan pembahasan</p>
+            <p>• Perlindungan konten (anti copy, anti screenshot)</p>
+        </div>
 
-        <p>
+        <div style="background:#f8f9fa; border-radius:12px; padding:15px;">
+            <p><strong>📊 Passing Grade:</strong></p>
+            <p>• TWK: 65</p>
+            <p>• TIU: 80</p>
+            <p>• TKP: 166</p>
+        </div>
+
+        <div class="version" style="margin-top:15px;">
             Versi : 2.0
-        </p>
+        </div>
 
         <button class="back-btn" onclick="showScreen('home')">
-            Kembali
+            ← Kembali
         </button>
 
     </div>
@@ -361,45 +474,16 @@ document.addEventListener('contextmenu', function(e) {
     return false;
 });
 
-// 2. Mencegah kombinasi keyboard (tanpa alert yang mengganggu)
+// 2. Mencegah kombinasi keyboard
 document.addEventListener('keydown', function(e) {
-    // F12
-    if(e.key === 'F12') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+Shift+I (Windows/Linux)
-    if(e.ctrlKey && e.shiftKey && e.key === 'I') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+Shift+J (Windows/Linux)
-    if(e.ctrlKey && e.shiftKey && e.key === 'J') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+Shift+C (Windows/Linux)
-    if(e.ctrlKey && e.shiftKey && e.key === 'C') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+U (View Source)
-    if(e.ctrlKey && e.key === 'u') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+S (Save)
-    if(e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        return false;
-    }
-    // Ctrl+P (Print)
-    if(e.ctrlKey && e.key === 'p') {
-        e.preventDefault();
-        return false;
-    }
-    // Print Screen key
-    if(e.key === 'PrintScreen') {
+    if(e.key === 'F12' || 
+       (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+       (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+       (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+       (e.ctrlKey && e.key === 'u') ||
+       (e.ctrlKey && e.key === 's') ||
+       (e.ctrlKey && e.key === 'p') ||
+       e.key === 'PrintScreen') {
         e.preventDefault();
         showScreenshotWarning();
         return false;
@@ -412,45 +496,33 @@ document.addEventListener('dragstart', function(e) {
     return false;
 });
 
-// 4. Mencegah copy
-document.addEventListener('copy', function(e) {
-    e.preventDefault();
-    return false;
-});
+// 4. Mencegah copy & cut
+document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
 
-// 5. Mencegah cut
-document.addEventListener('cut', function(e) {
-    e.preventDefault();
-    return false;
-});
-
-// 6. Fungsi peringatan screenshot (tanpa alert terus-terusan)
+// 5. Fungsi peringatan screenshot
 let lastWarningTime = 0;
 function showScreenshotWarning() {
     const now = Date.now();
-    // Hanya tampilkan peringatan setiap 5 detik sekali
     if(now - lastWarningTime > 5000) {
         lastWarningTime = now;
         const overlay = document.getElementById('screenshotOverlay');
         overlay.style.display = 'block';
-        
         setTimeout(() => {
             overlay.style.display = 'none';
         }, 500);
-        
-        // Peringatan ringan (gunakan console, bukan alert)
         console.warn('⚠️ Screenshot terdeteksi! Konten dilindungi.');
     }
 }
 
-// 7. Deteksi Print Screen via keyup
+// 6. Deteksi Print Screen via keyup
 window.addEventListener('keyup', function(e) {
     if(e.key === 'PrintScreen') {
         showScreenshotWarning();
     }
 });
 
-// 8. Mencegah inspect element pada tombol
+// 7. Mencegah inspect element pada tombol
 document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn').forEach(el => {
     el.addEventListener('contextmenu', function(e) {
         e.preventDefault();
@@ -459,57 +531,45 @@ document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn').forEach(el
 });
 
 // ========== FUNGSI TIMER TOGGLE ==========
-// Mendapatkan status timer dari localStorage
 function getTimerStatus() {
     const savedStatus = localStorage.getItem('timerEnabled');
-    // Jika belum ada setting, default true (ON)
     if(savedStatus === null) {
         return true;
     }
     return savedStatus === 'true';
 }
 
-// Menyimpan status timer ke localStorage
 function setTimerStatus(enabled) {
     localStorage.setItem('timerEnabled', enabled);
 }
 
-// Update tampilan toggle berdasarkan status yang tersimpan
 function updateToggleUI() {
     const toggle = document.getElementById('timerToggle');
     const statusLabel = document.getElementById('timerStatusLabel');
     const isEnabled = getTimerStatus();
     
-    if(toggle) {
-        toggle.checked = isEnabled;
-    }
-    
+    if(toggle) toggle.checked = isEnabled;
     if(statusLabel) {
         if(isEnabled) {
-            statusLabel.innerHTML = '⏱️ Timer ON';
+            statusLabel.innerHTML = '⏱️ ON';
             statusLabel.className = 'timer-status on';
         } else {
-            statusLabel.innerHTML = '⏸️ Timer OFF';
+            statusLabel.innerHTML = '⏸️ OFF';
             statusLabel.className = 'timer-status off';
         }
     }
 }
 
-// Event listener untuk toggle timer
 function initTimerToggle() {
     const toggle = document.getElementById('timerToggle');
     if(toggle) {
-        // Set nilai awal dari localStorage
         toggle.checked = getTimerStatus();
         updateToggleUI();
         
-        // Event ketika toggle diubah
         toggle.addEventListener('change', function() {
             const isEnabled = this.checked;
             setTimerStatus(isEnabled);
             updateToggleUI();
-            
-            // Tampilkan notifikasi di console
             console.log(`Timer ${isEnabled ? 'DIAKTIFKAN' : 'DINONAKTIFKAN'} untuk latihan selanjutnya`);
         });
     }
@@ -524,21 +584,38 @@ function showScreen(id){
     document.getElementById(id).classList.add("active");
 }
 
-// Fungsi untuk membuka kuis dengan parameter acak dan status timer
 function bukaKuis(halaman) {
     const timestamp = new Date().getTime();
     const timerEnabled = getTimerStatus();
-    
-    // Kirim parameter seed dan timer status
     window.location.href = `${halaman}?seed=${timestamp}&timer=${timerEnabled ? 'on' : 'off'}`;
 }
 
-// Peringatan di console (tidak mengganggu user)
+// ========== AMBIL SKOR TERBAIK DARI LOCALSTORAGE ==========
+function loadBestScores() {
+    let bestScores = [];
+    for(let i = 1; i <= 4; i++) {
+        const saved = localStorage.getItem(`bestScore_latihan${i}`);
+        if(saved) {
+            bestScores.push(parseInt(saved));
+        }
+    }
+    if(bestScores.length > 0) {
+        const maxScore = Math.max(...bestScores);
+        document.getElementById('skorTerbaik').innerText = maxScore;
+    } else {
+        document.getElementById('skorTerbaik').innerText = '-';
+    }
+}
+
+// Panggil loadBestScores saat halaman dimuat
+loadBestScores();
+
+// Peringatan di console
 console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
 console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
 console.log("%c💡 Fitur Timer dapat diatur ON/OFF di halaman Pilih Soal SKD.", "color: #0d6efd; font-size: 12px;");
 
-// Inisialisasi toggle timer saat halaman dimuat
+// Inisialisasi toggle timer
 initTimerToggle();
 
 </script>
