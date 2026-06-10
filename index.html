@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz App - Menu Utama</title>
+<title>Latihan SKD - Menu Utama</title>
 
 <style>
 
@@ -201,12 +201,12 @@ body:blur {
     <div id="home" class="screen active">
 
         <div class="logo">
-            <h1>📚 Quiz App</h1>
-            <p>Latihan Soal Pilihan Ganda</p>
+            <h1>📚 Latihan SKD CPNS</h1>
+            <p>Latihan Soal TWK, TIU dan TKP</p>
         </div>
 
         <button class="menu-btn" onclick="showScreen('quizlist')">
-            📚 Pilih Kuis
+            📚 Pilih Soal
         </button>
 
         <button class="menu-btn" onclick="showScreen('petunjuk')">
@@ -218,7 +218,7 @@ body:blur {
         </button>
 
         <div class="info-acak">
-            🔄 Setiap membuka kuis, pilihan jawaban akan diacak!
+            🔄 Setiap membuka soal, pilihan jawaban akan diacak!
         </div>
 
         <div class="version">
@@ -230,22 +230,22 @@ body:blur {
     <!-- PILIH KUIS -->
     <div id="quizlist" class="screen">
 
-        <h2>📚 Pilih Kuis</h2>
+        <h2>📚 Pilih Soal SKD</h2>
 
         <button class="quiz-item" onclick="bukaKuis('latihan1.html')">
-            📖 Latihan 1
+            📖 Latihan SKD 1
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan2.html')">
-            📖 Latihan 2
+            📖 Latihan SKD 2
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan3.html')">
-            📖 Latihan 3
+            📖 Latihan SKD 3
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan4.html')">
-            📖 Latihan 4
+            📖 Latihan SKD 4
         </button>
 
         <button class="back-btn" onclick="showScreen('home')">
@@ -259,12 +259,12 @@ body:blur {
 
         <h2>📖 Petunjuk</h2>
 
-        <p>1. Pilih salah satu kuis yang tersedia.</p>
+        <p>1. Pilih salah satu soal latihan yang tersedia.</p>
         <p>2. Baca soal dengan teliti.</p>
         <p>3. Pilih jawaban yang paling benar.</p>
         <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
         <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
-        <p>6. Setiap kuis memiliki timer 10 menit.</p>
+        <p>6. Setiap soal memiliki timer 100 menit.</p>
         <p>7. Gunakan tombol 📋 Daftar Soal untuk navigasi cepat.</p>
 
         <button class="back-btn" onclick="showScreen('home')">
@@ -279,17 +279,17 @@ body:blur {
         <h2>ℹ️ Tentang</h2>
 
         <p>
-            Quiz App adalah aplikasi latihan soal berbasis HTML,
+            Aplikasi ini adalah aplikasi latihan soal berbasis HTML,
             CSS dan JavaScript yang dapat dijalankan secara offline
             maupun online.
         </p>
 
         <p>
             Fitur unggulan:
-            • Pengacakan pilihan jawaban setiap kuis dibuka
-            • Timer 10 menit
+            • Pengacakan pilihan jawaban setiap soal dibuka
+            • Timer 100 menit
             • Sidebar grid soal untuk navigasi
-            • Hasil nilai otomatis
+            • Hasil nilai/skor otomatis
         </p>
 
         <p>
@@ -306,7 +306,7 @@ body:blur {
 
 <!-- Overlay untuk anti-screenshot -->
 <div id="screenshotOverlay" class="screenshot-overlay"></div>
-<div class="watermark">© Quiz App - Hak Cipta Dilindungi</div>
+<div class="watermark">© Latihan SKD - Hak Cipta Dilindungi</div>
 
 <script>
 // ========== PERLINDUNGAN ==========
