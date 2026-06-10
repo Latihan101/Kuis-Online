@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Latihan 2</title>
+<title>Latihan SKD 2 - Sistem Skor</title>
 
 <style>
 *{
@@ -20,6 +20,10 @@ body{
     align-items:center;
     min-height:100vh;
     padding:20px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .container{
@@ -31,7 +35,6 @@ body{
     box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
 
-/* Tombol Sidebar */
 .sidebar-toggle{
     position:fixed;
     bottom:30px;
@@ -59,7 +62,6 @@ body{
     transform:scale(1.05);
 }
 
-/* Sidebar */
 .sidebar{
     position:fixed;
     top:0;
@@ -122,6 +124,9 @@ body{
     grid-template-columns:repeat(5,1fr);
     gap:12px;
     margin-bottom:20px;
+    max-height:400px;
+    overflow-y:auto;
+    padding-right:5px;
 }
 
 .grid-soal{
@@ -132,9 +137,11 @@ body{
     border-radius:10px;
     cursor:pointer;
     font-weight:bold;
-    font-size:16px;
+    font-size:14px;
     transition:0.2s;
-    border:2px solid #ddd;
+    border:2px solid #dee2e6;
+    background: #f8f9fa;
+    color: #495057;
 }
 
 .grid-soal:hover{
@@ -142,22 +149,47 @@ body{
 }
 
 .grid-soal.answered{
-    background:#198754;
-    color:white;
-    border-color:#198754;
+    background: #198754;
+    color: white;
+    border-color: #198754;
 }
 
 .grid-soal.unanswered{
-    background:#dc3545;
-    color:white;
-    border-color:#dc3545;
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
 }
 
 .grid-soal.active{
-    background:#0d6efd;
-    color:white;
-    border-color:#0d6efd;
-    box-shadow:0 0 0 3px rgba(13,110,253,0.3);
+    background: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.3);
+    transform: scale(1.02);
+}
+
+.grid-soal.twk{
+    border-left: 5px solid #6f42c1;
+}
+
+.grid-soal.tiu{
+    border-left: 5px solid #8B4513;
+}
+
+.grid-soal.tkp{
+    border-left: 5px solid #20c997;
+}
+
+.grid-soal.active.twk{
+    border-left: 5px solid #ffffff;
+}
+
+.grid-soal.active.tiu{
+    border-left: 5px solid #ffffff;
+}
+
+.grid-soal.active.tkp{
+    border-left: 5px solid #ffffff;
 }
 
 .sidebar-info{
@@ -191,7 +223,6 @@ body{
     border-radius:5px;
 }
 
-/* Overlay */
 .overlay{
     position:fixed;
     top:0;
@@ -207,72 +238,102 @@ body{
     display:block;
 }
 
-/* Style Utama Kuis */
 .header-title{
     text-align:center;
     margin-bottom:20px;
     padding-bottom:10px;
     border-bottom:2px solid #0d6efd;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 .header-title h2{
     color:#0d6efd;
+    margin:0;
+}
+
+.header-category{
+    font-weight:bold;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.header-category.twk{
+    background:#6f42c120;
+    color:#6f42c1;
+    border:1px solid #6f42c1;
+}
+
+.header-category.tiu{
+    background:#8B451320;
+    color:#8B4513;
+    border:1px solid #8B4513;
+}
+
+.header-category.tkp{
+    background:#20c99720;
+    color:#20c997;
+    border:1px solid #20c997;
 }
 
 .info{
     display:flex;
     justify-content:space-between;
-    margin-bottom:20px;
+    margin-bottom:15px;
     font-weight:bold;
 }
 
-/* Timer normal (hitam) */
 #timer{
     transition: color 0.3s ease;
     font-weight: bold;
     font-size: 18px;
 }
 
-/* Timer warna oranye (sisa 5 menit) */
 .timer-warning{
     color: #fd7e14 !important;
 }
 
-/* Timer warna merah (sisa 2 menit) */
 .timer-danger{
     color: #dc3545 !important;
 }
 
-/* Timer kedap-kedip untuk sisa < 20 detik */
 .timer-blink{
     color: #dc3545 !important;
     animation: blinkFast 0.5s ease infinite;
     font-weight: bold;
 }
 
-/* Efek blink cepat untuk < 20 detik */
 @keyframes blinkFast {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
 }
 
+.timer-status-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+.timer-status-badge.on {
+    background: #198754;
+    color: white;
+}
+
+.timer-status-badge.off {
+    background: #dc3545;
+    color: white;
+}
+
 .question{
-    font-size:20px;
-    margin-bottom:15px;
-    font-weight:bold;
-    text-align:center;
-}
-
-.question-image{
-    text-align:center;
+    font-size:18px;
     margin-bottom:20px;
-}
-
-.question-image img{
-    max-width:100%;
-    max-height:200px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    font-weight:bold;
+    line-height:1.5;
 }
 
 .option{
@@ -280,7 +341,7 @@ body{
     align-items:center;
     gap:12px;
     margin-bottom:12px;
-    padding:12px;
+    padding:14px;
     border:1px solid #ddd;
     border-radius:10px;
     cursor:pointer;
@@ -307,15 +368,6 @@ body{
     justify-content:center;
     font-weight:bold;
     font-size:18px;
-}
-
-.choice-image{
-    width:60px;
-    height:60px;
-    min-width:60px;
-    border-radius:8px;
-    object-fit:cover;
-    background:#f0f0f0;
 }
 
 .choice-text{
@@ -388,58 +440,182 @@ button:hover{
     flex-wrap:wrap;
 }
 
-/* Responsive */
-@media (max-width: 768px){
+.evaluasi-btn{
+    background:#6f42c1;
+    color:white;
+}
+
+.evaluasi-btn:hover{
+    background:#5a36a1;
+}
+
+.evaluasi-panel{
+    display:none;
+    max-height:600px;
+    overflow-y:auto;
+    margin-top:20px;
+    text-align:left;
+    border-top:2px solid #0d6efd;
+    padding-top:20px;
+}
+
+.evaluasi-item{
+    background:#f8f9fa;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+    border-left:5px solid;
+}
+
+.evaluasi-item.benar{
+    border-left-color:#198754;
+    background:#d4edda20;
+}
+
+.evaluasi-item.salah{
+    border-left-color:#dc3545;
+    background:#f8d7da20;
+}
+
+.evaluasi-item .soal-teks{
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.evaluasi-item .jawaban-user{
+    font-size:14px;
+    margin-bottom:5px;
+}
+
+.evaluasi-item .jawaban-benar{
+    font-size:14px;
+    margin-bottom:5px;
+    color:#198754;
+}
+
+.evaluasi-item .pembahasan{
+    font-size:13px;
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed #ddd;
+    color:#495057;
+}
+
+.close-evaluasi{
+    background:#6c757d;
+    color:white;
+    margin-top:10px;
+}
+
+@media (max-width:768px){
     .sidebar{
         width:100%;
         right:-100%;
     }
-    
     .soal-grid{
         grid-template-columns:repeat(5,1fr);
     }
-    
     .btn-sidebar{
         padding:10px 18px;
         font-size:14px;
     }
-    
-    .choice-image{
-        width:45px;
-        height:45px;
+    .header-title{
+        flex-direction:column;
+        text-align:center;
+    }
+    .question{
+        font-size:16px;
     }
 }
 
-.acak-info{
-    background:#e9ecef;
-    padding:8px 12px;
+.score-detail{
+    text-align:left;
+    max-width:450px;
+    margin:20px auto;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:10px;
+}
+
+.score-detail h3{
+    margin-bottom:10px;
+    color:#0d6efd;
+}
+
+.score-detail table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.score-detail td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+.score-detail td:first-child{
+    font-weight:bold;
+}
+
+.score-detail td:last-child{
+    text-align:right;
+}
+
+.total-score{
+    font-size:24px;
+    font-weight:bold;
+    color:#198754;
+    margin-top:15px;
+}
+
+.pass-status{
+    margin-top:10px;
+    padding:10px;
     border-radius:8px;
-    font-size:12px;
-    color:#495057;
     text-align:center;
-    margin-bottom:15px;
+    font-weight:bold;
+}
+
+.screenshot-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.95);
+    z-index:99999;
     display:none;
+    pointer-events:none;
+}
+
+.watermark{
+    position:fixed;
+    bottom:5px;
+    right:5px;
+    font-size:8px;
+    color:rgba(0,0,0,0.1);
+    z-index:100;
+    pointer-events:none;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-
 <div class="header-title">
-    <h2>🖼️ Latihan 2</h2>
+    <h2>📖 Latihan SKD 2</h2>
+    <div id="headerCategory" class="header-category twk">📍 TWK</div>
 </div>
 
 <div id="quiz">
     <div class="info">
-        <span id="progress">Soal 1/10</span>
-        <span id="timer">10:00</span>
+        <span id="progress">Soal 1/110</span>
+        <div>
+            <span id="timer">100:00</span>
+            <span id="timerStatusBadge" class="timer-status-badge on">⏱️ Timer ON</span>
+        </div>
     </div>
-
     <div class="question" id="question"></div>
-    <div id="questionImage" class="question-image"></div>
     <div id="options"></div>
-
     <div class="buttons">
         <button class="prev" onclick="prevQuestion()">◀ Previous</button>
         <button id="nextFinishBtn" class="next" onclick="nextQuestion()">Next ▶</button>
@@ -447,32 +623,24 @@ button:hover{
 </div>
 
 <div class="result" id="result">
-    <h1>📊 Hasil Kuis</h1>
-    <p>📝 Latihan 2</p>
-    <p>✅ Jawaban Benar: <span id="correct"></span></p>
-    <p>❌ Jawaban Salah: <span id="wrong"></span></p>
-    <p>⭐ Nilai: <span id="score"></span></p>
-    <br />
+    <h1>📊 Skor Latihan</h1>
+    <p>📝 Latihan SKD - TWK, TIU, TKP</p>
+    <div id="scoreDetail" class="score-detail"></div>
+    <div id="passingGradeStatus" class="pass-status"></div>
     <div class="result-buttons">
-        <button class="finish" onclick="restartQuiz()">
-            🔄 Ulangi Kuis
-        </button>
-        <button class="back-home" onclick="goToHomePage()">
-            🏠 Kembali ke Menu Utama
-        </button>
+        <button class="finish" onclick="restartQuiz()">🔄 Ulangi Soal</button>
+        <button class="evaluasi-btn" onclick="showEvaluasi()">📋 Evaluasi Jawaban</button>
+        <button class="back-home" onclick="goToHomePage()">🏠 Kembali ke Menu Utama</button>
     </div>
+    <div id="evaluasiPanel" class="evaluasi-panel"></div>
+    <button id="closeEvaluasiBtn" class="back-home close-evaluasi" style="display:none;" onclick="closeEvaluasi()">✖ Tutup Evaluasi</button>
+</div>
 </div>
 
-</div>
-
-<!-- Tombol Sidebar -->
 <div class="sidebar-toggle" id="sidebarToggle">
-    <button class="btn-sidebar" onclick="toggleSidebar()">
-        📋 Daftar Soal
-    </button>
+    <button class="btn-sidebar" onclick="toggleSidebar()">📋 Daftar Soal</button>
 </div>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <h3>📋 Daftar Soal</h3>
@@ -480,412 +648,282 @@ button:hover{
     </div>
     <div class="sidebar-content">
         <div class="soal-grid" id="soalGrid"></div>
-        
         <div class="sidebar-info">
             <p><strong>Informasi:</strong></p>
             <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background:#0d6efd;"></div>
-                    <span>Soal Aktif</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background:#198754;"></div>
-                    <span>Sudah Dijawab</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background:#dc3545;"></div>
-                    <span>Belum Dijawab</span>
-                </div>
+                <div class="legend-item"><div class="legend-color" style="background:#0d6efd;"></div><span>🔵 Soal Aktif</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:#198754;"></div><span>🟢 Sudah Dijawab</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:#dc3545;"></div><span>🔴 Belum Dijawab</span></div>
             </div>
-            <p style="margin-top:15px; font-size:12px; color:#666;">
-                💡 Klik nomor soal untuk langsung ke soal tersebut
-            </p>
+            <div class="legend" style="margin-top:5px;">
+                <div class="legend-item"><div class="legend-color" style="background:#6f42c1;"></div><span>🟣 TWK (Soal 1-30) - Skor 5</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:#8B4513;"></div><span>🟤 TIU (Soal 31-65) - Skor 5</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:#20c997;"></div><span>🟢 TKP (Soal 66-110) - Skor 1-5</span></div>
+            </div>
+            <div class="legend" style="margin-top:5px; border-top:1px solid #ddd; padding-top:10px;">
+                <div class="legend-item"><div class="legend-color" style="background:#155724;"></div><span>✅ Lulus Passing Grade</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:#721c24;"></div><span>❌ Tidak Lulus Passing Grade</span></div>
+            </div>
+            <p style="margin-top:15px; font-size:12px; color:#666;">💡 Klik nomor soal untuk langsung ke soal tersebut<br>📊 Passing Grade: TWK=65, TIU=80, TKP=166</p>
         </div>
     </div>
 </div>
 
-<!-- Overlay -->
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div id="screenshotOverlay" class="screenshot-overlay"></div>
+<div class="watermark">© Quiz App - Hak Cipta Dilindungi</div>
 
 <script>
-
-// ========== FUNGSI KEMBALI KE MENU UTAMA ==========
-function goToHomePage() {
-    window.location.href = "index.html";
+// ========== AMBIL PARAMETER URL ==========
+function getParameter(nama) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(nama);
 }
 
-// ========== DATA SOAL LATIHAN 2 (GAMBAR) ==========
-const originalQuestions = [
+// ========== CEK STATUS TIMER DARI PARAMETER ==========
+const timerParam = getParameter('timer');
+const timerEnabled = timerParam !== 'off'; // default ON jika tidak ada parameter
 
-{
-    question:"Apa nama hewan ini?",
-    questionImage:"https://i.pinimg.com/736x/2a/b2/1c/2ab21c138f40f7cf267f3c83d8bcf325.jpg",
-    options:[
-        {text:"Kucing", image:"https://i.pinimg.com/736x/1b/f5/43/1bf543d1275b87da5e436697c6e1a13c.jpg"},
-        {text:"Anjing", image:"https://i.pinimg.com/736x/e1/6a/71/e16a71a06bdbdd0f072b51aab8746bf4.jpg"},
-        {text:"Kelinci", image:"https://i.pinimg.com/736x/6b/21/6a/6b216a4902b0d73f196f4ae68074a0d1.jpg"},
-        {text:"Hamster", image:"https://i.pinimg.com/736x/50/3b/98/503b98c96e10c5d83665d7e3b7ea9282.jpg"},
-        {text:"Kura-kura", image:"https://i.pinimg.com/736x/c1/bf/d9/c1bfd9bfeb58229d7eedb983fbb6a995.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Buah apa yang berwarna merah ini?",
-    questionImage:"https://i.pinimg.com/736x/1d/73/34/1d73348a8954dd8975aa14b8ecbeacf9.jpg",
-    options:[
-        {text:"Apel", image:"https://i.pinimg.com/736x/91/1b/01/911b01b87bdaac1e15c45f3680640236.jpg"},
-        {text:"Jeruk", image:"https://i.pinimg.com/736x/93/7e/1d/937e1d79e3c95c99edd8a1131d9a90f4.jpg"},
-        {text:"Mangga", image:"https://i.pinimg.com/736x/1f/2c/fe/1f2cfe603541dfa053b366f6ff894128.jpg"},
-        {text:"Semangka", image:"https://i.pinimg.com/736x/96/07/bd/9607bd0f8d18a4b307aa5d2e5e76ee3c.jpg"},
-        {text:"Strawberry", image:"https://i.pinimg.com/736x/98/2c/7a/982c7a55cef284ae2b57c565cd68f64b.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Gambar ini adalah warna?",
-    questionImage:"https://i.pinimg.com/736x/d7/dc/e4/d7dce4c61a078e2ee46a2fd2d332d3eb.jpg",
-    options:[
-        {text:"Merah", image:"https://i.pinimg.com/736x/d7/dc/e4/d7dce4c61a078e2ee46a2fd2d332d3eb.jpg"},
-        {text:"Biru", image:"https://i.pinimg.com/736x/77/93/2c/77932c0b1c236fc2a4c6374708fb5d39.jpg"},
-        {text:"Hijau", image:"https://i.pinimg.com/736x/a8/7e/d9/a87ed9316213bd890a6381988a4731a5.jpg"},
-        {text:"Kuning", image:"https://i.pinimg.com/736x/09/87/bb/0987bbdc73414823a5b7407ac77bc9dc.jpg"},
-        {text:"Ungu", image:"https://i.pinimg.com/736x/7d/4c/3e/7d4c3e724d30215b9c6c381150360117.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Kendaraan apa yang digunakan untuk perjalanan laut?",
-    questionImage:"https://i.pinimg.com/736x/ae/ae/f0/aeaef0a275688e72953d7606c47c7232.jpg",
-    options:[
-        {text:"Mobil", image:"https://i.pinimg.com/736x/94/05/cf/9405cfc7523526a1aed1cb71ad03f0f7.jpg"},
-        {text:"Pesawat", image:"https://i.pinimg.com/736x/84/5d/6e/845d6e1d1dd846ae2d64fde63ed65ef3.jpg"},
-        {text:"Kereta", image:"https://i.pinimg.com/736x/10/6a/f1/106af1ba274c377429cb55b37298b917.jpg"},
-        {text:"Kapal", image:"https://i.pinimg.com/736x/34/cc/86/34cc86f74db46e9b9f439965791b5c21.jpg"},
-        {text:"Sepeda", image:"https://i.pinimg.com/736x/b6/f7/bd/b6f7bd931f9fa33c1e7dab74118a6847.jpg"}
-    ],
-    answer:3
-},
-
-{
-    question:"Hewan apa yang memiliki belalai?",
-    questionImage:"https://i.pinimg.com/736x/1f/8e/0b/1f8e0b8b8b8b8b8b8b8b8b8b8b8b8b8.jpg",
-    options:[
-        {text:"Gajah", image:"https://i.pinimg.com/736x/1f/8e/0b/1f8e0b8b8b8b8b8b8b8b8b8b8b8b8b8.jpg"},
-        {text:"Jerapah", image:"https://i.pinimg.com/736x/2c/3d/4e/2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f.jpg"},
-        {text:"Singa", image:"https://i.pinimg.com/736x/3d/4e/5f/3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8g.jpg"},
-        {text:"Harimau", image:"https://i.pinimg.com/736x/4e/5f/6a/4e5f6a7b8c9d0e1f2a3b4c5d6e7f8g9h.jpg"},
-        {text:"Zebra", image:"https://i.pinimg.com/736x/5f/6a/7b/5f6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Makanan khas Indonesia ini adalah?",
-    questionImage:"https://i.pinimg.com/736x/6a/7b/8c/6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j.jpg",
-    options:[
-        {text:"Rendang", image:"https://i.pinimg.com/736x/6a/7b/8c/6a7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j.jpg"},
-        {text:"Sate", image:"https://i.pinimg.com/736x/7b/8c/9d/7b8c9d0e1f2a3b4c5d6e7f8g9h0i1j2k.jpg"},
-        {text:"Nasi Goreng", image:"https://i.pinimg.com/736x/8c/9d/0e/8c9d0e1f2a3b4c5d6e7f8g9h0i1j2k3l.jpg"},
-        {text:"Gado-gado", image:"https://i.pinimg.com/736x/9d/0e/1f/9d0e1f2a3b4c5d6e7f8g9h0i1j2k3l4m.jpg"},
-        {text:"Bakso", image:"https://i.pinimg.com/736x/0e/1f/2a/0e1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Alat musik tradisional ini berasal dari?",
-    questionImage:"https://i.pinimg.com/736x/1f/2a/3b/1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o.jpg",
-    options:[
-        {text:"Jawa Barat", image:"https://i.pinimg.com/736x/1f/2a/3b/1f2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o.jpg"},
-        {text:"Bali", image:"https://i.pinimg.com/736x/2a/3b/4c/2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p.jpg"},
-        {text:"Sumatera", image:"https://i.pinimg.com/736x/3b/4c/5d/3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q.jpg"},
-        {text:"Sulawesi", image:"https://i.pinimg.com/736x/4c/5d/6e/4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r.jpg"},
-        {text:"Papua", image:"https://i.pinimg.com/736x/5d/6e/7f/5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Pakaian adat ini berasal dari?",
-    questionImage:"https://i.pinimg.com/736x/6e/7f/8g/6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t.jpg",
-    options:[
-        {text:"Jawa", image:"https://i.pinimg.com/736x/6e/7f/8g/6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t.jpg"},
-        {text:"Bali", image:"https://i.pinimg.com/736x/7f/8g/9h/7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u.jpg"},
-        {text:"Sumatera", image:"https://i.pinimg.com/736x/8g/9h/0i/8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v.jpg"},
-        {text:"Kalimantan", image:"https://i.pinimg.com/736x/9h/0i/1j/9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w.jpg"},
-        {text:"Papua", image:"https://i.pinimg.com/736x/0i/1j/2k/0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Tari tradisional ini berasal dari?",
-    questionImage:"https://i.pinimg.com/736x/1j/2k/3l/1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y.jpg",
-    options:[
-        {text:"Aceh", image:"https://i.pinimg.com/736x/1j/2k/3l/1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y.jpg"},
-        {text:"Bali", image:"https://i.pinimg.com/736x/2k/3l/4m/2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z.jpg"},
-        {text:"Jawa", image:"https://i.pinimg.com/736x/3l/4m/5n/3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a.jpg"},
-        {text:"Papua", image:"https://i.pinimg.com/736x/4m/5n/6o/4m5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b.jpg"},
-        {text:"Sumatera", image:"https://i.pinimg.com/736x/5n/6o/7p/5n6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c.jpg"}
-    ],
-    answer:0
-},
-
-{
-    question:"Rumah adat ini disebut?",
-    questionImage:"https://i.pinimg.com/736x/6o/7p/8q/6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d.jpg",
-    options:[
-        {text:"Gadang", image:"https://i.pinimg.com/736x/6o/7p/8q/6o7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d.jpg"},
-        {text:"Joglo", image:"https://i.pinimg.com/736x/7p/8q/9r/7p8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e.jpg"},
-        {text:"Tongkonan", image:"https://i.pinimg.com/736x/8q/9r/0s/8q9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f.jpg"},
-        {text:"Honai", image:"https://i.pinimg.com/736x/9r/0s/1t/9r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g.jpg"},
-        {text:"Lamin", image:"https://i.pinimg.com/736x/0s/1t/2u/0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h.jpg"}
-    ],
-    answer:0
+// Tampilkan badge status timer
+const timerBadge = document.getElementById('timerStatusBadge');
+if(timerBadge) {
+    if(timerEnabled) {
+        timerBadge.textContent = '⏱️ Timer ON';
+        timerBadge.className = 'timer-status-badge on';
+    } else {
+        timerBadge.textContent = '⏸️ Timer OFF';
+        timerBadge.className = 'timer-status-badge off';
+    }
 }
 
+// PERLINDUNGAN
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    const key=e.key, c=e.ctrlKey, s=e.shiftKey;
+    if(key==='F12'||(c&&s&&key==='I')||(c&&s&&key==='J')||(c&&s&&key==='C')||(c&&key==='u')||(c&&key==='s')||(c&&key==='p')||key==='PrintScreen'){
+        e.preventDefault();
+        const ov=document.getElementById('screenshotOverlay');
+        if(ov){ov.style.display='block';setTimeout(()=>ov.style.display='none',500);}
+    }
+});
+document.addEventListener('dragstart', e=>e.preventDefault());
+document.addEventListener('copy', e=>e.preventDefault());
+document.addEventListener('cut', e=>e.preventDefault());
+
+const PASSING_GRADE={TWK:65,TIU:80,TKP:166};
+function checkPassingGrade(t,t2,t3){return{twk:t>=PASSING_GRADE.TWK,tiu:t2>=PASSING_GRADE.TIU,tkp:t3>=PASSING_GRADE.TKP,semua:t>=PASSING_GRADE.TWK&&t2>=PASSING_GRADE.TIU&&t3>=PASSING_GRADE.TKP};}
+
+// DATA TWK 30 SOAL
+const twkSoal=[
+{q:"Pancasila sebagai dasar negara Indonesia terdiri dari berapa sila?",opt:["3","4","5","6","7"],a:2},
+{q:"Siapa presiden pertama Indonesia?",opt:["Soeharto","Soekarno","Habibie","Gus Dur","Megawati"],a:1},
+{q:"Bendera Indonesia berwarna?",opt:["Merah Putih","Merah Biru","Kuning Merah","Hijau Putih","Hitam Putih"],a:0},
+{q:"Lagu kebangsaan Indonesia adalah?",opt:["Indonesia Pusaka","Indonesia Raya","Rayuan Pulau Kelapa","Tanah Airku","Garuda Pancasila"],a:1},
+{q:"Semboyan negara Indonesia adalah?",opt:["Bersatu Kita Teguh","Bhinneka Tunggal Ika","Merdeka","Jayalah Indonesiaku","Indonesia Jaya"],a:1},
+{q:"Hari Kemerdekaan RI diperingati tanggal?",opt:["17 Agustus","1 Juni","28 Oktober","10 November","20 Mei"],a:0},
+{q:"Lambang negara Indonesia adalah?",opt:["Garuda","Banteng","Komodo","Elang","Merak"],a:0},
+{q:"Bahasa resmi Indonesia adalah?",opt:["Jawa","Sunda","Indonesia","Melayu","Inggris"],a:2},
+{q:"Ibukota Indonesia adalah?",opt:["Bandung","Jakarta","Surabaya","Medan","Makassar"],a:1},
+{q:"BPUPKI dibentuk pada tanggal?",opt:["1 Maret 1945","29 April 1945","1 Juni 1945","17 Agustus 1945","18 Agustus 1945"],a:0},
+{q:"Proklamasi Kemerdekaan dibacakan oleh?",opt:["Soekarno","Moh Hatta","Soeharto","Ki Hajar Dewantara","Jendral Sudirman"],a:0},
+{q:"Sumpah Pemuda diperingati tanggal?",opt:["17 Agustus","28 Oktober","10 November","20 Mei","1 Juni"],a:1},
+{q:"Konstitusi Indonesia adalah?",opt:["UUD 1945","UUD 1950","UUD Sementara","Proklamasi","Dekrit Presiden"],a:0},
+{q:"Pahlawan wanita dari Aceh adalah?",opt:["RA Kartini","Cut Nyak Dien","Dewi Sartika","Martha Tiahahu","Christina Tiahahu"],a:1},
+{q:"Gunung tertinggi di Indonesia?",opt:["Kerinci","Rinjani","Bromo","Jayawijaya","Merbabu"],a:3},
+{q:"Danau terbesar di Indonesia?",opt:["Toba","Maninjau","Singkarak","Poso","Towuti"],a:0},
+{q:"Pulau terpadat di Indonesia?",opt:["Jawa","Sumatra","Kalimantan","Sulawesi","Papua"],a:0},
+{q:"Selat yang memisahkan Jawa dan Sumatra?",opt:["Selat Sunda","Selat Bali","Selat Lombok","Selat Malaka","Selat Makassar"],a:0},
+{q:"Tarian dari Bali?",opt:["Jaipong","Kecak","Tor-tor","Saman","Piring"],a:1},
+{q:"Alat musik tradisional dari Jawa Barat?",opt:["Angklung","Gamelan","Sasando","Tifa","Kolintang"],a:0},
+{q:"Rumah adat Minangkabau?",opt:["Gadang","Joglo","Tongkonan","Honai","Lamin"],a:0},
+{q:"Makanan khas dari Padang?",opt:["Rendang","Gudeg","Pempek","Sate Lilit","Ayam Betutu"],a:0},
+{q:"Candi Borobudur terletak di?",opt:["Jawa Tengah","Jawa Timur","Yogyakarta","Bali","Lampung"],a:0},
+{q:"Agama resmi yang diakui di Indonesia ada?",opt:["4","5","6","7","8"],a:1},
+{q:"Bahasa pengantar di sekolah adalah?",opt:["Inggris","Indonesia","Daerah","Arab","Mandarin"],a:1},
+{q:"Lembaga yang berwenang mengubah UUD?",opt:["DPR","MPR","MA","MK","Presiden"],a:1},
+{q:"Hak angket DPR adalah hak untuk?",opt:["Menyelidiki","Mengajukan","Mengubah","Menghapus","Menolak"],a:0},
+{q:"TNI singkatan dari?",opt:["Tentara Nasional Indonesia","Tentara Negara Indonesia","Tugas Nasional Indonesia","Tim Nasional Indonesia","Tentara Nusantara Indonesia"],a:0},
+{q:"Polri singkatan dari?",opt:["Polisi Republik Indonesia","Polisi Negara Indonesia","Polisi Nasional Indonesia","Pasukan Republik Indonesia","Pengawal Republik Indonesia"],a:0},
+{q:"Warna pada lambang Garuda Pancasila melambangkan?",opt:["Kemakmuran","Kesuburan","Keadilan","Persatuan","Kekuatan"],a:0}
 ];
 
-// Variabel untuk menyimpan soal yang sudah diacak
-let questions = [];
-let currentQuestion = 0;
-let userAnswers = [];
-let timerInterval = null;
-let time = 600;
-const prefixes = ["A", "B", "C", "D", "E"];
+// DATA TIU 35 SOAL
+const tiuSoal=[
+{q:"2 + 2 = ?",opt:["2","3","4","5","6"],a:2},
+{q:"5 x 5 = ?",opt:["20","25","30","35","40"],a:1},
+{q:"10 - 3 = ?",opt:["5","6","7","8","9"],a:2},
+{q:"100 : 4 = ?",opt:["20","25","30","35","40"],a:1},
+{q:"Akar dari 81 adalah?",opt:["7","8","9","10","11"],a:2},
+{q:"3 x 7 = ?",opt:["18","20","21","22","24"],a:2},
+{q:"12 + 8 = ?",opt:["18","19","20","21","22"],a:2},
+{q:"6 x 6 = ?",opt:["30","32","34","36","38"],a:3},
+{q:"15 - 7 = ?",opt:["6","7","8","9","10"],a:1},
+{q:"2 x 8 = ?",opt:["14","15","16","17","18"],a:2},
+{q:"Jika x = 5, maka 3x + 2 = ?",opt:["15","16","17","18","19"],a:2},
+{q:"Jika 2a = 10, maka a = ?",opt:["2","3","4","5","6"],a:3},
+{q:"Bilangan prima antara 10-20 adalah?",opt:["11,13,17,19","11,13,15,17","13,15,17,19","11,13,17,18","10,11,13,17"],a:0},
+{q:"FPB dari 12 dan 18 adalah?",opt:["2","3","4","6","9"],a:3},
+{q:"KPK dari 4 dan 6 adalah?",opt:["8","10","12","14","16"],a:2},
+{q:"20% dari 500 adalah?",opt:["50","100","150","200","250"],a:1},
+{q:"3/4 + 1/2 = ?",opt:["1","1/4","1 1/4","1 1/2","2"],a:0},
+{q:"0,5 x 0,2 = ?",opt:["0,01","0,1","1","10","100"],a:1},
+{q:"Jika hari ini Selasa, 10 hari lagi?",opt:["Senin","Selasa","Rabu","Kamis","Jumat"],a:4},
+{q:"Semua kucing suka ikan. Si Belang adalah kucing. Maka?",opt:["Si Belang suka ikan","Si Belang tidak suka ikan","Si Belang mungkin suka ikan","Tidak tahu","Si Belang suka daging"],a:0},
+{q:"Jika A > B dan B > C, maka?",opt:["A < C","A = C","A > C","A < B","B > A"],a:2},
+{q:"Nilai dari 2^3 adalah?",opt:["4","6","8","9","12"],a:2},
+{q:"Nilai dari 3^2 adalah?",opt:["5","6","8","9","12"],a:3},
+{q:"Akar dari 144 adalah?",opt:["10","11","12","13","14"],a:2},
+{q:"Luas persegi dengan sisi 5 cm?",opt:["10","15","20","25","30"],a:3},
+{q:"Keliling persegi dengan sisi 7 cm?",opt:["14","21","28","35","42"],a:2},
+{q:"Volume kubus dengan rusuk 3 cm?",opt:["9","18","27","36","45"],a:2},
+{q:"Jika 4x = 20, maka x = ?",opt:["3","4","5","6","7"],a:2},
+{q:"1 km = ... meter",opt:["10","100","1000","10000","100000"],a:2},
+{q:"1 jam = ... menit",opt:["30","45","60","75","90"],a:2},
+{q:"1 menit = ... detik",opt:["30","45","60","75","90"],a:2},
+{q:"Jika p = 2, q = 3, maka p x q = ?",opt:["4","5","6","7","8"],a:2},
+{q:"Jika 3x + 2 = 11, maka x = ?",opt:["2","3","4","5","6"],a:1},
+{q:"Jika x + 5 = 10, maka x = ?",opt:["2","3","4","5","6"],a:3},
+{q:"Jika 2x - 3 = 7, maka x = ?",opt:["3","4","5","6","7"],a:2}
+];
 
-// ========== FUNGSI UPDATE WARNA TIMER ==========
-function updateTimerColor(remainingTime) {
-    const timerElement = document.getElementById("timer");
-    
-    // Hapus semua kelas yang ada
-    timerElement.classList.remove("timer-warning", "timer-danger", "timer-blink");
-    
-    // Cek sisa waktu
-    if(remainingTime <= 20) { // Kurang dari 20 detik
-        timerElement.classList.add("timer-blink");
-    } else if(remainingTime <= 120) { // 2 menit (120 detik)
-        timerElement.classList.add("timer-danger");
-    } else if(remainingTime <= 300) { // 5 menit (300 detik)
-        timerElement.classList.add("timer-warning");
-    }
-    // Selain itu warna default (hitam)
+// DATA TKP 45 SOAL
+const tkpQuestionsData=[
+{q:"Saat bekerja dalam tim, sikap terbaik adalah?",opts:["Bekerja sendiri","Mendominasi","Bekerjasama","Menghindar","Mengkritik terus"],scores:[1,2,5,3,4]},
+{q:"Jika rekan kerja melakukan kesalahan, sebaiknya?",opts:["Membiarkan","Melaporkan ke atasan","Menegur dengan baik","Mengolok-olok","Mengabaikan"],scores:[1,4,5,2,3]},
+{q:"Saat menghadapi tekanan kerja, sebaiknya?",opts:["Menyerah","Bersantai","Tetap fokus","Marah-marah","Menyalahkan orang lain"],scores:[1,3,5,2,4]},
+{q:"Pelayanan terbaik kepada pelanggan adalah?",opts:["Cepat","Ramah","Profesional","Tepat waktu","Semua benar"],scores:[2,3,4,1,5]},
+{q:"Saat diberi kritik, sebaiknya?",opts:["Marah","Menerima dengan lapang","Membantah","Mengabaikan","Menangis"],scores:[1,5,2,3,4]},
+{q:"Saat rapat berlangsung, sebaiknya?",opts:["Bermain HP","Mendengarkan","Mengobrol","Keluar masuk","Tidur"],scores:[1,5,2,3,4]},
+{q:"Jika ada janji, sebaiknya?",opts:["Batal","Datang terlambat","Tepat waktu","Mengganti hari","Lupa"],scores:[1,2,5,3,4]},
+{q:"Sikap terhadap atasan yang baik adalah?",opts:["Sombong","Acuh","Hormat","Menghindar","Melawan"],scores:[1,2,5,3,4]},
+{q:"Saat pekerjaan menumpuk, sebaiknya?",opts:["Liburan","Mengeluh","Prioritaskan","Menunda","Membiarkan"],scores:[1,2,5,3,4]},
+{q:"Sikap korupsi harus?",opts:["Didukung","Dibiarkan","Dilawan","Dicontoh","Dipuji"],scores:[1,2,5,3,4]},
+{q:"Kerja keras adalah kunci?",opts:["Kegagalan","Kemalasan","Kesuksesan","Kebosanan","Masalah"],scores:[1,2,5,3,4]},
+{q:"Disiplin sangat penting untuk?",opts:["Kekacauan","Keteraturan","Kebingungan","Kemalasan","Masalah"],scores:[1,5,2,3,4]},
+{q:"Jujur adalah sikap yang?",opts:["Buruk","Baik","Biasa","Sulit","Tidak penting"],scores:[1,5,3,2,4]},
+{q:"Tanggung jawab harus?",opts:["Dihindari","Diabaikan","Dilaksanakan","Ditunda","Dilupakan"],scores:[1,2,5,3,4]},
+{q:"Inovasi penting untuk?",opts:["Kemunduran","Kemajuan","Stagnasi","Kehancuran","Masalah"],scores:[1,5,2,3,4]},
+{q:"Belajar sepanjang hayat disebut?",opts:["Pendidikan formal","Pendidikan informal","Pendidikan seumur hidup","Pendidikan dasar","Pendidikan tinggi"],scores:[2,3,5,1,4]},
+{q:"Sikap terhadap perbedaan pendapat?",opts:["Menolak","Menghargai","Menghina","Mengolok","Membenci"],scores:[1,5,2,3,4]},
+{q:"Saat ada konflik, sebaiknya?",opts:["Dibiarkan","Diperparah","Didiamkan","Dimusyawarahkan","Dilupakan"],scores:[1,2,3,5,4]},
+{q:"Sikap hemat energi adalah?",opts:["Boros","Efisien","Berlebihan","Mubazir","Sia-sia"],scores:[1,5,2,3,4]},
+{q:"Menjaga kebersihan adalah tanggung jawab?",opts:["Petugas","Semua orang","Pemerintah","Anak-anak","Guru"],scores:[2,5,3,1,4]},
+{q:"Saat melihat pelanggaran lalu lintas, sikap Anda?",opts:["Mengabaikan","Melaporkan","Menegur","Merekam","Membiarkan"],scores:[1,5,4,2,3]},
+{q:"Sikap toleransi kepada beda agama?",opts:["Menghormati","Memusuhi","Mengolok","Menghina","Mengucilkan"],scores:[5,1,2,3,4]},
+{q:"Pengorbanan untuk kepentingan bersama disebut?",opts:["Egois","Individualis","Nasionalis","Patriot","Altruis"],scores:[1,2,3,5,4]},
+{q:"Saat ada bencana alam, sebaiknya?",opts:["Mengungsi","Membantu","Panik","Mengambil barang","Lari"],scores:[3,5,1,2,4]},
+{q:"Menjaga nama baik organisasi adalah?",opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"],scores:[5,1,3,2,4]},
+{q:"Kreativitas dapat meningkatkan?",opts:["Masalah","Produktivitas","Kebingungan","Kemalasan","Kekacauan"],scores:[1,5,2,3,4]},
+{q:"Efektivitas kerja diukur dari?",opts:["Waktu","Biaya","Hasil","Tenaga","Alat"],scores:[2,3,5,1,4]},
+{q:"Efisiensi kerja diukur dari?",opts:["Hasil maksimal dengan sumber daya minimal","Hasil minimal","Waktu lama","Biaya besar","Tenaga besar"],scores:[5,1,2,3,4]},
+{q:"Sikap optimis membawa?",opts:["Kegagalan","Kemajuan","Kemunduran","Masalah","Kebingungan"],scores:[1,5,2,3,4]},
+{q:"Kerjasama tim menghasilkan?",opts:["Konflik","Sinergi","Kekacauan","Kebingungan","Masalah"],scores:[1,5,2,3,4]},
+{q:"Gaya kepemimpinan ideal?",opts:["Otoriter","Demokratis","Bebas","Acuh","Tidak peduli"],scores:[2,5,3,1,4]},
+{q:"Kedisiplinan waktu mencerminkan?",opts:["Tanggung jawab","Ketidakpedulian","Kemalasan","Kebingungan","Kesombongan"],scores:[5,1,2,3,4]},
+{q:"Saat ada masalah, sebaiknya?",opts:["Cari kambing hitam","Cari solusi","Diam saja","Lari","Tunda"],scores:[1,5,2,3,4]},
+{q:"Pelayanan publik yang baik?",opts:["Berbelit","Cepat dan tepat","Mahal","Lambat","Tidak jelas"],scores:[1,5,2,3,4]},
+{q:"Sikap ramah kepada semua orang?",opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"],scores:[5,1,3,2,4]},
+{q:"Berbagi ilmu dengan rekan kerja?",opts:["Dilarang","Diperbolehkan","Sebaiknya dilakukan","Tidak perlu","Buang waktu"],scores:[1,3,5,2,4]},
+{q:"Saat tidak setuju dengan keputusan pimpinan?",opts:["Membangkang","Protes","Mengajukan saran baik","Diam saja","Keluar dari kantor"],scores:[1,2,5,3,4]},
+{q:"Menjaga rahasia perusahaan adalah?",opts:["Kewajiban","Hak","Bebas","Tidak penting","Terserah"],scores:[5,3,2,1,4]},
+{q:"Saat bekerja di bawah tekanan, sebaiknya?",opts:["Tetap tenang","Panik","Marah","Menyerah","Protes"],scores:[5,1,2,3,4]},
+{q:"Peningkatan kualitas diri dapat dilakukan dengan?",opts:["Bermalas-malasan","Belajar terus-menerus","Berhenti bekerja","Pindah kerja","Mengeluh"],scores:[1,5,2,3,4]},
+{q:"Sikap empati terhadap rekan kerja?",opts:["Penting","Tidak penting","Biasa","Terserah","Membosankan"],scores:[5,1,3,2,4]},
+{q:"Menyelesaikan pekerjaan tepat waktu disebut?",opts:["Profesional","Malas","Biasa","Lamban","Ceroboh"],scores:[5,1,3,2,4]},
+{q:"Saat ada perubahan kebijakan, sikap terbaik?",opts:["Menolak","Menerima","Mengabaikan","Membangkang","Protes"],scores:[1,5,2,3,4]},
+{q:"Integritas adalah?",opts:["Ketidakjujuran","Kejujuran dan konsistensi","Kebohongan","Kemunafikan","Kecurangan"],scores:[1,5,2,3,4]},
+{q:"Sikap terhadap rekan kerja yang berbeda pendapat?",opts:["Memusuhi","Menghargai","Mengabaikan","Mengolok","Mengancam"],scores:[1,5,2,3,4]}
+];
+
+// MEMBANGUN ORIGINAL QUESTIONS
+const originalQuestions=[];
+for(let i=0;i<twkSoal.length;i++) originalQuestions.push({question:twkSoal[i].q,options:twkSoal[i].opt,answer:twkSoal[i].a,isTKP:false,optionScores:null});
+for(let i=0;i<tiuSoal.length;i++) originalQuestions.push({question:tiuSoal[i].q,options:tiuSoal[i].opt,answer:tiuSoal[i].a,isTKP:false,optionScores:null});
+for(let i=0;i<tkpQuestionsData.length;i++) originalQuestions.push({question:tkpQuestionsData[i].q,options:tkpQuestionsData[i].opts,answer:null,isTKP:true,optionScores:tkpQuestionsData[i].scores});
+
+let questions=[],currentQuestion=0,userAnswers=[],userScores=[],timerInterval=null,time=6000; // 100 menit
+const prefixes=["A","B","C","D","E"];
+
+function getCategory(soalNumber){
+    if(soalNumber>=1&&soalNumber<=30)return{name:"TWK",class:"twk"};
+    if(soalNumber>=31&&soalNumber<=65)return{name:"TIU",class:"tiu"};
+    return{name:"TKP",class:"tkp"};
 }
 
-// ========== FUNGSI MENGACAK PILIHAN ==========
-function shuffleOptions(questionData) {
-    const optionPairs = questionData.options.map((opt, idx) => ({
-        text: opt.text,
-        image: opt.image,
-        originalIndex: idx
-    }));
-    
-    for(let i = optionPairs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [optionPairs[i], optionPairs[j]] = [optionPairs[j], optionPairs[i]];
-    }
-    
-    const shuffledOptions = optionPairs.map(pair => ({
-        text: pair.text,
-        image: pair.image
-    }));
-    
-    const newAnswerIndex = optionPairs.findIndex(pair => pair.originalIndex === questionData.answer);
-    
-    return {
-        question: questionData.question,
-        questionImage: questionData.questionImage,
-        options: shuffledOptions,
-        answer: newAnswerIndex
-    };
-}
-
-function shuffleAllQuestions() {
-    questions = originalQuestions.map(q => shuffleOptions(q));
-}
-
-// ========== INISIALISASI ==========
-function initQuiz() {
-    shuffleAllQuestions();
-    
-    currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
-    
-    loadQuestion();
-    updateSoalGrid();
-    startTimer();
-}
-
-function restartQuiz() {
-    if(timerInterval) clearInterval(timerInterval);
-    shuffleAllQuestions();
-    
-    currentQuestion = 0;
-    userAnswers = Array(questions.length).fill(null);
-    
-    document.getElementById("result").style.display = "none";
-    document.getElementById("quiz").style.display = "block";
-    document.getElementById("sidebarToggle").style.display = "block";
-    
-    loadQuestion();
-    updateSoalGrid();
-    startTimer();
-}
-
-// ========== FUNGSI SIDEBAR ==========
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('show');
-}
-
-function updateSoalGrid() {
-    const grid = document.getElementById('soalGrid');
-    if(!grid) return;
-    
-    let html = '';
-    for(let i = 0; i < questions.length; i++) {
-        let statusClass = 'unanswered';
-        if(userAnswers[i] !== null) statusClass = 'answered';
-        if(i === currentQuestion) statusClass = 'active';
-        
-        html += `<div class="grid-soal ${statusClass}" onclick="goToSoal(${i})">${i + 1}</div>`;
-    }
-    grid.innerHTML = html;
-}
-
-function goToSoal(soalIndex) {
+function updateHeaderCategory(soalNumber){let c=getCategory(soalNumber);let e=document.getElementById("headerCategory");e.textContent=`📍 ${c.name}`;e.className=`header-category ${c.class}`;}
+function updateTimerColor(t){if(!timerEnabled) return; let e=document.getElementById("timer");e.classList.remove("timer-warning","timer-danger","timer-blink");if(t<=20)e.classList.add("timer-blink");else if(t<=120)e.classList.add("timer-danger");else if(t<=300)e.classList.add("timer-warning");}
+function saveProgress(){localStorage.setItem('skdQuizProgress',JSON.stringify({currentQuestion,userAnswers,userScores,time,questionsData:questions.map(q=>({question:q.question,options:q.options,answer:q.answer,optionScores:q.optionScores,isTKP:q.isTKP}))}));}
+function loadProgress(){let s=localStorage.getItem('skdQuizProgress');if(s){let p=JSON.parse(s);currentQuestion=p.currentQuestion;userAnswers=p.userAnswers;userScores=p.userScores||Array(originalQuestions.length).fill(null);time=p.time;if(p.questionsData&&p.questionsData.length===originalQuestions.length)questions=p.questionsData;else shuffleAllQuestions();return true}return false;}
+function clearProgress(){localStorage.removeItem('skdQuizProgress');}
+function hitungSkor(){let twk=0,tiu=0,tkp=0;for(let i=0;i<questions.length;i++){let n=i+1;if(n<=30){if(userAnswers[i]!==null&&userAnswers[i]===questions[i].answer)twk+=5;}else if(n<=65){if(userAnswers[i]!==null&&userAnswers[i]===questions[i].answer)tiu+=5;}else{if(userScores[i]!==null)tkp+=userScores[i];}}let total=twk+tiu+tkp;return{twk,tiu,tkp,total,maxTwk:150,maxTiu:175,maxTkp:225,maxTotal:550,persen:Math.round(total/550*100)};}
+function shuffleOptions(q){if(q.isTKP){let pairs=q.options.map((t,i)=>({text:t,score:q.optionScores[i]}));for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}return{question:q.question,options:pairs.map(p=>p.text),answer:null,isTKP:true,optionScores:pairs.map(p=>p.score)};}else{let pairs=q.options.map((t,i)=>({text:t,idx:i}));for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}let newAns=pairs.findIndex(p=>p.idx===q.answer);return{question:q.question,options:pairs.map(p=>p.text),answer:newAns,isTKP:false,optionScores:null};}}
+function shuffleAllQuestions(){questions=originalQuestions.map(q=>shuffleOptions(q));}
+function initQuiz(){if(!loadProgress()){shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;}loadQuestion();updateSoalGrid();if(timerEnabled){startTimer();}else{const timerElement=document.getElementById("timer");if(timerElement)timerElement.style.opacity="0.5";console.log("⏸️ Timer dalam keadaan OFF (sesuai pengaturan)");}}
+function restartQuiz(){if(timerInterval)clearInterval(timerInterval);clearProgress();shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;document.getElementById("result").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("sidebarToggle").style.display="block";loadQuestion();updateSoalGrid();if(timerEnabled){startTimer();}}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function updateSoalGrid(){let grid=document.getElementById('soalGrid');if(!grid)return;let html='';for(let i=0;i<questions.length;i++){let st='unanswered';if(questions[i].isTKP){if(userScores[i]!==null)st='answered';}else{if(userAnswers[i]!==null)st='answered';}if(i===currentQuestion)st='active';let cat=getCategory(i+1);html+=`<div class="grid-soal ${st} ${cat.class}" onclick="goToSoal(${i})">${i+1}</div>`;}grid.innerHTML=html;}
+function goToSoal(i){saveAnswer();currentQuestion=i;loadQuestion();toggleSidebar();saveProgress();}
+function loadQuestion(){let n=currentQuestion+1;document.getElementById("progress").innerText=`Soal ${n}/${questions.length}`;document.getElementById("question").innerText=questions[currentQuestion].question;updateHeaderCategory(n);let html="";questions[currentQuestion].options.forEach((opt,idx)=>{let cek=false;if(questions[currentQuestion].isTKP)cek=(userScores[currentQuestion]===questions[currentQuestion].optionScores[idx]);else cek=(userAnswers[currentQuestion]===idx);html+=`<label class="option"><input type="radio" name="answer" value="${idx}" ${cek?"checked":""}><span class="choice-letter">${prefixes[idx]}</span><span class="choice-text">${opt}</span></label>`;});document.getElementById("options").innerHTML=html;updateSoalGrid();updateButtonText();}
+function updateButtonText(){let btn=document.getElementById("nextFinishBtn");if(currentQuestion===questions.length-1){btn.innerText="✅ Selesai";btn.className="finish";btn.onclick=()=>finishQuiz();}else{btn.innerText="Next ▶";btn.className="next";btn.onclick=()=>nextQuestion();}}
+function saveAnswer(){let sel=document.querySelector('input[name="answer"]:checked');if(sel){let idx=parseInt(sel.value);if(questions[currentQuestion].isTKP)userScores[currentQuestion]=questions[currentQuestion].optionScores[idx];else userAnswers[currentQuestion]=idx;updateSoalGrid();saveProgress();}}
+function nextQuestion(){saveAnswer();if(currentQuestion<questions.length-1){currentQuestion++;loadQuestion();saveProgress();}}
+function prevQuestion(){saveAnswer();if(currentQuestion>0){currentQuestion--;loadQuestion();saveProgress();}}
+function finishQuiz(){
+    if(timerInterval)clearInterval(timerInterval);
     saveAnswer();
-    currentQuestion = soalIndex;
-    loadQuestion();
-    toggleSidebar();
-}
-
-function loadQuestion() {
-    document.getElementById("progress").innerText = `Soal ${currentQuestion+1}/${questions.length}`;
-    document.getElementById("question").innerText = questions[currentQuestion].question;
+    clearProgress();
+    let s=hitungSkor();
     
-    const questionImageDiv = document.getElementById("questionImage");
-    const qImage = questions[currentQuestion].questionImage;
-    if(qImage && qImage !== null){
-        questionImageDiv.innerHTML = `<img src="${qImage}" alt="Gambar soal">`;
-        questionImageDiv.style.display = "block";
+    // ========== SIMPAN SKOR TERBAIK KE LOCALSTORAGE ==========
+    let latihanKe = 1;
+    const judul = document.querySelector('.header-title h2')?.innerText || '';
+    if(judul.includes('Latihan SKD 2')) latihanKe = 2;
+    else if(judul.includes('Latihan SKD 3')) latihanKe = 3;
+    else if(judul.includes('Latihan SKD 4')) latihanKe = 4;
+    else if(judul.includes('Latihan SKD 5')) latihanKe = 5;  // ← TAMBAHKAN INI
+
+        // ========== SIMPAN SKOR PER KATEGORI KE LOCALSTORAGE ==========
+    localStorage.setItem(`skorTWK_latihan${latihanKe}`, s.twk);
+    localStorage.setItem(`skorTIU_latihan${latihanKe}`, s.tiu);
+    localStorage.setItem(`skorTKP_latihan${latihanKe}`, s.tkp);
+    console.log(`✅ Skor Latihan ${latihanKe} disimpan: TWK=${s.twk}, TIU=${s.tiu}, TKP=${s.tkp}`);
+    // ========== END SIMPAN SKOR PER KATEGORI ==========
+    
+    const skorAkhir = s.total;
+    const keySkor = `bestScore_latihan${latihanKe}`;
+    const savedScore = localStorage.getItem(keySkor);
+    
+    if(savedScore === null || skorAkhir > parseInt(savedScore)) {
+        localStorage.setItem(keySkor, skorAkhir);
+        console.log(`✅ Skor terbaik Latihan ${latihanKe} disimpan: ${skorAkhir}`);
     } else {
-        questionImageDiv.innerHTML = "";
-        questionImageDiv.style.display = "none";
+        console.log(`📊 Skor saat ini: ${skorAkhir}, Skor terbaik: ${savedScore}`);
     }
+    // ========== END SIMPAN SKOR ==========
     
-    let html = "";
-    const currentOptions = questions[currentQuestion].options;
-    
-    currentOptions.forEach((opt, index) => {
-        let isChecked = (userAnswers[currentQuestion] === index) ? "checked" : "";
-        
-        const hasImage = opt.image && opt.image !== null;
-        const imageHtml = hasImage ? `<img class="choice-image" src="${opt.image}" alt="${opt.text}">` : "";
-        
-        html += `
-        <label class="option">
-            <input type="radio" name="answer" value="${index}" ${isChecked}>
-            <span class="choice-letter">${prefixes[index]}</span>
-            ${imageHtml}
-            <span class="choice-text">${opt.text}</span>
-        </label>
-        `;
-    });
-    
-    document.getElementById("options").innerHTML = html;
-    updateSoalGrid();
-    updateButtonText();
-}
-
-function updateButtonText() {
-    const btn = document.getElementById("nextFinishBtn");
-    if(currentQuestion === questions.length-1) {
-        btn.innerText = "✅ Selesai";
-        btn.className = "finish";
-        btn.onclick = () => finishQuiz();
-    } else {
-        btn.innerText = "Next ▶";
-        btn.className = "next";
-        btn.onclick = () => nextQuestion();
-    }
-}
-
-function saveAnswer() {
-    const selected = document.querySelector('input[name="answer"]:checked');
-    if(selected) {
-        userAnswers[currentQuestion] = parseInt(selected.value);
-        updateSoalGrid();
-    }
-}
-
-function nextQuestion() {
-    saveAnswer();
-    if(currentQuestion < questions.length-1) {
-        currentQuestion++;
-        loadQuestion();
-    }
-}
-
-function prevQuestion() {
-    saveAnswer();
-    if(currentQuestion > 0) {
-        currentQuestion--;
-        loadQuestion();
-    }
-}
-
-function finishQuiz() {
-    if(timerInterval) clearInterval(timerInterval);
-    saveAnswer();
-
-    let correct = 0;
-    questions.forEach((q, index) => {
-        if(userAnswers[index] === q.answer) correct++;
-    });
-
-    let wrong = questions.length - correct;
-    let score = Math.round((correct/questions.length)*100);
-
     document.getElementById("quiz").style.display = "none";
     document.getElementById("result").style.display = "block";
-    document.getElementById("correct").innerText = correct;
-    document.getElementById("wrong").innerText = wrong;
-    document.getElementById("score").innerText = score;
-    
     document.getElementById("sidebarToggle").style.display = "none";
+    document.getElementById("scoreDetail").innerHTML = `<h3>📊 Detail Skor</h3><table style="width:100%"><tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">📚 TWK (30 soal)</td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.twk}</strong> / ${s.maxTwk}<\/td></tr>
+    <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">🔢 TIU (35 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.tiu}</strong> / ${s.maxTiu}<\/td></tr>
+    <tr><td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold;">⭐ TKP (45 soal)<\/td><td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;"><strong>${s.tkp}</strong> / ${s.maxTkp}<\/td></tr>
+    <tr style="border-top:2px solid #ddd;"><td style="padding:8px; font-weight:bold;">✅ TOTAL SKOR<\/td><td style="padding:8px; text-align:right;"><strong>${s.total}</strong> / ${s.maxTotal}<\/td></tr>
+    </table><div class="total-score">🎯 Nilai Akhir: ${s.persen}</div>`;
+    
+    let stat = checkPassingGrade(s.twk, s.tiu, s.tkp);
+    document.getElementById("passingGradeStatus").innerHTML = `<div style="margin-bottom:10px;font-weight:bold;">📋 STATUS PASSING GRADE:</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.twk?'#d4edda':'#f8d7da'}">📚 TWK: ${s.twk}/65<br>${stat.twk?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tiu?'#d4edda':'#f8d7da'}">🔢 TIU: ${s.tiu}/80<br>${stat.tiu?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+        <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${stat.tkp?'#d4edda':'#f8d7da'}">⭐ TKP: ${s.tkp}/166<br>${stat.tkp?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+    </div>
+    <div style="margin-top:15px;padding:10px;border-radius:8px;text-align:center;font-weight:bold;background:${stat.semua?'#c3e6cb':'#f5c6cb'}">${stat.semua?'🎉 SELAMAT! Anda LULUS Passing Grade SKD! 🎉':'⚠️ MAAF! Anda BELUM LULUS Passing Grade SKD. Silakan coba lagi! ⚠️'}</div>`;
 }
-
-function startTimer() {
-    if(timerInterval) clearInterval(timerInterval);
-    time = 600;
-    timerInterval = setInterval(() => {
-        let minutes = Math.floor(time/60);
-        let seconds = time%60;
-        
-        // Update tampilan timer
-        document.getElementById("timer").innerText = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-        
-        // Update warna timer berdasarkan sisa waktu
-        updateTimerColor(time);
-        
-        if(time <= 0) {
-            clearInterval(timerInterval);
-            finishQuiz();
-        }
-        time--;
-    }, 1000);
-}
-
-// Jalankan quiz saat halaman dimuat
+function startTimer(){if(timerInterval)clearInterval(timerInterval);timerInterval=setInterval(()=>{if(time<=0){clearInterval(timerInterval);finishQuiz();}else{time--;let m=Math.floor(time/60),s=time%60;document.getElementById("timer").innerText=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;updateTimerColor(time);saveProgress();}},1000);}
+function goToHomePage(){clearProgress();window.location.replace("index.html#reset");}
+function showEvaluasi(){let panel=document.getElementById('evaluasiPanel'),closeBtn=document.getElementById('closeEvaluasiBtn');let html='<h3 style="color:#0d6efd;margin-bottom:15px;">📝 Evaluasi Jawaban</h3>';for(let i=0;i<questions.length;i++){let n=i+1,cat=getCategory(n),userJ=questions[i].isTKP?userScores[i]:userAnswers[i],isJ=(questions[i].isTKP?userScores[i]!==null:userAnswers[i]!==null);let status='belum dijawab',jawUser='Tidak dijawab',jawBenar='',pembahasan='',isBenar=false;if(questions[i].isTKP){if(isJ){let idx=questions[i].optionScores.findIndex(s=>s===userJ);jawUser=`${prefixes[idx]}. ${questions[i].options[idx]}`;let maxS=Math.max(...questions[i].optionScores),bestIdx=questions[i].optionScores.findIndex(s=>s===maxS);jawBenar=`Jawaban terbaik: ${prefixes[bestIdx]}. ${questions[i].options[bestIdx]} (Skor ${maxS})`;isBenar=userJ===maxS;status=isBenar?'benar':'salah';pembahasan=`Jawaban Anda mendapat skor ${userJ} dari maksimal ${maxS}. ${isBenar?'Jawaban Anda sudah tepat.':'Coba evaluasi kembali pilihan Anda.'}`;}else{pembahasan='Soal ini belum Anda jawab.';}}else{if(isJ){jawUser=`${prefixes[userJ]}. ${questions[i].options[userJ]}`;jawBenar=`Jawaban benar: ${prefixes[questions[i].answer]}. ${questions[i].options[questions[i].answer]}`;isBenar=userJ===questions[i].answer;status=isBenar?'benar':'salah';pembahasan=`${isBenar?'✅ Jawaban Anda benar!':'❌ Jawaban Anda kurang tepat.'} ${jawBenar}. ${isBenar?'Pertahankan pemahaman Anda!':'Pelajari kembali materi terkait.'}`;}else{pembahasan='Soal ini belum Anda jawab.';}}let icon=(status==='benar'?'✅':(status==='salah'?'❌':'⏳'));html+=`<div class="evaluasi-item ${status==='benar'?'benar':(status==='salah'?'salah':'')}"><div class="soal-teks">${icon} Soal ${n} [${cat.name}]</div><div class="soal-teks" style="font-size:16px;margin-top:5px;">${questions[i].question}</div><div class="jawaban-user">📌 Jawaban Anda: ${jawUser}</div>${jawBenar?`<div class="jawaban-benar">✅ ${jawBenar}</div>`:''}<div class="pembahasan">💡 ${pembahasan}</div></div>`;}panel.innerHTML=html;panel.style.display='block';closeBtn.style.display='block';panel.scrollIntoView({behavior:'smooth',block:'start'});}
+function closeEvaluasi(){document.getElementById('evaluasiPanel').style.display='none';document.getElementById('closeEvaluasiBtn').style.display='none';}
 initQuiz();
-
 </script>
-
 </body>
 </html>
