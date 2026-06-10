@@ -833,21 +833,15 @@ function resetAllProgress() {
     alert('✅ Semua progress latihan telah direset!');
 }
 
-// ========== FUNGSI UTAMA ==========
-// ========== NAVIGASI BERTINGKAT ==========
-// Stack untuk menyimpan riwayat screen
+// ========== NAVIGASI ==========
 let screenHistory = ['home'];
 
 function showScreen(id) {
     const currentActive = document.querySelector('.screen.active');
     const currentId = currentActive ? currentActive.id : null;
     
-    // Jika pindah ke screen yang berbeda
     if (currentId !== id) {
-        // Simpan ke history stack
         screenHistory.push(id);
-        
-        // Update browser history
         history.pushState({ screen: id }, '', window.location.pathname);
     }
     
@@ -856,16 +850,13 @@ function showScreen(id) {
 }
 
 function bukaKuis(halaman) {
-    // Untuk pindah ke halaman latihan, replace agar tidak masuk ke history
     window.location.replace(`${halaman}?seed=${Date.now()}&timer=${getTimerStatus() ? 'on' : 'off'}`);
 }
 
-// Tangani tombol back HP
+// BACK BUTTON HANDLER - SATU SAJA!
 window.addEventListener('popstate', function(e) {
-    // Hapus screen terakhir dari history stack
+    // Hapus screen terakhir dari history
     screenHistory.pop();
-    
-    // Ambil screen sebelumnya
     const previousScreen = screenHistory[screenHistory.length - 1];
     
     if (previousScreen) {
@@ -873,19 +864,20 @@ window.addEventListener('popstate', function(e) {
         document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
         document.getElementById(previousScreen).classList.add("active");
     } else {
-        // Tidak ada history lagi, keluar aplikasi
+        // Tidak ada history lagi, keluar
         if (confirm('Keluar dari aplikasi Latihan SKD?')) {
             window.location.href = 'about:blank';
         } else {
-            // Jika batal, push ulang state
+            // Batal, push ulang home
             screenHistory.push('home');
             history.pushState({ screen: 'home' }, '', window.location.pathname);
         }
     }
 });
 
-// Inisialisasi state awal
+// Inisialisasi
 history.replaceState({ screen: 'home' }, '', window.location.pathname);
+
 // ========== HITUNG TOTAL SKOR ==========
 function hitungTotal(twk, tiu, tkp) {
     const t = (parseInt(twk) || 0) + (parseInt(tiu) || 0) + (parseInt(tkp) || 0);
@@ -900,7 +892,6 @@ function loadAllScores() {
         const tiu = localStorage.getItem(`skorTIU_latihan${i}`);
         const tkp = localStorage.getItem(`skorTKP_latihan${i}`);
         
-        // Update badge di header
         const container = document.getElementById(`skorLatihan${i}`);
         if(container) {
             if(twk && tiu && tkp) {
@@ -914,13 +905,10 @@ function loadAllScores() {
             }
         }
         
-        // Update total skor di bagian bawah
         const totalEl = document.getElementById(`total${i}`);
         if(totalEl) {
             const totalText = hitungTotal(twk, tiu, tkp);
             totalEl.innerText = totalText;
-            
-            // Ubah warna jika semua skor terisi
             if(twk && tiu && tkp) {
                 totalEl.classList.add('completed');
             } else {
@@ -928,7 +916,6 @@ function loadAllScores() {
             }
         }
         
-        // Update status badge
         const statusEl = document.getElementById(`status${i}`);
         if(twk && tiu && tkp) {
             statusEl.className = 'status-badge selesai';
@@ -940,7 +927,6 @@ function loadAllScores() {
     }
 }
 
-// ========== AMBIL SKOR TERBAIK ==========
 function loadBestScores() {
     let bestScores = [];
     for(let i = 1; i <= 5; i++) {
@@ -956,16 +942,6 @@ initTimerToggle();
 
 console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
 console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px");
-// TAMBAHKAN INI DI PALING BAWAH SEBELUM
-
-// ========== PERBAIKAN TOMBAK BACK SEDERHANA ==========
-// Saat tombol back ditekan, langsung keluar
-window.addEventListener('popstate', function() {
-    window.location.href = 'about:blank';
-});
-
-// Push state awal
-history.pushState(null, '', window.location.pathname);
 </script>
 </body>
 </html>
