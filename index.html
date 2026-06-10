@@ -14,6 +14,7 @@
     font-family:Arial,sans-serif;
 }
 
+/* Menonaktifkan seleksi teks */
 body{
     background:#f4f6f9;
     display:flex;
@@ -21,6 +22,15 @@ body{
     align-items:center;
     min-height:100vh;
     padding:20px;
+    user-select: none; /* Mencegah seleksi teks */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Menonaktifkan context menu (klik kanan) */
+.no-context-menu{
+    pointer-events: auto;
 }
 
 .container{
@@ -131,6 +141,20 @@ p{
     margin-top:15px;
 }
 
+/* Peringatan jika devtools terbuka */
+.devtools-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #dc3545;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    z-index: 9999;
+    font-size: 14px;
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -245,7 +269,104 @@ p{
 </div>
 
 <script>
+// ========== PERLINDUNGAN ==========
 
+// 1. Mencegah klik kanan (context menu)
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 2. Mencegah kombinasi keyboard untuk developer tools
+document.addEventListener('keydown', function(e) {
+    // F12
+    if(e.key === 'F12') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+Shift+I (Windows/Linux)
+    if(e.ctrlKey && e.shiftKey && e.key === 'I') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+Shift+J (Windows/Linux)
+    if(e.ctrlKey && e.shiftKey && e.key === 'J') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+Shift+C (Windows/Linux)
+    if(e.ctrlKey && e.shiftKey && e.key === 'C') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+U (View Source)
+    if(e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+S (Save)
+    if(e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+P (Print)
+    if(e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        return false;
+    }
+    // Ctrl+C (Copy) - bisa diizinkan untuk user biasa, tapi kita batasi
+    // Jika ingin mencegah copy, uncomment baris di bawah
+    /*
+    if(e.ctrlKey && e.key === 'c') {
+        e.preventDefault();
+        return false;
+    }
+    */
+});
+
+// 3. Mencegah drag and drop pada gambar/teks
+document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// 4. Mencegah seleksi teks tambahan dengan CSS sudah di body
+// 5. Overlay peringatan jika devtools terbuka (deteksi)
+(function() {
+    const devtools = function() {};
+    devtools.toString = function() {
+        this.opened = true;
+    };
+    console.log('%c', devtools);
+    
+    // Deteksi pembukaan devtools
+    setInterval(function() {
+        const before = new Date().getTime();
+        debugger;
+        const after = new Date().getTime();
+        if (after - before > 100) {
+            // Devtools terbuka, bisa lakukan sesuatu
+            // Contoh: redirect atau tampilkan peringatan
+            // window.location.href = 'about:blank';
+            console.log('DevTools terdeteksi!');
+        }
+    }, 1000);
+})();
+
+// 6. Enkripsi sederhana untuk konten penting (opsional)
+function decodeContent(encoded) {
+    return atob(encoded); // base64 decode
+}
+
+// 7. Mencegah inspect element melalui tombol kanan pada elemen tertentu
+document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn').forEach(el => {
+    el.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+});
+
+// ========== FUNGSI UTAMA ==========
 function showScreen(id){
     let screens = document.querySelectorAll(".screen");
     screens.forEach(screen => {
@@ -256,29 +377,40 @@ function showScreen(id){
 
 // Fungsi untuk membuka kuis dengan parameter acak
 function bukaKuis(halaman) {
-    // Tambahkan parameter random agar setiap kali buka, pilihannya berbeda
-    // Parameter ?acak=123456789 akan membuat file latihan bisa mendeteksi bahwa
-    // ini adalah bukaan baru dan perlu mengacak pilihan
-    
-    // Cara 1: Dengan parameter timestamp
     const timestamp = new Date().getTime();
     window.location.href = `${halaman}?seed=${timestamp}`;
-    
-    // Cara 2: Jika ingin tanpa parameter (cukup reload biasa)
-    // Tapi untuk pengacakan, file latihan harus sudah memiliki fitur acak di dalamnya
-    // window.location.href = halaman;
 }
 
-// Informasi untuk developer:
-// File latihan1.html, latihan2.html, dll harus sudah memiliki fitur:
-// 1. Pengacakan pilihan jawaban saat halaman dimuat
-// 2. Sidebar grid soal
-// 3. Timer 10 menit
-// 4. Tampilan hasil nilai
+// 8. Memata-matai perubahan ukuran (deteksi devtools)
+let element = new Image();
+Object.defineProperty(element, 'id', {
+    get: function() {
+        // Devtools mencoba mengakses properti
+        console.warn('Akses mencurigakan terdeteksi');
+        return '';
+    }
+});
+console.log(element);
 
-// Jika file latihan belum memiliki fitur tersebut,
-// silakan gunakan kode latihan yang sudah saya buat sebelumnya
-// dengan menambahkan parameter 'seed' untuk trigger pengacakan
+// 9. Menonaktifkan cut, copy, paste pada seluruh halaman (opsional)
+/*
+document.addEventListener('cut', function(e) {
+    e.preventDefault();
+    return false;
+});
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    return false;
+});
+document.addEventListener('paste', function(e) {
+    e.preventDefault();
+    return false;
+});
+*/
+
+// 10. Peringatan jika console dibuka (hanya peringatan)
+console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
+console.log("%cKonten ini dilindungi dan tidak boleh dicopy atau direproduksi tanpa izin.", "color: orange; font-size: 12px;");
 
 </script>
 
