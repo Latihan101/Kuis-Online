@@ -834,12 +834,23 @@ function resetAllProgress() {
 }
 
 // ========== FUNGSI UTAMA ==========
+// GANTI DENGAN INI:
 function showScreen(id){
+    // Gunakan replaceState untuk menghapus histori saat pindah antar screen
+    if (id === 'home') {
+        // Saat ke menu utama, replace state agar back langsung exit
+        history.replaceState({ screen: 'home' }, '', window.location.pathname);
+    } else {
+        history.pushState({ screen: id }, '', window.location.pathname);
+    }
+    
     document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
+// GANTI DENGAN INI:
 function bukaKuis(halaman) {
-    window.location.href = `${halaman}?seed=${Date.now()}&timer=${getTimerStatus() ? 'on' : 'off'}`;
+    // Gunakan location.replace agar tidak menyimpan halaman soal di history
+    window.location.replace(`${halaman}?seed=${Date.now()}&timer=${getTimerStatus() ? 'on' : 'off'}`);
 }
 
 // ========== HITUNG TOTAL SKOR ==========
@@ -912,6 +923,31 @@ initTimerToggle();
 
 console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
 console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px");
+// TAMBAHKAN INI DI PALING BAWAH SEBELUM </script>:
+
+// ========== PERBAIKAN TOMBAK BACK ==========
+// Tangkap event tombol back
+window.addEventListener('popstate', function(e) {
+    const aktif = document.querySelector('.screen.active');
+    
+    // Jika sedang di menu utama, keluar aplikasi
+    if (aktif && aktif.id === 'home') {
+        // Tampilkan pesan konfirmasi
+        if (confirm('Keluar dari aplikasi?')) {
+            window.close();
+            // Fallback jika window.close() tidak berfungsi
+            setTimeout(() => {
+                window.location.href = 'about:blank';
+            }, 100);
+        } else {
+            // Jika batal, push state baru
+            history.pushState(null, '', window.location.pathname);
+        }
+    }
+});
+
+// Tambahkan state awal ke history
+history.pushState(null, '', window.location.pathname);
 </script>
 </body>
 </html>
