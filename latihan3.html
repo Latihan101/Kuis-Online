@@ -881,6 +881,13 @@ function finishQuiz(){
     else if(judul.includes('Latihan SKD 3')) latihanKe = 3;
     else if(judul.includes('Latihan SKD 4')) latihanKe = 4;
     else if(judul.includes('Latihan SKD 5')) latihanKe = 5;  // ← TAMBAHKAN INI
+
+        // ========== SIMPAN SKOR PER KATEGORI KE LOCALSTORAGE ==========
+    localStorage.setItem(`skorTWK_latihan${latihanKe}`, s.twk);
+    localStorage.setItem(`skorTIU_latihan${latihanKe}`, s.tiu);
+    localStorage.setItem(`skorTKP_latihan${latihanKe}`, s.tkp);
+    console.log(`✅ Skor Latihan ${latihanKe} disimpan: TWK=${s.twk}, TIU=${s.tiu}, TKP=${s.tkp}`);
+    // ========== END SIMPAN SKOR PER KATEGORI ==========
     
     const skorAkhir = s.total;
     const keySkor = `bestScore_latihan${latihanKe}`;
