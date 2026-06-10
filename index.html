@@ -29,12 +29,12 @@ body{
 .container{
     width:100%;
     max-width:550px;
-    background:rgba(255,255,255,0.95);
+    background:rgba(255,255,255,0.98);
     backdrop-filter: blur(10px);
-    padding:25px;
-    border-radius:25px;
+    padding:20px;
+    border-radius:30px;
     box-shadow:0 20px 60px rgba(0,0,0,.3);
-    border:1px solid rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.3);
 }
 
 .screen{
@@ -53,7 +53,12 @@ body{
 
 .logo{
     text-align:center;
-    margin-bottom:30px;
+    margin-bottom:25px;
+}
+
+.logo .icon{
+    font-size: 50px;
+    margin-bottom: 10px;
 }
 
 .logo h1{
@@ -61,24 +66,24 @@ body{
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-size: 28px;
-    margin-bottom:10px;
+    font-size: 26px;
+    margin-bottom:8px;
 }
 
 .logo p{
-    color:#666;
-    font-size:14px;
+    color:#888;
+    font-size:13px;
 }
 
 .menu-btn{
     width:100%;
-    padding:15px;
+    padding:14px;
     border:none;
-    border-radius:15px;
+    border-radius:20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color:white;
-    font-size:18px;
-    margin-bottom:12px;
+    font-size:16px;
+    margin-bottom:10px;
     cursor:pointer;
     transition:0.2s;
     display:flex;
@@ -97,7 +102,7 @@ body{
     width:100%;
     padding:12px;
     border:none;
-    border-radius:15px;
+    border-radius:20px;
     background:#6c757d;
     color:white;
     cursor:pointer;
@@ -115,7 +120,7 @@ body{
     width:100%;
     padding:12px;
     border:none;
-    border-radius:15px;
+    border-radius:20px;
     background:#dc3545;
     color:white;
     cursor:pointer;
@@ -141,7 +146,9 @@ h2{
     flex-wrap:wrap;
     gap:10px;
     color:#333;
-    font-size:20px;
+    font-size:18px;
+    padding-bottom:10px;
+    border-bottom:2px solid #e9ecef;
 }
 
 p{
@@ -150,82 +157,131 @@ p{
     color:#555;
 }
 
-/* Quiz Item dengan skor */
+/* Quiz Item dengan skor - DESAIN BARU */
 .quiz-item {
     width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 15px;
-    border:none;
-    border-radius:15px;
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-    color:white;
-    margin-bottom:10px;
+    background: white;
+    border-radius:20px;
+    margin-bottom:12px;
     cursor:pointer;
     transition:0.2s;
-    gap:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    border:1px solid #e9ecef;
+    overflow:hidden;
 }
 
 .quiz-item:hover{
-    transform:scale(1.02);
-    box-shadow:0 5px 20px rgba(17,153,142,0.4);
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
 }
 
-.quiz-left{
+.quiz-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:15px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color:white;
+}
+
+.quiz-left {
     display:flex;
     align-items:center;
     gap:10px;
     font-weight:bold;
-    flex:2;
+    font-size:16px;
 }
 
-.quiz-right{
+.quiz-icon {
+    font-size:24px;
+}
+
+.quiz-right {
     display:flex;
-    gap:8px;
+    gap:5px;
+}
+
+.skor-badge {
+    padding:4px 10px;
+    border-radius:30px;
+    text-align:center;
     font-size:11px;
     font-weight:bold;
 }
 
-.skor-badge {
-    padding:4px 8px;
-    border-radius:20px;
-    text-align:center;
-    min-width:55px;
-}
-
 .skor-badge.twk {
-    background: #6f42c1;
+    background: rgba(111,66,193,0.9);
     color: white;
 }
 
 .skor-badge.tiu {
-    background: #8B4513;
+    background: rgba(139,69,19,0.9);
     color: white;
 }
 
 .skor-badge.tkp {
-    background: #20c997;
+    background: rgba(32,201,151,0.9);
     color: white;
 }
 
 .skor-badge.belum {
-    background: #6c757d;
+    background: rgba(108,117,125,0.8);
     color: white;
+}
+
+/* Detail skor di dalam card */
+.quiz-detail {
+    padding:12px 15px;
+    background: #f8f9fa;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid #e9ecef;
+}
+
+.skor-detail {
+    display:flex;
+    gap:15px;
+    font-size:12px;
+}
+
+.skor-detail span {
+    color:#495057;
+}
+
+.skor-detail strong {
+    color:#0d6efd;
+}
+
+.status-badge {
+    font-size:11px;
+    padding:4px 12px;
+    border-radius:20px;
+    font-weight:bold;
+}
+
+.status-badge.selesai {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.belum {
+    background: #f8d7da;
+    color: #721c24;
 }
 
 .version{
     text-align:center;
     margin-top:20px;
     color:#aaa;
-    font-size:12px;
+    font-size:11px;
 }
 
 .info-acak{
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     padding:12px;
-    border-radius:12px;
-    font-size:12px;
+    border-radius:15px;
+    font-size:11px;
     color:white;
     text-align:center;
     margin-top:15px;
@@ -237,9 +293,9 @@ p{
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 12px;
+    font-size: 11px;
     background: #e9ecef;
-    padding: 5px 12px;
+    padding: 4px 12px;
     border-radius: 30px;
 }
 
@@ -290,7 +346,7 @@ input:checked + .slider:before {
 
 .timer-status {
     font-weight: bold;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .timer-status.on {
@@ -326,7 +382,7 @@ input:checked + .slider:before {
 /* Statistik Card */
 .stats-card {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 15px;
+    border-radius: 20px;
     padding: 15px;
     margin: 20px 0;
     display: flex;
@@ -339,7 +395,7 @@ input:checked + .slider:before {
 }
 
 .stat-number {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: #0d6efd;
 }
@@ -367,7 +423,7 @@ input:checked + .slider:before {
 .modal-content {
     background: white;
     padding: 25px;
-    border-radius: 20px;
+    border-radius: 25px;
     max-width: 300px;
     text-align: center;
     animation: fadeIn 0.3s ease;
@@ -392,7 +448,7 @@ input:checked + .slider:before {
 .modal-buttons button {
     padding: 10px 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
 }
@@ -405,17 +461,6 @@ input:checked + .slider:before {
 .modal-buttons .cancel {
     background: #6c757d;
     color: white;
-}
-
-/* Animasi loading */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -432,7 +477,7 @@ input:checked + .slider:before {
     <div id="home" class="screen active">
 
         <div class="logo">
-            <div style="font-size: 50px; margin-bottom: 10px;">📚</div>
+            <div class="icon">📚</div>
             <h1>Latihan SKD CPNS</h1>
             <p>Latihan Soal TWK, TIU dan TKP</p>
         </div>
@@ -489,58 +534,118 @@ input:checked + .slider:before {
             </div>
         </h2>
 
+        <!-- Latihan SKD 1 -->
         <div class="quiz-item" onclick="bukaKuis('latihan1.html')">
-            <div class="quiz-left">
-                📖 Latihan SKD 1
+            <div class="quiz-header">
+                <div class="quiz-left">
+                    <span class="quiz-icon">📘</span>
+                    <span>Latihan SKD 1</span>
+                </div>
+                <div class="quiz-right" id="skorLatihan1">
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                </div>
             </div>
-            <div class="quiz-right" id="skorLatihan1">
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
+            <div class="quiz-detail" id="detailLatihan1">
+                <div class="skor-detail">
+                    <span>📊 <strong id="twk1">-</strong> / 150</span>
+                    <span>🔢 <strong id="tiu1">-</strong> / 175</span>
+                    <span>⭐ <strong id="tkp1">-</strong> / 225</span>
+                </div>
+                <div class="status-badge belum" id="status1">Belum dikerjakan</div>
             </div>
         </div>
 
+        <!-- Latihan SKD 2 -->
         <div class="quiz-item" onclick="bukaKuis('latihan2.html')">
-            <div class="quiz-left">
-                📖 Latihan SKD 2
+            <div class="quiz-header">
+                <div class="quiz-left">
+                    <span class="quiz-icon">📗</span>
+                    <span>Latihan SKD 2</span>
+                </div>
+                <div class="quiz-right" id="skorLatihan2">
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                </div>
             </div>
-            <div class="quiz-right" id="skorLatihan2">
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
+            <div class="quiz-detail" id="detailLatihan2">
+                <div class="skor-detail">
+                    <span>📊 <strong id="twk2">-</strong> / 150</span>
+                    <span>🔢 <strong id="tiu2">-</strong> / 175</span>
+                    <span>⭐ <strong id="tkp2">-</strong> / 225</span>
+                </div>
+                <div class="status-badge belum" id="status2">Belum dikerjakan</div>
             </div>
         </div>
 
+        <!-- Latihan SKD 3 -->
         <div class="quiz-item" onclick="bukaKuis('latihan3.html')">
-            <div class="quiz-left">
-                📖 Latihan SKD 3
+            <div class="quiz-header">
+                <div class="quiz-left">
+                    <span class="quiz-icon">📙</span>
+                    <span>Latihan SKD 3</span>
+                </div>
+                <div class="quiz-right" id="skorLatihan3">
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                </div>
             </div>
-            <div class="quiz-right" id="skorLatihan3">
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
+            <div class="quiz-detail" id="detailLatihan3">
+                <div class="skor-detail">
+                    <span>📊 <strong id="twk3">-</strong> / 150</span>
+                    <span>🔢 <strong id="tiu3">-</strong> / 175</span>
+                    <span>⭐ <strong id="tkp3">-</strong> / 225</span>
+                </div>
+                <div class="status-badge belum" id="status3">Belum dikerjakan</div>
             </div>
         </div>
 
+        <!-- Latihan SKD 4 -->
         <div class="quiz-item" onclick="bukaKuis('latihan4.html')">
-            <div class="quiz-left">
-                📖 Latihan SKD 4
+            <div class="quiz-header">
+                <div class="quiz-left">
+                    <span class="quiz-icon">📕</span>
+                    <span>Latihan SKD 4</span>
+                </div>
+                <div class="quiz-right" id="skorLatihan4">
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                </div>
             </div>
-            <div class="quiz-right" id="skorLatihan4">
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
+            <div class="quiz-detail" id="detailLatihan4">
+                <div class="skor-detail">
+                    <span>📊 <strong id="twk4">-</strong> / 150</span>
+                    <span>🔢 <strong id="tiu4">-</strong> / 175</span>
+                    <span>⭐ <strong id="tkp4">-</strong> / 225</span>
+                </div>
+                <div class="status-badge belum" id="status4">Belum dikerjakan</div>
             </div>
         </div>
 
+        <!-- Latihan SKD 5 -->
         <div class="quiz-item" onclick="bukaKuis('latihan5.html')">
-            <div class="quiz-left">
-                📖 Latihan SKD 5
+            <div class="quiz-header">
+                <div class="quiz-left">
+                    <span class="quiz-icon">📔</span>
+                    <span>Latihan SKD 5</span>
+                </div>
+                <div class="quiz-right" id="skorLatihan5">
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                </div>
             </div>
-            <div class="quiz-right" id="skorLatihan5">
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
+            <div class="quiz-detail" id="detailLatihan5">
+                <div class="skor-detail">
+                    <span>📊 <strong id="twk5">-</strong> / 150</span>
+                    <span>🔢 <strong id="tiu5">-</strong> / 175</span>
+                    <span>⭐ <strong id="tkp5">-</strong> / 225</span>
+                </div>
+                <div class="status-badge belum" id="status5">Belum dikerjakan</div>
             </div>
         </div>
 
@@ -559,7 +664,7 @@ input:checked + .slider:before {
 
         <h2>📖 Petunjuk</h2>
 
-        <div style="background:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px;">
+        <div style="background:#e9ecef; border-radius:16px; padding:15px; margin-bottom:15px;">
             <p><strong>📌 Cara Menggunakan:</strong></p>
             <p>1. Pilih salah satu soal latihan yang tersedia.</p>
             <p>2. Baca soal dengan teliti.</p>
@@ -570,7 +675,7 @@ input:checked + .slider:before {
             <p>7. Gunakan tombol 📋 Daftar Soal untuk navigasi cepat.</p>
         </div>
 
-        <div style="background:#fff3cd; border-radius:12px; padding:15px;">
+        <div style="background:#fff3cd; border-radius:16px; padding:15px;">
             <p><strong>💡 Tips:</strong></p>
             <p>• Kerjakan soal dengan tenang dan fokus</p>
             <p>• Manfaatkan fitur timer untuk mengatur waktu</p>
@@ -588,7 +693,7 @@ input:checked + .slider:before {
 
         <h2>ℹ️ Tentang</h2>
 
-        <div style="background:#e9ecef; border-radius:12px; padding:15px; margin-bottom:15px;">
+        <div style="background:#e9ecef; border-radius:16px; padding:15px; margin-bottom:15px;">
             <p><strong>📱 Aplikasi Latihan SKD</strong></p>
             <p>
                 Latihan SKD adalah aplikasi latihan soal berbasis HTML,
@@ -597,7 +702,7 @@ input:checked + .slider:before {
             </p>
         </div>
 
-        <div style="background:#d1ecf1; border-radius:12px; padding:15px; margin-bottom:15px;">
+        <div style="background:#d1ecf1; border-radius:16px; padding:15px; margin-bottom:15px;">
             <p><strong>⭐ Fitur Unggulan:</strong></p>
             <p>• Pengacakan pilihan jawaban setiap soal dibuka</p>
             <p>• Timer 100 menit (dapat dimatikan/dinyalakan)</p>
@@ -608,7 +713,7 @@ input:checked + .slider:before {
             <p>• Reset progress untuk memulai dari awal</p>
         </div>
 
-        <div style="background:#f8f9fa; border-radius:12px; padding:15px;">
+        <div style="background:#f8f9fa; border-radius:16px; padding:15px;">
             <p><strong>📊 Passing Grade:</strong></p>
             <p>• TWK: 65</p>
             <p>• TIU: 80</p>
@@ -644,40 +749,21 @@ input:checked + .slider:before {
 
 <script>
 // ========== PERLINDUNGAN ==========
-
-// 1. Mencegah klik kanan (context menu)
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    return false;
-});
-
-// 2. Mencegah kombinasi keyboard
-document.addEventListener('keydown', function(e) {
-    if(e.key === 'F12' || 
-       (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-       (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-       (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-       (e.ctrlKey && e.key === 'u') ||
-       (e.ctrlKey && e.key === 's') ||
-       (e.ctrlKey && e.key === 'p') ||
-       e.key === 'PrintScreen') {
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+       (e.ctrlKey && e.shiftKey && e.key === 'J') || (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+       (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 's') ||
+       (e.ctrlKey && e.key === 'p') || e.key === 'PrintScreen') {
         e.preventDefault();
-        showScreenshotWarning();
-        return false;
+        const ov=document.getElementById('screenshotOverlay');
+        if(ov){ov.style.display='block';setTimeout(()=>ov.style.display='none',500);}
     }
 });
+document.addEventListener('dragstart', e=>e.preventDefault());
+document.addEventListener('copy', e=>e.preventDefault());
+document.addEventListener('cut', e=>e.preventDefault());
 
-// 3. Mencegah drag and drop
-document.addEventListener('dragstart', function(e) {
-    e.preventDefault();
-    return false;
-});
-
-// 4. Mencegah copy & cut
-document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
-document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
-
-// 5. Fungsi peringatan screenshot
 let lastWarningTime = 0;
 function showScreenshotWarning() {
     const now = Date.now();
@@ -685,193 +771,126 @@ function showScreenshotWarning() {
         lastWarningTime = now;
         const overlay = document.getElementById('screenshotOverlay');
         overlay.style.display = 'block';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 500);
+        setTimeout(() => overlay.style.display = 'none', 500);
         console.warn('⚠️ Screenshot terdeteksi! Konten dilindungi.');
     }
 }
-
-// 6. Deteksi Print Screen via keyup
-window.addEventListener('keyup', function(e) {
-    if(e.key === 'PrintScreen') {
-        showScreenshotWarning();
-    }
-});
-
-// 7. Mencegah inspect element pada tombol
+window.addEventListener('keyup', e => { if(e.key === 'PrintScreen') showScreenshotWarning(); });
 document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn, .reset-btn').forEach(el => {
-    el.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-    });
+    el.addEventListener('contextmenu', e => e.preventDefault());
 });
 
 // ========== FUNGSI TIMER TOGGLE ==========
 function getTimerStatus() {
     const savedStatus = localStorage.getItem('timerEnabled');
-    if(savedStatus === null) {
-        return true;
-    }
-    return savedStatus === 'true';
+    return savedStatus === null ? true : savedStatus === 'true';
 }
-
-function setTimerStatus(enabled) {
-    localStorage.setItem('timerEnabled', enabled);
-}
-
+function setTimerStatus(enabled) { localStorage.setItem('timerEnabled', enabled); }
 function updateToggleUI() {
     const toggle = document.getElementById('timerToggle');
     const statusLabel = document.getElementById('timerStatusLabel');
     const isEnabled = getTimerStatus();
-    
     if(toggle) toggle.checked = isEnabled;
     if(statusLabel) {
-        if(isEnabled) {
-            statusLabel.innerHTML = '⏱️ ON';
-            statusLabel.className = 'timer-status on';
-        } else {
-            statusLabel.innerHTML = '⏸️ OFF';
-            statusLabel.className = 'timer-status off';
-        }
+        statusLabel.innerHTML = isEnabled ? '⏱️ ON' : '⏸️ OFF';
+        statusLabel.className = `timer-status ${isEnabled ? 'on' : 'off'}`;
     }
 }
-
 function initTimerToggle() {
     const toggle = document.getElementById('timerToggle');
     if(toggle) {
         toggle.checked = getTimerStatus();
         updateToggleUI();
-        
         toggle.addEventListener('change', function() {
-            const isEnabled = this.checked;
-            setTimerStatus(isEnabled);
+            setTimerStatus(this.checked);
             updateToggleUI();
-            console.log(`Timer ${isEnabled ? 'DIAKTIFKAN' : 'DINONAKTIFKAN'} untuk latihan selanjutnya`);
         });
     }
 }
 
 // ========== FUNGSI MODAL RESET ==========
-function showResetModal() {
-    document.getElementById('resetModal').style.display = 'flex';
-}
-
-function closeResetModal() {
-    document.getElementById('resetModal').style.display = 'none';
-}
+function showResetModal() { document.getElementById('resetModal').style.display = 'flex'; }
+function closeResetModal() { document.getElementById('resetModal').style.display = 'none'; }
 
 // ========== RESET SEMUA PROGRESS ==========
 function resetAllProgress() {
-    // Hapus semua skor latihan
     for(let i = 1; i <= 5; i++) {
         localStorage.removeItem(`bestScore_latihan${i}`);
         localStorage.removeItem(`skorTWK_latihan${i}`);
         localStorage.removeItem(`skorTIU_latihan${i}`);
         localStorage.removeItem(`skorTKP_latihan${i}`);
     }
-    
-    // Hapus progres kuis yang tersimpan
     localStorage.removeItem('skdQuizProgress');
-    
-    // Reset tampilan skor di tombol
-    for(let i = 1; i <= 5; i++) {
-        const container = document.getElementById(`skorLatihan${i}`);
-        if(container) {
-            container.innerHTML = `
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-                <span class="skor-badge belum">-</span>
-            `;
-        }
-    }
-    
-    // Reset skor terbaik di statistik
-    document.getElementById('skorTerbaik').innerHTML = '- / 550';
-    
-    // Tutup modal
+    loadAllScores();
+    loadBestScores();
     closeResetModal();
-    
-    // Tampilkan notifikasi
     alert('✅ Semua progress latihan telah direset!');
-    console.log('✅ Semua progress latihan telah direset');
 }
 
 // ========== FUNGSI UTAMA ==========
 function showScreen(id){
-    let screens = document.querySelectorAll(".screen");
-    screens.forEach(screen => {
-        screen.classList.remove("active");
-    });
+    document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
-
 function bukaKuis(halaman) {
-    const timestamp = new Date().getTime();
-    const timerEnabled = getTimerStatus();
-    window.location.href = `${halaman}?seed=${timestamp}&timer=${timerEnabled ? 'on' : 'off'}`;
+    window.location.href = `${halaman}?seed=${Date.now()}&timer=${getTimerStatus() ? 'on' : 'off'}`;
 }
 
 // ========== AMBIL SKOR DARI LOCALSTORAGE ==========
 function loadAllScores() {
-    // Data latihan: [TWK, TIU, TKP] dengan skor maksimal masing-masing
-    // TWK maks 150, TIU maks 175, TKP maks 225
     const maxScores = { twk: 150, tiu: 175, tkp: 225 };
-    
     for(let i = 1; i <= 5; i++) {
-        const savedTWK = localStorage.getItem(`skorTWK_latihan${i}`);
-        const savedTIU = localStorage.getItem(`skorTIU_latihan${i}`);
-        const savedTKP = localStorage.getItem(`skorTKP_latihan${i}`);
+        const twk = localStorage.getItem(`skorTWK_latihan${i}`);
+        const tiu = localStorage.getItem(`skorTIU_latihan${i}`);
+        const tkp = localStorage.getItem(`skorTKP_latihan${i}`);
         
+        // Update badge di header
         const container = document.getElementById(`skorLatihan${i}`);
         if(container) {
-            if(savedTWK && savedTIU && savedTKP) {
+            if(twk && tiu && tkp) {
                 container.innerHTML = `
-                    <span class="skor-badge twk">TWK: ${savedTWK}/${maxScores.twk}</span>
-                    <span class="skor-badge tiu">TIU: ${savedTIU}/${maxScores.tiu}</span>
-                    <span class="skor-badge tkp">TKP: ${savedTKP}/${maxScores.tkp}</span>
+                    <span class="skor-badge twk">TWK: ${twk}/${maxScores.twk}</span>
+                    <span class="skor-badge tiu">TIU: ${tiu}/${maxScores.tiu}</span>
+                    <span class="skor-badge tkp">TKP: ${tkp}/${maxScores.tkp}</span>
                 `;
             } else {
-                container.innerHTML = `
-                    <span class="skor-badge belum">-</span>
-                    <span class="skor-badge belum">-</span>
-                    <span class="skor-badge belum">-</span>
-                `;
+                container.innerHTML = `<span class="skor-badge belum">-</span><span class="skor-badge belum">-</span><span class="skor-badge belum">-</span>`;
             }
+        }
+        
+        // Update detail skor di bawah
+        if(twk) document.getElementById(`twk${i}`).innerText = twk;
+        if(tiu) document.getElementById(`tiu${i}`).innerText = tiu;
+        if(tkp) document.getElementById(`tkp${i}`).innerText = tkp;
+        
+        // Update status badge
+        const statusEl = document.getElementById(`status${i}`);
+        if(twk && tiu && tkp) {
+            statusEl.className = 'status-badge selesai';
+            statusEl.innerText = '✅ Selesai';
+        } else {
+            statusEl.className = 'status-badge belum';
+            statusEl.innerText = '⏳ Belum dikerjakan';
         }
     }
 }
 
-// ========== AMBIL SKOR TERBAIK DARI LOCALSTORAGE ==========
+// ========== AMBIL SKOR TERBAIK ==========
 function loadBestScores() {
     let bestScores = [];
     for(let i = 1; i <= 5; i++) {
         const saved = localStorage.getItem(`bestScore_latihan${i}`);
-        if(saved) {
-            bestScores.push(parseInt(saved));
-        }
+        if(saved) bestScores.push(parseInt(saved));
     }
-    if(bestScores.length > 0) {
-        const maxScore = Math.max(...bestScores);
-        document.getElementById('skorTerbaik').innerHTML = `${maxScore} / 550`;
-    } else {
-        document.getElementById('skorTerbaik').innerHTML = '- / 550';
-    }
+    document.getElementById('skorTerbaik').innerHTML = bestScores.length > 0 ? `${Math.max(...bestScores)} / 550` : '- / 550';
 }
 
-// Panggil loadAllScores dan loadBestScores saat halaman dimuat
 loadAllScores();
 loadBestScores();
-
-// Peringatan di console
-console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
-console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
-console.log("%c💡 Fitur Timer dapat diatur ON/OFF di halaman Pilih Soal SKD.", "color: #0d6efd; font-size: 12px;");
-
-// Inisialisasi toggle timer
 initTimerToggle();
 
+console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
+console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
 </script>
-
 </body>
 </html>
