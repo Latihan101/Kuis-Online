@@ -312,6 +312,23 @@ body{
     50% { opacity: 0.3; }
 }
 
+.timer-status-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+.timer-status-badge.on {
+    background: #198754;
+    color: white;
+}
+
+.timer-status-badge.off {
+    background: #dc3545;
+    color: white;
+}
+
 .question{
     font-size:18px;
     margin-bottom:20px;
@@ -592,7 +609,10 @@ button:hover{
 <div id="quiz">
     <div class="info">
         <span id="progress">Soal 1/110</span>
-        <span id="timer">100:00</span>
+        <div>
+            <span id="timer">100:00</span>
+            <span id="timerStatusBadge" class="timer-status-badge on">⏱️ Timer ON</span>
+        </div>
     </div>
     <div class="question" id="question"></div>
     <div id="options"></div>
@@ -603,12 +623,12 @@ button:hover{
 </div>
 
 <div class="result" id="result">
-    <h1>📊 Hasil Kuis</h1>
+    <h1>📊 Skor Latihan</h1>
     <p>📝 Latihan SKD - TWK, TIU, TKP</p>
     <div id="scoreDetail" class="score-detail"></div>
     <div id="passingGradeStatus" class="pass-status"></div>
     <div class="result-buttons">
-        <button class="finish" onclick="restartQuiz()">🔄 Ulangi Kuis</button>
+        <button class="finish" onclick="restartQuiz()">🔄 Ulangi Soal</button>
         <button class="evaluasi-btn" onclick="showEvaluasi()">📋 Evaluasi Jawaban</button>
         <button class="back-home" onclick="goToHomePage()">🏠 Kembali ke Menu Utama</button>
     </div>
@@ -654,6 +674,28 @@ button:hover{
 <div class="watermark">© Quiz App - Hak Cipta Dilindungi</div>
 
 <script>
+// ========== AMBIL PARAMETER URL ==========
+function getParameter(nama) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(nama);
+}
+
+// ========== CEK STATUS TIMER DARI PARAMETER ==========
+const timerParam = getParameter('timer');
+const timerEnabled = timerParam !== 'off'; // default ON jika tidak ada parameter
+
+// Tampilkan badge status timer
+const timerBadge = document.getElementById('timerStatusBadge');
+if(timerBadge) {
+    if(timerEnabled) {
+        timerBadge.textContent = '⏱️ Timer ON';
+        timerBadge.className = 'timer-status-badge on';
+    } else {
+        timerBadge.textContent = '⏸️ Timer OFF';
+        timerBadge.className = 'timer-status-badge off';
+    }
+}
+
 // PERLINDUNGAN
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
@@ -799,7 +841,7 @@ for(let i=0;i<twkSoal.length;i++) originalQuestions.push({question:twkSoal[i].q,
 for(let i=0;i<tiuSoal.length;i++) originalQuestions.push({question:tiuSoal[i].q,options:tiuSoal[i].opt,answer:tiuSoal[i].a,isTKP:false,optionScores:null});
 for(let i=0;i<tkpQuestionsData.length;i++) originalQuestions.push({question:tkpQuestionsData[i].q,options:tkpQuestionsData[i].opts,answer:null,isTKP:true,optionScores:tkpQuestionsData[i].scores});
 
-let questions=[],currentQuestion=0,userAnswers=[],userScores=[],timerInterval=null,time=6000;
+let questions=[],currentQuestion=0,userAnswers=[],userScores=[],timerInterval=null,time=6000; // 100 menit
 const prefixes=["A","B","C","D","E"];
 
 function getCategory(soalNumber){
@@ -809,15 +851,15 @@ function getCategory(soalNumber){
 }
 
 function updateHeaderCategory(soalNumber){let c=getCategory(soalNumber);let e=document.getElementById("headerCategory");e.textContent=`📍 ${c.name}`;e.className=`header-category ${c.class}`;}
-function updateTimerColor(t){let e=document.getElementById("timer");e.classList.remove("timer-warning","timer-danger","timer-blink");if(t<=20)e.classList.add("timer-blink");else if(t<=120)e.classList.add("timer-danger");else if(t<=300)e.classList.add("timer-warning");}
+function updateTimerColor(t){if(!timerEnabled) return; let e=document.getElementById("timer");e.classList.remove("timer-warning","timer-danger","timer-blink");if(t<=20)e.classList.add("timer-blink");else if(t<=120)e.classList.add("timer-danger");else if(t<=300)e.classList.add("timer-warning");}
 function saveProgress(){localStorage.setItem('skdQuizProgress',JSON.stringify({currentQuestion,userAnswers,userScores,time,questionsData:questions.map(q=>({question:q.question,options:q.options,answer:q.answer,optionScores:q.optionScores,isTKP:q.isTKP}))}));}
 function loadProgress(){let s=localStorage.getItem('skdQuizProgress');if(s){let p=JSON.parse(s);currentQuestion=p.currentQuestion;userAnswers=p.userAnswers;userScores=p.userScores||Array(originalQuestions.length).fill(null);time=p.time;if(p.questionsData&&p.questionsData.length===originalQuestions.length)questions=p.questionsData;else shuffleAllQuestions();return true}return false;}
 function clearProgress(){localStorage.removeItem('skdQuizProgress');}
 function hitungSkor(){let twk=0,tiu=0,tkp=0;for(let i=0;i<questions.length;i++){let n=i+1;if(n<=30){if(userAnswers[i]!==null&&userAnswers[i]===questions[i].answer)twk+=5;}else if(n<=65){if(userAnswers[i]!==null&&userAnswers[i]===questions[i].answer)tiu+=5;}else{if(userScores[i]!==null)tkp+=userScores[i];}}let total=twk+tiu+tkp;return{twk,tiu,tkp,total,maxTwk:150,maxTiu:175,maxTkp:225,maxTotal:550,persen:Math.round(total/550*100)};}
 function shuffleOptions(q){if(q.isTKP){let pairs=q.options.map((t,i)=>({text:t,score:q.optionScores[i]}));for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}return{question:q.question,options:pairs.map(p=>p.text),answer:null,isTKP:true,optionScores:pairs.map(p=>p.score)};}else{let pairs=q.options.map((t,i)=>({text:t,idx:i}));for(let i=pairs.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}let newAns=pairs.findIndex(p=>p.idx===q.answer);return{question:q.question,options:pairs.map(p=>p.text),answer:newAns,isTKP:false,optionScores:null};}}
 function shuffleAllQuestions(){questions=originalQuestions.map(q=>shuffleOptions(q));}
-function initQuiz(){if(!loadProgress()){shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;}loadQuestion();updateSoalGrid();startTimer();}
-function restartQuiz(){if(timerInterval)clearInterval(timerInterval);clearProgress();shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;document.getElementById("result").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("sidebarToggle").style.display="block";loadQuestion();updateSoalGrid();startTimer();}
+function initQuiz(){if(!loadProgress()){shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;}loadQuestion();updateSoalGrid();if(timerEnabled){startTimer();}else{const timerElement=document.getElementById("timer");if(timerElement)timerElement.style.opacity="0.5";console.log("⏸️ Timer dalam keadaan OFF (sesuai pengaturan)");}}
+function restartQuiz(){if(timerInterval)clearInterval(timerInterval);clearProgress();shuffleAllQuestions();currentQuestion=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);time=6000;document.getElementById("result").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("sidebarToggle").style.display="block";loadQuestion();updateSoalGrid();if(timerEnabled){startTimer();}}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function updateSoalGrid(){let grid=document.getElementById('soalGrid');if(!grid)return;let html='';for(let i=0;i<questions.length;i++){let st='unanswered';if(questions[i].isTKP){if(userScores[i]!==null)st='answered';}else{if(userAnswers[i]!==null)st='answered';}if(i===currentQuestion)st='active';let cat=getCategory(i+1);html+=`<div class="grid-soal ${st} ${cat.class}" onclick="goToSoal(${i})">${i+1}</div>`;}grid.innerHTML=html;}
 function goToSoal(i){saveAnswer();currentQuestion=i;loadQuestion();toggleSidebar();saveProgress();}
