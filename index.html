@@ -28,7 +28,7 @@ body{
 
 .container{
     width:100%;
-    max-width:500px;
+    max-width:550px;
     background:rgba(255,255,255,0.95);
     backdrop-filter: blur(10px);
     padding:25px;
@@ -111,6 +111,28 @@ body{
     transform:scale(1.02);
 }
 
+.reset-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:15px;
+    background:#dc3545;
+    color:white;
+    cursor:pointer;
+    margin-top:10px;
+    transition:0.2s;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.reset-btn:hover{
+    background:#c82333;
+    transform:scale(1.02);
+}
+
 h2{
     margin-bottom:15px;
     display:flex;
@@ -128,26 +150,68 @@ p{
     color:#555;
 }
 
-.quiz-item{
+/* Quiz Item dengan skor */
+.quiz-item {
     width:100%;
-    padding:15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 15px;
     border:none;
     border-radius:15px;
     background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     color:white;
-    font-size:16px;
     margin-bottom:10px;
     cursor:pointer;
     transition:0.2s;
-    display:flex;
-    align-items:center;
     gap:10px;
-    font-weight:bold;
 }
 
 .quiz-item:hover{
     transform:scale(1.02);
     box-shadow:0 5px 20px rgba(17,153,142,0.4);
+}
+
+.quiz-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
+    flex:2;
+}
+
+.quiz-right{
+    display:flex;
+    gap:8px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.skor-badge {
+    padding:4px 8px;
+    border-radius:20px;
+    text-align:center;
+    min-width:55px;
+}
+
+.skor-badge.twk {
+    background: #6f42c1;
+    color: white;
+}
+
+.skor-badge.tiu {
+    background: #8B4513;
+    color: white;
+}
+
+.skor-badge.tkp {
+    background: #20c997;
+    color: white;
+}
+
+.skor-badge.belum {
+    background: #6c757d;
+    color: white;
 }
 
 .version{
@@ -286,6 +350,63 @@ input:checked + .slider:before {
     margin-top: 5px;
 }
 
+/* Modal Konfirmasi */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 20000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    max-width: 300px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.modal-buttons .confirm {
+    background: #dc3545;
+    color: white;
+}
+
+.modal-buttons .cancel {
+    background: #6c757d;
+    color: white;
+}
+
 /* Animasi loading */
 .loading {
     display: inline-block;
@@ -368,24 +489,63 @@ input:checked + .slider:before {
             </div>
         </h2>
 
-        <button class="quiz-item" onclick="bukaKuis('latihan1.html')">
-            📖 Latihan SKD 1
-        </button>
+        <div class="quiz-item" onclick="bukaKuis('latihan1.html')">
+            <div class="quiz-left">
+                📖 Latihan SKD 1
+            </div>
+            <div class="quiz-right" id="skorLatihan1">
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            </div>
+        </div>
 
-        <button class="quiz-item" onclick="bukaKuis('latihan2.html')">
-            📖 Latihan SKD 2
-        </button>
+        <div class="quiz-item" onclick="bukaKuis('latihan2.html')">
+            <div class="quiz-left">
+                📖 Latihan SKD 2
+            </div>
+            <div class="quiz-right" id="skorLatihan2">
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            </div>
+        </div>
 
-        <button class="quiz-item" onclick="bukaKuis('latihan3.html')">
-            📖 Latihan SKD 3
-        </button>
+        <div class="quiz-item" onclick="bukaKuis('latihan3.html')">
+            <div class="quiz-left">
+                📖 Latihan SKD 3
+            </div>
+            <div class="quiz-right" id="skorLatihan3">
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            </div>
+        </div>
 
-        <button class="quiz-item" onclick="bukaKuis('latihan4.html')">
-            📖 Latihan SKD 4
-        </button>
+        <div class="quiz-item" onclick="bukaKuis('latihan4.html')">
+            <div class="quiz-left">
+                📖 Latihan SKD 4
+            </div>
+            <div class="quiz-right" id="skorLatihan4">
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            </div>
+        </div>
 
-        <button class="quiz-item" onclick="bukaKuis('latihan5.html')">
-            📖 Latihan SKD 5
+        <div class="quiz-item" onclick="bukaKuis('latihan5.html')">
+            <div class="quiz-left">
+                📖 Latihan SKD 5
+            </div>
+            <div class="quiz-right" id="skorLatihan5">
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="showResetModal()">
+            🗑️ Reset Semua Progress
         </button>
 
         <button class="back-btn" onclick="showScreen('home')">
@@ -445,6 +605,7 @@ input:checked + .slider:before {
             <p>• Hasil nilai/skor otomatis dengan passing grade</p>
             <p>• Evaluasi jawaban lengkap dengan pembahasan</p>
             <p>• Perlindungan konten (anti copy, anti screenshot)</p>
+            <p>• Reset progress untuk memulai dari awal</p>
         </div>
 
         <div style="background:#f8f9fa; border-radius:12px; padding:15px;">
@@ -464,6 +625,18 @@ input:checked + .slider:before {
 
     </div>
 
+</div>
+
+<!-- Modal Konfirmasi Reset -->
+<div id="resetModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Reset Progress</h3>
+        <p>Apakah Anda yakin ingin mereset semua skor latihan? Tindakan ini tidak dapat dibatalkan!</p>
+        <div class="modal-buttons">
+            <button class="confirm" onclick="resetAllProgress()">Ya, Reset</button>
+            <button class="cancel" onclick="closeResetModal()">Batal</button>
+        </div>
+    </div>
 </div>
 
 <div id="screenshotOverlay" class="screenshot-overlay"></div>
@@ -527,7 +700,7 @@ window.addEventListener('keyup', function(e) {
 });
 
 // 7. Mencegah inspect element pada tombol
-document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn').forEach(el => {
+document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn, .reset-btn').forEach(el => {
     el.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         return false;
@@ -579,6 +752,51 @@ function initTimerToggle() {
     }
 }
 
+// ========== FUNGSI MODAL RESET ==========
+function showResetModal() {
+    document.getElementById('resetModal').style.display = 'flex';
+}
+
+function closeResetModal() {
+    document.getElementById('resetModal').style.display = 'none';
+}
+
+// ========== RESET SEMUA PROGRESS ==========
+function resetAllProgress() {
+    // Hapus semua skor latihan
+    for(let i = 1; i <= 5; i++) {
+        localStorage.removeItem(`bestScore_latihan${i}`);
+        localStorage.removeItem(`skorTWK_latihan${i}`);
+        localStorage.removeItem(`skorTIU_latihan${i}`);
+        localStorage.removeItem(`skorTKP_latihan${i}`);
+    }
+    
+    // Hapus progres kuis yang tersimpan
+    localStorage.removeItem('skdQuizProgress');
+    
+    // Reset tampilan skor di tombol
+    for(let i = 1; i <= 5; i++) {
+        const container = document.getElementById(`skorLatihan${i}`);
+        if(container) {
+            container.innerHTML = `
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+                <span class="skor-badge belum">-</span>
+            `;
+        }
+    }
+    
+    // Reset skor terbaik di statistik
+    document.getElementById('skorTerbaik').innerHTML = '- / 550';
+    
+    // Tutup modal
+    closeResetModal();
+    
+    // Tampilkan notifikasi
+    alert('✅ Semua progress latihan telah direset!');
+    console.log('✅ Semua progress latihan telah direset');
+}
+
 // ========== FUNGSI UTAMA ==========
 function showScreen(id){
     let screens = document.querySelectorAll(".screen");
@@ -594,6 +812,36 @@ function bukaKuis(halaman) {
     window.location.href = `${halaman}?seed=${timestamp}&timer=${timerEnabled ? 'on' : 'off'}`;
 }
 
+// ========== AMBIL SKOR DARI LOCALSTORAGE ==========
+function loadAllScores() {
+    // Data latihan: [TWK, TIU, TKP] dengan skor maksimal masing-masing
+    // TWK maks 150, TIU maks 175, TKP maks 225
+    const maxScores = { twk: 150, tiu: 175, tkp: 225 };
+    
+    for(let i = 1; i <= 5; i++) {
+        const savedTWK = localStorage.getItem(`skorTWK_latihan${i}`);
+        const savedTIU = localStorage.getItem(`skorTIU_latihan${i}`);
+        const savedTKP = localStorage.getItem(`skorTKP_latihan${i}`);
+        
+        const container = document.getElementById(`skorLatihan${i}`);
+        if(container) {
+            if(savedTWK && savedTIU && savedTKP) {
+                container.innerHTML = `
+                    <span class="skor-badge twk">TWK: ${savedTWK}/${maxScores.twk}</span>
+                    <span class="skor-badge tiu">TIU: ${savedTIU}/${maxScores.tiu}</span>
+                    <span class="skor-badge tkp">TKP: ${savedTKP}/${maxScores.tkp}</span>
+                `;
+            } else {
+                container.innerHTML = `
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                    <span class="skor-badge belum">-</span>
+                `;
+            }
+        }
+    }
+}
+
 // ========== AMBIL SKOR TERBAIK DARI LOCALSTORAGE ==========
 function loadBestScores() {
     let bestScores = [];
@@ -605,13 +853,14 @@ function loadBestScores() {
     }
     if(bestScores.length > 0) {
         const maxScore = Math.max(...bestScores);
-        document.getElementById('skorTerbaik').innerHTML = `${maxScore} / 550`;  // ← INI YANG DIUBAH
+        document.getElementById('skorTerbaik').innerHTML = `${maxScore} / 550`;
     } else {
-        document.getElementById('skorTerbaik').innerHTML = '- / 550';  // ← INI JUGA DIUBAH
+        document.getElementById('skorTerbaik').innerHTML = '- / 550';
     }
 }
 
-// Panggil loadBestScores saat halaman dimuat
+// Panggil loadAllScores dan loadBestScores saat halaman dimuat
+loadAllScores();
 loadBestScores();
 
 // Peringatan di console
