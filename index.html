@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Latihan SKD - Menu Utama</title>
+<title>Quiz App - Menu Utama</title>
 
 <style>
 
@@ -22,15 +22,10 @@ body{
     align-items:center;
     min-height:100vh;
     padding:20px;
-    user-select: none; /* Mencegah seleksi teks */
+    user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-}
-
-/* Menonaktifkan context menu (klik kanan) */
-.no-context-menu{
-    pointer-events: auto;
 }
 
 .container{
@@ -141,53 +136,24 @@ p{
     margin-top:15px;
 }
 
-/* Peringatan jika devtools terbuka */
-.devtools-warning {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #dc3545;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    z-index: 9999;
-    font-size: 14px;
-    display: none;
-}
-
-/* ========== ANTI-SCREENSHOT ========== */
-/* Overlay tersembunyi yang akan muncul saat screenshot (coba) */
 .screenshot-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(0,0,0,0.9) 0px,
-        rgba(0,0,0,0.9) 2px,
-        rgba(255,0,0,0.8) 2px,
-        rgba(255,0,0,0.8) 4px
-    );
+    background: rgba(0,0,0,0.9);
     z-index: 99999;
     display: none;
     pointer-events: none;
 }
 
-/* Efek blur saat halaman tidak fokus (saat screenshot via shortcut) */
-body:blur {
-    filter: blur(10px);
-}
-
-/* Watermark transparan */
 .watermark {
     position: fixed;
     bottom: 10px;
     left: 10px;
     font-size: 10px;
-    color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.15);
     z-index: 100;
     pointer-events: none;
 }
@@ -201,12 +167,12 @@ body:blur {
     <div id="home" class="screen active">
 
         <div class="logo">
-            <h1>📚 Latihan SKD CPNS</h1>
-            <p>Latihan Soal TWK, TIU dan TKP</p>
+            <h1>📚 Quiz App</h1>
+            <p>Latihan Soal Pilihan Ganda</p>
         </div>
 
         <button class="menu-btn" onclick="showScreen('quizlist')">
-            📚 Pilih Soal
+            📚 Pilih Kuis
         </button>
 
         <button class="menu-btn" onclick="showScreen('petunjuk')">
@@ -218,7 +184,7 @@ body:blur {
         </button>
 
         <div class="info-acak">
-            🔄 Setiap membuka soal, pilihan jawaban akan diacak!
+            🔄 Setiap membuka kuis, pilihan jawaban akan diacak!
         </div>
 
         <div class="version">
@@ -230,22 +196,22 @@ body:blur {
     <!-- PILIH KUIS -->
     <div id="quizlist" class="screen">
 
-        <h2>📚 Pilih Soal SKD</h2>
+        <h2>📚 Pilih Kuis</h2>
 
         <button class="quiz-item" onclick="bukaKuis('latihan1.html')">
-            📖 Latihan SKD 1
+            📖 Latihan 1
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan2.html')">
-            📖 Latihan SKD 2
+            📖 Latihan 2
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan3.html')">
-            📖 Latihan SKD 3
+            📖 Latihan 3
         </button>
 
         <button class="quiz-item" onclick="bukaKuis('latihan4.html')">
-            📖 Latihan SKD 4
+            📖 Latihan 4
         </button>
 
         <button class="back-btn" onclick="showScreen('home')">
@@ -259,12 +225,12 @@ body:blur {
 
         <h2>📖 Petunjuk</h2>
 
-        <p>1. Pilih salah satu soal latihan yang tersedia.</p>
+        <p>1. Pilih salah satu kuis yang tersedia.</p>
         <p>2. Baca soal dengan teliti.</p>
         <p>3. Pilih jawaban yang paling benar.</p>
         <p>4. Gunakan tombol Next dan Previous untuk berpindah soal.</p>
         <p>5. Tekan tombol Selesai untuk melihat hasil nilai.</p>
-        <p>6. Setiap soal memiliki timer 100 menit.</p>
+        <p>6. Setiap kuis memiliki timer 10 menit.</p>
         <p>7. Gunakan tombol 📋 Daftar Soal untuk navigasi cepat.</p>
 
         <button class="back-btn" onclick="showScreen('home')">
@@ -279,17 +245,17 @@ body:blur {
         <h2>ℹ️ Tentang</h2>
 
         <p>
-            Aplikasi ini adalah aplikasi latihan soal berbasis HTML,
+            Quiz App adalah aplikasi latihan soal berbasis HTML,
             CSS dan JavaScript yang dapat dijalankan secara offline
             maupun online.
         </p>
 
         <p>
             Fitur unggulan:
-            • Pengacakan pilihan jawaban setiap soal dibuka
-            • Timer 100 menit
+            • Pengacakan pilihan jawaban setiap kuis dibuka
+            • Timer 10 menit
             • Sidebar grid soal untuk navigasi
-            • Hasil nilai/skor otomatis
+            • Hasil nilai otomatis
         </p>
 
         <p>
@@ -304,9 +270,8 @@ body:blur {
 
 </div>
 
-<!-- Overlay untuk anti-screenshot -->
 <div id="screenshotOverlay" class="screenshot-overlay"></div>
-<div class="watermark">© Latihan SKD - Hak Cipta Dilindungi</div>
+<div class="watermark">© Quiz App - Hak Cipta Dilindungi</div>
 
 <script>
 // ========== PERLINDUNGAN ==========
@@ -317,48 +282,41 @@ document.addEventListener('contextmenu', function(e) {
     return false;
 });
 
-// 2. Mencegah kombinasi keyboard untuk developer tools
+// 2. Mencegah kombinasi keyboard (tanpa alert yang mengganggu)
 document.addEventListener('keydown', function(e) {
     // F12
     if(e.key === 'F12') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+Shift+I (Windows/Linux)
     if(e.ctrlKey && e.shiftKey && e.key === 'I') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+Shift+J (Windows/Linux)
     if(e.ctrlKey && e.shiftKey && e.key === 'J') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+Shift+C (Windows/Linux)
     if(e.ctrlKey && e.shiftKey && e.key === 'C') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+U (View Source)
     if(e.ctrlKey && e.key === 'u') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+S (Save)
     if(e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Ctrl+P (Print)
     if(e.ctrlKey && e.key === 'p') {
         e.preventDefault();
-        showScreenshotWarning();
         return false;
     }
     // Print Screen key
@@ -367,21 +325,9 @@ document.addEventListener('keydown', function(e) {
         showScreenshotWarning();
         return false;
     }
-    // Windows + Shift + S (Snipping Tool)
-    if(e.metaKey && e.shiftKey && e.key === 'S') {
-        e.preventDefault();
-        showScreenshotWarning();
-        return false;
-    }
-    // Windows + PrtSc
-    if(e.metaKey && e.key === 'PrintScreen') {
-        e.preventDefault();
-        showScreenshotWarning();
-        return false;
-    }
 });
 
-// 3. Mencegah drag and drop pada gambar/teks
+// 3. Mencegah drag and drop
 document.addEventListener('dragstart', function(e) {
     e.preventDefault();
     return false;
@@ -390,96 +336,47 @@ document.addEventListener('dragstart', function(e) {
 // 4. Mencegah copy
 document.addEventListener('copy', function(e) {
     e.preventDefault();
-    showScreenshotWarning();
     return false;
 });
 
 // 5. Mencegah cut
 document.addEventListener('cut', function(e) {
     e.preventDefault();
-    showScreenshotWarning();
     return false;
 });
 
-// 6. Fungsi untuk menampilkan peringatan screenshot
+// 6. Fungsi peringatan screenshot (tanpa alert terus-terusan)
+let lastWarningTime = 0;
 function showScreenshotWarning() {
-    const overlay = document.getElementById('screenshotOverlay');
-    overlay.style.display = 'block';
-    
-    // Tampilkan peringatan alert
-    alert('🚫 SORRY! Screenshot tidak diizinkan. Konten ini dilindungi! 🚫');
-    
-    // Sembunyikan overlay setelah 2 detik
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 2000);
+    const now = Date.now();
+    // Hanya tampilkan peringatan setiap 5 detik sekali
+    if(now - lastWarningTime > 5000) {
+        lastWarningTime = now;
+        const overlay = document.getElementById('screenshotOverlay');
+        overlay.style.display = 'block';
+        
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 500);
+        
+        // Peringatan ringan (gunakan console, bukan alert)
+        console.warn('⚠️ Screenshot terdeteksi! Konten dilindungi.');
+    }
 }
 
-// 7. Mencegah seleksi teks tambahan dengan CSS sudah di body
-
-// 8. Deteksi screenshot via keyboard shortcut (visibility change)
-document.addEventListener('visibilitychange', function() {
-    if(document.hidden) {
-        // Halaman tidak terlihat (mungkin sedang screenshot atau switch tab)
-        console.log('Halaman tidak terlihat');
+// 7. Deteksi Print Screen via keyup
+window.addEventListener('keyup', function(e) {
+    if(e.key === 'PrintScreen') {
+        showScreenshotWarning();
     }
 });
 
-// 9. Mencegah inspect element melalui tombol kanan pada elemen tertentu
+// 8. Mencegah inspect element pada tombol
 document.querySelectorAll('button, .menu-btn, .quiz-item, .back-btn').forEach(el => {
     el.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         return false;
     });
-});
-
-// 10. Deteksi devtools
-(function() {
-    let devtoolsOpen = false;
-    
-    // Metode deteksi devtools
-    function detectDevTools() {
-        const before = new Date().getTime();
-        debugger;
-        const after = new Date().getTime();
-        
-        if (after - before > 100) {
-            if (!devtoolsOpen) {
-                devtoolsOpen = true;
-                showScreenshotWarning();
-            }
-        } else {
-            devtoolsOpen = false;
-        }
-    }
-    
-    setInterval(detectDevTools, 1000);
-})();
-
-// 11. Prevent print screen via canvas (alternatif)
-function clearScreenForScreenshot() {
-    const overlay = document.getElementById('screenshotOverlay');
-    overlay.style.display = 'block';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-    }, 500);
-}
-
-// Event listener untuk mendeteksi perubahan style yang mungkin disebabkan oleh screenshot tools
-const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-        if(mutation.type === 'attributes') {
-            showScreenshotWarning();
-        }
-    });
-});
-observer.observe(document.body, { attributes: true });
-
-// 12. Menonaktifkan PrintScreen via event listener lain
-window.addEventListener('keyup', function(e) {
-    if(e.key === 'PrintScreen') {
-        showScreenshotWarning();
-    }
 });
 
 // ========== FUNGSI UTAMA ==========
@@ -497,18 +394,9 @@ function bukaKuis(halaman) {
     window.location.href = `${halaman}?seed=${timestamp}`;
 }
 
-// Peringatan di console
+// Peringatan di console (tidak mengganggu user)
 console.log("%c🚫 PERINGATAN! 🚫", "color: red; font-size: 16px; font-weight: bold;");
-console.log("%cKonten ini dilindungi. Screenshot, copy, dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
-
-// Deteksi screen capture software (basic)
-setInterval(function() {
-    // Cek apakah ada elemen yang mencurigakan
-    const suspiciousElements = document.querySelectorAll('[style*="screenshot"], [class*="screenshot"]');
-    if(suspiciousElements.length > 0) {
-        showScreenshotWarning();
-    }
-}, 2000);
+console.log("%cKonten ini dilindungi. Copy dan inspect element tidak diizinkan.", "color: orange; font-size: 12px;");
 
 </script>
 
