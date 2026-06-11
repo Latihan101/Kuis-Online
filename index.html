@@ -513,7 +513,7 @@ function refreshQuizList(){
     const maxTKP=bank.tkp.length>0?bank.tkp.length*5:225;
     const maxTotal=maxTWK+maxTIU+maxTKP;
     const badgesHtml=done?
-      `<span class="skor-badge twk">TWK:${twk}/${maxTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${maxTIU}</span><span class="skor-badge tkp">TKP:${tkp}</span>`
+      `<span class="skor-badge twk">TWK:${twk}/${maxTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${maxTIU}</span><span class="skor-badge tkp">TKP:${tkp}/${maxTKP}</span>`
       :`<span class="skor-badge belum">-</span><span class="skor-badge belum">-</span><span class="skor-badge belum">-</span>`;
     // Tampilkan hanya paket yang ada soalnya, atau selalu tampilkan semua
     c.innerHTML+=`<div class="quiz-item" onclick="startQuiz(${m.id})">
