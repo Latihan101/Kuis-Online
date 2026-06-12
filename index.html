@@ -406,6 +406,184 @@ input:checked+.slider:before{transform:translateX(22px);}
 .materi-nav-btn.tiu-btn{background:#8B4513;}
 .materi-nav-btn.tkp-btn{background:#20c997;}
 
+/* ===== MENU 6 KOTAK (3x2) ===== */
+.menu-grid-6 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0;
+}
+.menu-grid-6 .menu-card {
+  padding: 16px 8px;
+  font-size: 12px;
+  gap: 5px;
+}
+.menu-grid-6 .menu-card .menu-icon {
+  font-size: 28px;
+}
+.menu-grid-6 .menu-card .menu-label {
+  font-size: 11px;
+}
+.menu-card.stats {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+.menu-card.simulasi {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+/* ===== STATISTIK PAGE ===== */
+.stats-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stats-mini-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.stats-mini-card .mini-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+.stats-mini-card .mini-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #0d6efd;
+}
+.stats-mini-card .mini-label {
+  font-size: 10px;
+  color: #888;
+  margin-top: 2px;
+}
+.stats-bar-container {
+  margin: 10px 0;
+}
+.stats-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.stats-bar {
+  height: 20px;
+  border-radius: 10px;
+  background: #e9ecef;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.stats-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 40px;
+}
+.stats-bar-fill.twk { background: linear-gradient(90deg, #6f42c1, #a855f7); }
+.stats-bar-fill.tiu { background: linear-gradient(90deg, #8B4513, #d2691e); }
+.stats-bar-fill.tkp { background: linear-gradient(90deg, #20c997, #38ef7d); }
+.stats-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 10px;
+}
+.stats-history-table th {
+  background: #f0f0f0;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+}
+.stats-history-table td {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+.stats-history-table .pass {
+  color: #198754;
+  font-weight: bold;
+}
+.stats-history-table .fail {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* ===== SIMULASI UJIAN ===== */
+.simulasi-info {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 14px;
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.simulasi-info strong {
+  color: #856404;
+}
+.simulasi-timer-big {
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  color: #dc3545;
+  margin: 20px 0;
+  font-family: 'Courier New', monospace;
+}
+.simulasi-progress {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 14px;
+}
+.btn-mulai-simulasi {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-mulai-simulasi:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(231,76,60,.4);
+}
+.btn-mulai-simulasi:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media(max-width:600px){
+  .menu-grid-6 {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .menu-grid-6 .menu-card {
+    padding: 14px 6px;
+  }
+  .stats-overview {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .simulasi-timer-big {
+    font-size: 36px;
+  }
+}
+
 @media(max-width:600px){
   .sidebar{width:100%;right:-100%;}
   .quiz-top{flex-direction:column;text-align:center;}
@@ -438,8 +616,8 @@ input:checked+.slider:before{transform:translateX(22px);}
       <div class="stat-item"><div class="stat-number" id="homeBestScore">-</div><div class="stat-label">Skor Terbaik</div></div>
     </div>
 
-    <!-- ===== 4 KOTAK MENU ===== -->
-    <div class="menu-grid">
+       <!-- ===== 6 KOTAK MENU (3x2) ===== -->
+    <div class="menu-grid-6">
       <button class="menu-card soal" onclick="goTo('quizlistPage')">
         <span class="menu-icon">📚</span>
         <span class="menu-label">Pilih Soal</span>
@@ -447,6 +625,14 @@ input:checked+.slider:before{transform:translateX(22px);}
       <button class="menu-card materi" onclick="goTo('materiPage')">
         <span class="menu-icon">📖</span>
         <span class="menu-label">Materi</span>
+      </button>
+      <button class="menu-card stats" onclick="goTo('statistikPage')">
+        <span class="menu-icon">📊</span>
+        <span class="menu-label">Statistik</span>
+      </button>
+      <button class="menu-card simulasi" onclick="goTo('simulasiPage')">
+        <span class="menu-icon">⏰</span>
+        <span class="menu-label">Simulasi</span>
       </button>
       <button class="menu-card petunjuk" onclick="goTo('petunjukPage')">
         <span class="menu-icon">📝</span>
@@ -513,6 +699,36 @@ input:checked+.slider:before{transform:translateX(22px);}
     <div class="page-title" id="materiContentTitle">📖 Materi</div>
     <div id="materiContentFull" class="materi-content-full"></div>
     <button class="back-btn" onclick="goTo('materiPage')">← Kembali ke Daftar Materi</button>
+  </div>
+</div>
+
+<!-- ==================== HALAMAN STATISTIK ==================== -->
+<div id="statistikPage" class="page">
+  <div class="card">
+    <div class="page-title">📊 Statistik Belajar</div>
+    <div class="stats-overview" id="statsOverview"></div>
+    <div id="statsBars" style="margin-top:8px;"></div>
+    <div id="statsHistory" style="margin-top:12px;"></div>
+    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+  </div>
+</div>
+
+<!-- ==================== HALAMAN SIMULASI UJIAN ==================== -->
+<div id="simulasiPage" class="page">
+  <div class="card">
+    <div class="page-title">⏰ Simulasi Ujian SKD</div>
+    <div class="simulasi-info">
+      <strong>⚠️ Perhatian!</strong><br>
+      • 110 soal (30 TWK + 35 TIU + 45 TKP)<br>
+      • Waktu: <strong>100 menit</strong> (tidak bisa pause)<br>
+      • Soal diambil dari <strong>semua paket</strong> yang tersedia<br>
+      • Hasil akan muncul setelah waktu habis atau semua soal selesai<br>
+      • Tidak bisa melihat kunci jawaban selama ujian
+    </div>
+    <button class="btn-mulai-simulasi" id="btnMulaiSimulasi" onclick="mulaiSimulasi()">
+      🚀 MULAI SIMULASI UJIAN
+    </button>
+    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
   </div>
 </div>
   
@@ -703,7 +919,7 @@ window.addEventListener('keyup',e=>{if(e.key==='PrintScreen')flashOverlay();});
 function flashOverlay(){const o=document.getElementById('screenshotOverlay');o.style.display='block';setTimeout(()=>o.style.display='none',500);}
 
 // ==================== PAGE NAVIGATION ====================
-const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage'];
+const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','statistikPage','simulasiPage','petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage'];
 let currentPage='homePage';
 let currentMateriKategori='';
 
@@ -715,6 +931,7 @@ function goTo(pageId){
   window.scrollTo(0,0);
   if(pageId==='quizlistPage')refreshQuizList();
   if(pageId==='homePage')refreshHomeStats();
+  if(pageId==='statistikPage')refreshStatistik();
   if(pageId==='materiPage'){
     document.getElementById('materiContent').style.display='none';
   }
@@ -1052,6 +1269,275 @@ function refreshHomeStats(){
 }
 refreshHomeStats();
 
+// ==================== STATISTIK ====================
+function refreshStatistik(){
+  // Overview
+  let totalLatihan = 0;
+  let totalLulus = 0;
+  let bestOverall = 0;
+  let totalSoalDijawab = 0;
+  
+  const historyRows = [];
+  
+  for(let i=1;i<=5;i++){
+    const twk = localStorage.getItem(`skorTWK_latihan${i}`);
+    const tiu = localStorage.getItem(`skorTIU_latihan${i}`);
+    const tkp = localStorage.getItem(`skorTKP_latihan${i}`);
+    const best = localStorage.getItem(`bestScore_latihan${i}`);
+    
+    if(twk && tiu && tkp){
+      totalLatihan++;
+      const sTWK = parseInt(twk)||0;
+      const sTIU = parseInt(tiu)||0;
+      const sTKP = parseInt(tkp)||0;
+      const total = sTWK+sTIU+sTKP;
+      const lulus = sTWK>=65 && sTIU>=80 && sTKP>=166;
+      if(lulus) totalLulus++;
+      if(total > bestOverall) bestOverall = total;
+      
+      const bank = getSoalBank(i);
+      const jmlSoal = bank.twk.length + bank.tiu.length + bank.tkp.length;
+      totalSoalDijawab += jmlSoal;
+      
+      historyRows.push({
+        paket: i,
+        twk: sTWK,
+        tiu: sTIU,
+        tkp: sTKP,
+        total: total,
+        lulus: lulus,
+        max: (bank.twk.length*5)+(bank.tiu.length*5)+(bank.tkp.length*5)
+      });
+    }
+  }
+  
+  // Overview cards
+  document.getElementById('statsOverview').innerHTML = `
+    <div class="stats-mini-card">
+      <div class="mini-icon">📝</div>
+      <div class="mini-value">${totalLatihan}/5</div>
+      <div class="mini-label">Paket Selesai</div>
+    </div>
+    <div class="stats-mini-card">
+      <div class="mini-icon">🏆</div>
+      <div class="mini-value">${bestOverall||'-'}</div>
+      <div class="mini-label">Skor Terbaik</div>
+    </div>
+    <div class="stats-mini-card">
+      <div class="mini-icon">🎯</div>
+      <div class="mini-value">${totalLulus}/${totalLatihan||1}</div>
+      <div class="mini-label">Lulus PG</div>
+    </div>
+  `;
+  
+  // Bar chart
+  let barsHTML = '<h4 style="margin-bottom:8px;color:#333;">📊 Penguasaan per Kategori</h4>';
+  const allTWK = [65,80,166]; // passing grade
+  let maxTWK = 0, maxTIU = 0, maxTKP = 0;
+  historyRows.forEach(r => {
+    if(r.twk > maxTWK) maxTWK = r.twk;
+    if(r.tiu > maxTIU) maxTIU = r.tiu;
+    if(r.tkp > maxTKP) maxTKP = r.tkp;
+  });
+  
+  const twkPct = maxTWK > 0 ? Math.round(maxTWK/150*100) : 0;
+  const tiuPct = maxTIU > 0 ? Math.round(maxTIU/175*100) : 0;
+  const tkpPct = maxTKP > 0 ? Math.round(maxTKP/225*100) : 0;
+  
+  barsHTML += `
+    <div class="stats-bar-container">
+      <div class="stats-bar-label"><span>📚 TWK</span><span>${maxTWK||0}/150 (${twkPct}%)</span></div>
+      <div class="stats-bar"><div class="stats-bar-fill twk" style="width:${twkPct}%">${twkPct}%</div></div>
+    </div>
+    <div class="stats-bar-container">
+      <div class="stats-bar-label"><span>🔢 TIU</span><span>${maxTIU||0}/175 (${tiuPct}%)</span></div>
+      <div class="stats-bar"><div class="stats-bar-fill tiu" style="width:${tiuPct}%">${tiuPct}%</div></div>
+    </div>
+    <div class="stats-bar-container">
+      <div class="stats-bar-label"><span>⭐ TKP</span><span>${maxTKP||0}/225 (${tkpPct}%)</span></div>
+      <div class="stats-bar"><div class="stats-bar-fill tkp" style="width:${tkpPct}%">${tkpPct}%</div></div>
+    </div>
+  `;
+  document.getElementById('statsBars').innerHTML = barsHTML;
+  
+  // History table
+  let historyHTML = '<h4 style="margin-bottom:8px;color:#333;">📋 Riwayat Latihan</h4>';
+  if(historyRows.length > 0){
+    historyHTML += `<table class="stats-history-table">
+      <tr><th>Paket</th><th>TWK</th><th>TIU</th><th>TKP</th><th>Total</th><th>Status</th></tr>`;
+    historyRows.forEach(r => {
+      historyHTML += `<tr>
+        <td>Paket ${r.paket}</td>
+        <td>${r.twk}</td>
+        <td>${r.tiu}</td>
+        <td>${r.tkp}</td>
+        <td>${r.total}/${r.max}</td>
+        <td class="${r.lulus?'pass':'fail'}">${r.lulus?'✅ Lulus':'❌ Tidak Lulus'}</td>
+      </tr>`;
+    });
+    historyHTML += '</table>';
+  } else {
+    historyHTML += '<p style="color:#888;text-align:center;padding:20px;">Belum ada riwayat latihan.</p>';
+  }
+  document.getElementById('statsHistory').innerHTML = historyHTML;
+}
+
+// ==================== SIMULASI UJIAN ====================
+let simulasiMode = false;
+
+function mulaiSimulasi(){
+  // Kumpulkan semua soal dari semua paket yang tersedia
+  const allTWK = [];
+  const allTIU = [];
+  const allTKP = [];
+  
+  for(let i=1;i<=5;i++){
+    const bank = getSoalBank(i);
+    allTWK.push(...bank.twk);
+    allTIU.push(...bank.tiu);
+    allTKP.push(...bank.tkp);
+  }
+  
+  // Ambil 30 TWK, 35 TIU, 45 TKP secara random
+  const randomPick = (arr, n) => {
+    const shuffled = [...arr].sort(()=>Math.random()-0.5);
+    return shuffled.slice(0, Math.min(n, shuffled.length));
+  };
+  
+  const selectedTWK = randomPick(allTWK, 30);
+  const selectedTIU = randomPick(allTIU, 35);
+  const selectedTKP = randomPick(allTKP, 45);
+  
+  const totalSoal = selectedTWK.length + selectedTIU.length + selectedTKP.length;
+  
+  if(totalSoal === 0){
+    alert('⚠️ Tidak ada soal tersedia untuk simulasi.\nSilakan tambahkan soal di file soal.js terlebih dahulu.');
+    return;
+  }
+  
+  if(totalSoal < 110){
+    alert(`⚠️ Soal yang tersedia hanya ${totalSoal} dari 110 soal.\nSimulasi akan tetap berjalan dengan ${totalSoal} soal.`);
+  }
+  
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  
+  // Bangun soal simulasi
+  originals = [];
+  selectedTWK.forEach(d=>originals.push({
+    question:d.q, options:[...d.opt], answer:d.a,
+    isTKP:false, optionScores:null, pembahasan:d.pembahasan||''
+  }));
+  selectedTIU.forEach(d=>originals.push({
+    question:d.q, options:[...d.opt], answer:d.a,
+    isTKP:false, optionScores:null, pembahasan:d.pembahasan||''
+  }));
+  selectedTKP.forEach(d=>originals.push({
+    question:d.q, options:[...d.opts], answer:null,
+    isTKP:true, optionScores:[...d.scores], pembahasan:d.pembahasan||''
+  }));
+  
+  questions = originals.map(q=>shuffleOpts(q));
+  curQ = 0;
+  userAnswers = Array(questions.length).fill(null);
+  userScores = Array(questions.length).fill(null);
+  timeLeft = 6000; // 100 menit
+  simulasiMode = true;
+  activeSet = 0; // Simulasi bukan paket biasa
+  
+  document.getElementById('evaluasiPanel').style.display='none';
+  document.getElementById('btnCloseEval').style.display='none';
+  document.getElementById('quizTitle').textContent='⏰ Simulasi Ujian SKD';
+  document.getElementById('sidebarToggle').style.display='block';
+  
+  goTo('quizPage');
+  loadQuestion();
+  updateGrid();
+  
+  const timerDisplay=document.getElementById('timerDisplay');
+  const timerBadge=document.getElementById('timerBadge');
+  timerDisplay.textContent='100:00';
+  timerDisplay.style.opacity='1';
+  timerDisplay.classList.remove('timer-warning','timer-danger','timer-blink');
+  timerBadge.textContent='⏱️ Simulasi';
+  timerBadge.className='timer-badge on';
+  startTimer();
+  
+  // Sembunyikan tombol selesai sampai semua terjawab atau waktu habis
+  document.getElementById('btnNextFinish').textContent='Next ▶';
+  document.getElementById('btnNextFinish').className='btn-next';
+  document.getElementById('btnNextFinish').onclick=nextQuestion;
+}
+
+// Update finishQuiz untuk simulasi
+const originalFinishQuiz = finishQuiz;
+finishQuiz = function(){
+  if(timerInterval)clearInterval(timerInterval);timerInterval=null;
+  saveAnswer();
+  document.getElementById('sidebarToggle').style.display='none';
+  const s=hitungSkor();
+  
+  if(simulasiMode){
+    // Simpan skor simulasi terpisah
+    const simKey = 'simulasi_last';
+    localStorage.setItem(simKey, JSON.stringify({
+      twk: s.twk,
+      tiu: s.tiu,
+      tkp: s.tkp,
+      total: s.total,
+      persen: s.persen,
+      tanggal: new Date().toLocaleDateString('id-ID')
+    }));
+    simulasiMode = false;
+    activeSet = 1;
+  } else {
+    // Simpan seperti biasa
+    localStorage.setItem(`skorTWK_latihan${activeSet}`,s.twk);
+    localStorage.setItem(`skorTIU_latihan${activeSet}`,s.tiu);
+    localStorage.setItem(`skorTKP_latihan${activeSet}`,s.tkp);
+    
+    // Simpan jawaban user untuk evaluasi nanti
+    const savedData = {
+      answers: userAnswers,
+      scores: userScores,
+      questions: questions.map(q=>({
+        question: q.question,
+        options: q.options,
+        answer: q.answer,
+        isTKP: q.isTKP,
+        optionScores: q.optionScores,
+        pembahasan: q.pembahasan||''
+      }))
+    };
+    localStorage.setItem(`evalData_latihan${activeSet}`, JSON.stringify(savedData));
+    
+    const key=`bestScore_latihan${activeSet}`;
+    const prev=localStorage.getItem(key);
+    if(prev===null||s.total>parseInt(prev))localStorage.setItem(key,s.total);
+  }
+  
+  const pass={twk:s.twk>=PASSING.TWK,tiu:s.tiu>=PASSING.TIU,tkp:s.tkp>=PASSING.TKP};
+  pass.all=pass.twk&&pass.tiu&&pass.tkp;
+
+  document.getElementById('scoreDetail').innerHTML=`
+    <h3>📊 Detail Skor ${simulasiMode?'Simulasi':''}</h3><table>
+      <tr><td>📚 TWK (30 soal)</td><td><strong>${s.twk}</strong> / 150</td></tr>
+      <tr><td>🔢 TIU (35 soal)</td><td><strong>${s.tiu}</strong> / 175</td></tr>
+      <tr><td>⭐ TKP (45 soal)</td><td><strong>${s.tkp}</strong> / 225</td></tr>
+      <tr style="border-top:2px solid #ddd;"><td><strong>✅ TOTAL SKOR</strong></td><td><strong>${s.total}</strong> / 550</td></tr>
+    </table><div class="total-score">🎯 Nilai Akhir: ${s.persen}%</div>`;
+  document.getElementById('passStatus').innerHTML=`
+    <div style="margin-bottom:10px;font-weight:bold;">📋 STATUS PASSING GRADE:</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${pass.twk?'#d4edda':'#f8d7da'}">📚 TWK: ${s.twk}/65<br>${pass.twk?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+      <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${pass.tiu?'#d4edda':'#f8d7da'}">🔢 TIU: ${s.tiu}/80<br>${pass.tiu?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+      <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:${pass.tkp?'#d4edda':'#f8d7da'}">⭐ TKP: ${s.tkp}/166<br>${pass.tkp?'✅ LULUS':'❌ TIDAK LULUS'}</div>
+    </div>
+    <div style="margin-top:12px;padding:10px;border-radius:8px;background:${pass.all?'#c3e6cb':'#f5c6cb'};font-weight:bold;">
+      ${pass.all?'🎉 SELAMAT! Anda LULUS Passing Grade SKD! 🎉':'⚠️ MAAF! Anda BELUM LULUS Passing Grade SKD. Silakan coba lagi!'}
+    </div>`;
+  goTo('resultPage');
+};
+
 // ==================== START QUIZ ====================
 //⚠️ Paket ${setId} belum memiliki soal.\nSilakan tambahkan soal di file soal.js.
 function startQuiz(setId){
@@ -1342,7 +1828,7 @@ window.addEventListener('popstate',function(){
     goTo('quizlistPage');
   } else if(currentPage=='materiContentPage'){
     goTo('materiPage');
-  } else if(currentPage=='quizlistPage'||currentPage=='materiPage'||currentPage=='petunjukPage'||currentPage=='tentangPage'){
+  } else if(currentPage=='quizlistPage'||currentPage=='materiPage'||currentPage=='statistikPage'||currentPage=='simulasiPage'||currentPage=='petunjukPage'||currentPage=='tentangPage'){
     goTo('homePage');
   }
 });
