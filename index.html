@@ -792,18 +792,11 @@ function mulaiSoalSalah(){
   goTo('quizPage');
   loadQuestion();
   updateGrid();
-  const timerOn=getTimerEnabled();
   const td=document.getElementById('timerDisplay');
   const tb=document.getElementById('timerBadge');
-  if(timerOn){
-    td.textContent='100:00';td.style.opacity='1';
-    td.classList.remove('timer-warning','timer-danger','timer-blink');
-    tb.textContent='⏱️ Timer ON';tb.className='timer-badge on';
-    startTimer();
-  } else {
-    td.textContent='100:00';td.style.opacity='.5';
-    tb.textContent='⏸️ Timer OFF';tb.className='timer-badge off';
-  }
+  td.textContent='--:--';td.style.opacity='0';
+  tb.textContent='';tb.className='timer-badge off';
+  tb.style.display='none';
 }
 
 // ==================== PENCAPAIAN ====================
@@ -1209,7 +1202,6 @@ function finishQuiz(){
   document.getElementById('sidebarToggle').style.display='none';
   const s=hitungSkor();
 
-  // Kumpulkan soal yang salah untuk disimpan
   const newWrong=[];
   const benarList=[];
   for(let i=0;i<questions.length;i++){
@@ -1235,9 +1227,11 @@ function finishQuiz(){
     hapusDariSoalSalah(benarList);
   }
   if(soalSalahMode){
-    // Hapus yang sudah benar dari daftar soal salah
     hapusDariSoalSalah(benarList);
   }
+
+  // === PERUBAHAN TITIK 1: simpan flag SEBELUM di-reset ===
+  const wasSoalSalah = soalSalahMode;
 
   if(simulasiMode){
     localStorage.setItem('simulasi_last',JSON.stringify({twk:s.twk,tiu:s.tiu,tkp:s.tkp,total:s.total,persen:s.persen,tanggal:new Date().toLocaleDateString('id-ID')}));
@@ -1278,6 +1272,13 @@ function finishQuiz(){
     <div style="margin-top:12px;padding:12px;border-radius:10px;background:${pass.all?'#d1fae5':'#fee2e2'};font-weight:700;font-size:14px;">
       ${pass.all?'🎉 SELAMAT! Anda LULUS Passing Grade SKD!':'⚠️ Belum lulus passing grade. Terus semangat berlatih!'}
     </div>`;
+
+  // === PERUBAHAN TITIK 2: sembunyikan skor jika dari soal salah ===
+  const sd=document.getElementById('scoreDetail');
+  const ps=document.getElementById('passStatus');
+  sd.style.display=wasSoalSalah?'none':'';
+  ps.style.display=wasSoalSalah?'none':'';
+
   goTo('resultPage');
 }
 
