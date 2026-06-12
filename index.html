@@ -732,7 +732,24 @@ function hitungSkor(){
   }
   return{twk,tiu,tkp,total:twk+tiu+tkp,persen:Math.round((twk+tiu+tkp)/550*100)};
 }
-
+// ==================== Hitung Skor Soal Salah =============
+function hitungSkorSoalSalah(){
+  let twk=0,tiu=0,tkp=0;
+  for(let i=0;i<questions.length;i++){
+    const q=questions[i];
+    const kat=q.kategori||'TKP';
+    if(q.isTKP){
+      if(userScores[i]!==null)tkp+=userScores[i];
+    } else {
+      if(userAnswers[i]!==null&&userAnswers[i]===q.answer){
+        if(kat==='TWK')twk+=5;
+        else if(kat==='TIU')tiu+=5;
+      }
+    }
+  }
+  const total=twk+tiu+tkp;
+  return{twk,tiu,tkp,total,persen:Math.round(total/550*100)};
+}
 // ==================== SOAL SALAH ====================
 function getSoalSalahList(){
   let list=[];
@@ -1200,7 +1217,8 @@ function finishQuiz(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   saveAnswer();
   document.getElementById('sidebarToggle').style.display='none';
-  const s=hitungSkor();
+  const wasSoalSalah=soalSalahMode;
+  const s=wasSoalSalah?hitungSkorSoalSalah():hitungSkor();
   const newWrong=[];
   const benarList=[];
   for(let i=0;i<questions.length;i++){
@@ -1230,7 +1248,6 @@ function finishQuiz(){
   if(soalSalahMode){
     hapusDariSoalSalah(benarList);
   }
-  const wasSoalSalah=soalSalahMode;
   if(simulasiMode){
     localStorage.setItem('simulasi_last',JSON.stringify({twk:s.twk,tiu:s.tiu,tkp:s.tkp,total:s.total,persen:s.persen,tanggal:new Date().toLocaleDateString('id-ID')}));
     simulasiMode=false;activeSet=1;
