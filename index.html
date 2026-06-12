@@ -515,10 +515,10 @@ function refreshQuizList(){
     const badgesHtml=done?
       `<span class="skor-badge twk">TWK:${twk}/${maxTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${maxTIU}</span><span class="skor-badge tkp">TKP:${tkp}/${maxTKP}</span>`
       :`<span class="skor-badge belum">-</span><span class="skor-badge belum">-</span><span class="skor-badge belum">-</span>`;
-    // Tampilkan hanya paket yang ada soalnya, atau selalu tampilkan semua
+    // Tampilkan hanya paket yang ada soalnya, atau selalu tampilkan semua pakai: ${m.name} (${totalSoal} soal)
     c.innerHTML+=`<div class="quiz-item" onclick="startQuiz(${m.id})">
       <div class="quiz-header">
-        <div class="quiz-left"><span class="quiz-icon">${m.icon}</span><span>${m.name} (${totalSoal} soal)</span></div>
+        <div class="quiz-left"><span class="quiz-icon">${m.icon}</span><span>${m.name}</span></div>
         <div class="quiz-right">${badgesHtml}</div>
       </div>
       <div class="quiz-detail">
@@ -526,7 +526,7 @@ function refreshQuizList(){
           <span class="total-skor-label">Total Skor:</span>
           <span class="total-skor-value ${done?'completed':''}">${total} / ${maxTotal}</span>
         </div>
-        <span class="status-badge ${done?'selesai':'belum'}">${done?'✅ Selesai':'⏳ Belum'}</span>
+        <span class="status-badge ${done?'selesai':'belum'}">${done?'✅ Selesai':'⏳ Belum Dikerjakan'}</span>
       </div>
     </div>`;
   });
