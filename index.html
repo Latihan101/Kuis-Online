@@ -382,6 +382,45 @@ canvas#progressChart{max-width:100%;height:180px;}
   .pencapaian-grid{grid-template-columns:1fr 1fr;}
   .qc-timer-grid{grid-template-columns:repeat(4,1fr);}
 }
+
+/* Layout Pencapaian - flex column full height */
+#pencapaianPage .card {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  max-height: 90vh;
+  overflow: hidden;
+  padding-bottom: 14px;
+}
+
+#pencapaianPage .page-title {
+  flex-shrink: 0;
+}
+
+#pencapaianPage .pencapaian-desc {
+  flex-shrink: 0;
+}
+
+/* Area scroll untuk badge */
+.pencapaian-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+  margin: 10px 0;
+}
+
+/* Grid di dalam scroll area */
+.pencapaian-scroll .pencapaian-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+#pencapaianPage .back-btn {
+  flex-shrink: 0;
+  margin-top: 6px;
+}
 </style>
 </head>
 <body>
@@ -561,8 +600,13 @@ canvas#progressChart{max-width:100%;height:180px;}
 <div id="pencapaianPage" class="page">
   <div class="card">
     <div class="page-title">🏅 Pencapaian</div>
-    <p style="color:var(--gray);font-size:13px;margin-bottom:14px;">Kumpulkan semua pencapaian dengan terus berlatih!</p>
-    <div class="pencapaian-grid" id="pencapaianGrid"></div>
+    <p class="pencapaian-desc" style="color:var(--gray);font-size:13px;flex-shrink:0;">Kumpulkan semua pencapaian dengan terus berlatih!</p>
+    
+    <!-- SCROLL AREA -->
+    <div class="pencapaian-scroll">
+      <div class="pencapaian-grid" id="pencapaianGrid"></div>
+    </div>
+    
     <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
   </div>
 </div>
