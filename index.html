@@ -1245,6 +1245,8 @@ const BADGE_TIERS=[
       {id:'qc_first',icon:'⚡',name:'Pemula Cepat',desc:'Main Quiz Cepat pertama kali',check:s=>s.qcTotalSesi>=1},
       {id:'kutu_buku',icon:'📖',name:'Kutu Buku',desc:'Buka semua materi TWK, TIU, TKP',check:s=>s.materiAll},
       {id:'penjelajah',icon:'🗺️',name:'Penjelajah',desc:'Kunjungi semua menu aplikasi',check:s=>s.menuAll},
+      {id:'penasaran',icon:'🔍',name:'Penasaran',desc:'Kunjungi halaman Tentang aplikasi',check:s=>s.menuVisitedTentang},
+      {id:'siap_belajar',icon:'✏️',name:'Siap Belajar',desc:'Jawab minimal 1 soal dalam latihan',check:s=>s.pernahJawab},
     ]
   },
   {
@@ -1255,6 +1257,7 @@ const BADGE_TIERS=[
       {id:'qc_10tiu',icon:'🧮',name:'Pakar TIU',desc:'Jawab 10 soal TIU benar di Quiz Cepat',check:s=>s.qcBestTIU>=10},
       {id:'qc_10tkp',icon:'🌈',name:'Pakar TKP',desc:'Jawab 10 soal TKP benar di Quiz Cepat',check:s=>s.qcBestTKP>=10},
       {id:'first_pass',icon:'✅',name:'Lulus Perdana',desc:'Lulus passing grade pertama kali',check:s=>s.totalLulus>=1},
+      {id:'rajin_berlatih',icon:'📓',name:'Rajin Berlatih',desc:'Selesaikan 3 paket soal berbeda',check:s=>s.totalDone>=3},
     ]
   },
   {
@@ -1287,6 +1290,7 @@ const BADGE_TIERS=[
       {id:'qc_10m_champ',icon:'👑',name:'Raja 10 Menit',desc:'Jawab 30+ soal benar dalam QC 10 menit',check:s=>s.qcBest10m>=30},
       {id:'triple_lulus',icon:'🥇',name:'Triple Lulus',desc:'Lulus PG ketiga kategori sekaligus dalam 1 sesi',check:s=>s.totalLulus>=1},
       {id:'qc_setia50',icon:'🏃',name:'Pemain Setia',desc:'Total 50 sesi Quiz Cepat semua kategori',check:s=>s.qcTotalSesi>=50},
+      {id:'master_kecepatan',icon:'💨',name:'Master Kecepatan',desc:'Jawab 20+ soal benar dalam QC 5 menit',check:s=>s.qcBest5m>=20},
     ]
   },
   {
@@ -1342,6 +1346,7 @@ function getBadgeStats(){
   const qcBestTIU=Math.max(...[1,3,5,10].map(m=>getQCBestScore('tiu',m)));
   const qcBestTKP=Math.max(...[1,3,5,10].map(m=>getQCBestScore('tkp',m)));
   const qcBest1m=Math.max(getQCBestScore('twk',1),getQCBestScore('tiu',1),getQCBestScore('tkp',1));
+  const qcBest5m=Math.max(getQCBestScore('twk',5),getQCBestScore('tiu',5),getQCBestScore('tkp',5));
   const qcBest10m=Math.max(getQCBestScore('twk',10),getQCBestScore('tiu',10),getQCBestScore('tkp',10));
   const qcStreakMaxAll=Math.max(...['twk','tiu','tkp'].map(c=>getQCStreakMax(c)));
   const qcNoWrongAny=['twk','tiu','tkp'].some(c=>getQCNoWrongBest(c)>0);
@@ -1350,15 +1355,18 @@ function getBadgeStats(){
   const materiAll=materiOpened.twk&&materiOpened.tiu&&materiOpened.tkp;
   const menuVisited=getMenuVisited();
   const menuAll=['latihan','materi','statistik','simulasi','petunjuk','tentang','pencapaian','quizcepat'].every(m=>menuVisited[m]);
+  const menuVisitedTentang=!!menuVisited['tentang'];
   const paketUlangiMax=getPaketUlangiMax();
+  let pernahJawab=false;
+  for(let i=1;i<=5;i++){if(localStorage.getItem(`evalData_latihan${i}`))pernahJawab=true;}
   const skorNaik=checkSkorNaik();
   return{
     totalDone,totalLulus,bestScore,bestTWK,bestTIU,
     simulasiDone,simulasiLulus,simulasiLulusBerturut,
     qcTotalSesi,qcSesiTWK,qcSesiTIU,qcSesiTKP,
-    qcBestTWK,qcBestTIU,qcBestTKP,qcBest1m,qcBest10m,
+    qcBestTWK,qcBestTIU,qcBestTKP,qcBest1m,qcBest5m,qcBest10m,
     qcStreakMaxAll,qcNoWrongAny,qcAkurasi90,
-    materiAll,menuAll,paketUlangiMax,skorNaik
+    materiAll,menuAll,menuVisitedTentang,paketUlangiMax,skorNaik,pernahJawab
   };
 }
 
