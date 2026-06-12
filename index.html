@@ -1137,7 +1137,7 @@ function refreshQuizList(){
     const total=done?((parseInt(twk)||0)+(parseInt(tiu)||0)+(parseInt(tkp)||0)):0;
     const maxTWK=bank.twk.length*5;
     const maxTIU=bank.tiu.length*5;
-    const maxTKP=bank.tkp.length>0?bank.tkp.length*5:225;
+    const maxTKP=bank.tkp.length*5;
     const maxTotal=maxTWK+maxTIU+maxTKP;
     const badgesHtml=done?
       `<span class="skor-badge twk">TWK:${twk}/${maxTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${maxTIU}</span><span class="skor-badge tkp">TKP:${tkp}/${maxTKP}</span>`
