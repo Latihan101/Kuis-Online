@@ -1673,8 +1673,17 @@ function updateGrid(){
 
 function goToSoal(i){saveAnswer();curQ=i;loadQuestion();toggleSidebar();}
 function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const isOpen = sidebar.classList.toggle('open');
+  if(isOpen){
+    const sidebarWidth = sidebar.offsetWidth;
+    overlay.style.width = `calc(100% - ${sidebarWidth}px)`;
+    overlay.classList.add('show');
+  } else {
+    overlay.style.width = '';
+    overlay.classList.remove('show');
+  }
 }
 
 // ==================== SELESAI ====================
