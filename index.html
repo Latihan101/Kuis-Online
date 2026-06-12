@@ -1201,7 +1201,6 @@ function finishQuiz(){
   saveAnswer();
   document.getElementById('sidebarToggle').style.display='none';
   const s=hitungSkor();
-
   const newWrong=[];
   const benarList=[];
   for(let i=0;i<questions.length;i++){
@@ -1216,7 +1215,9 @@ function finishQuiz(){
       isBenar=userAnswers[i]!==null&&userAnswers[i]===q.answer;
     }
     if(!isBenar&&!simulasiMode){
-      newWrong.push({question:q.question,options:q.options,answer:q.answer,isTKP:q.isTKP,optionScores:q.optionScores,pembahasan:q.pembahasan||''});
+      // ← TAMBAH kategori di sini
+      const cat=getCat(i+1);
+      newWrong.push({question:q.question,options:q.options,answer:q.answer,isTKP:q.isTKP,optionScores:q.optionScores,pembahasan:q.pembahasan||'',kategori:cat.name});
     }
     if(isBenar&&!simulasiMode){
       benarList.push(q);
@@ -1229,10 +1230,7 @@ function finishQuiz(){
   if(soalSalahMode){
     hapusDariSoalSalah(benarList);
   }
-
-  // === PERUBAHAN TITIK 1: simpan flag SEBELUM di-reset ===
-  const wasSoalSalah = soalSalahMode;
-
+  const wasSoalSalah=soalSalahMode;
   if(simulasiMode){
     localStorage.setItem('simulasi_last',JSON.stringify({twk:s.twk,tiu:s.tiu,tkp:s.tkp,total:s.total,persen:s.persen,tanggal:new Date().toLocaleDateString('id-ID')}));
     simulasiMode=false;activeSet=1;
@@ -1247,13 +1245,46 @@ function finishQuiz(){
     if(prev===null||s.total>parseInt(prev))localStorage.setItem(key,s.total);
   }
   soalSalahMode=false;
-
   const pass={twk:s.twk>=PASSING.TWK,tiu:s.tiu>=PASSING.TIU,tkp:s.tkp>=PASSING.TKP};
   pass.all=pass.twk&&pass.tiu&&pass.tkp;
-  const bank=getSoalBank(activeSet);
-  const mTWK=bank.twk.length>0?bank.twk.length*5:150;
-  const mTIU=bank.tiu.length>0?bank.tiu.length*5:175;
-  const mTKP=bank.tkp.length>0?bank.tkp.length*5:225;
+
+  // ← HITUNG MAKSIMUM SKOR DINAMIS
+  let mTWK,mTIU,mTKP;
+  if(wasSoalSalah){
+    let qTWK=0,qTIU=0,qTKP=0;
+    questions.forEach(q=>{
+      if(q.kategori==='TWK')qTWK++;
+      else if(q.kategori==='TIU')qTIU++;
+      else qTKP++;
+    });
+    mTWK=qTWK*5;mTIU=qTIU*5;mTKP=qTKP*5;
+  } else {
+    // Menjadi ini:
+  let cTWK=0,cTIU=0,cTKP=0;
+  for(let i=0;i<questions.length;i++){
+    const n=i+1;
+    if(wasSoalSalah){
+      // soal salah: posisi tidak menentu, cek dari kategori aslinya tidak bisa
+      // hitung dari jumlah saja — semua dianggap campuran
+      if(questions[i].isTKP)cTKP++;
+      else cTWK++; // fallback, akan diperbaiki di bawah
+    }
+  }
+  let mTWK,mTIU,mTKP;
+  if(wasSoalSalah){
+    // hitung ulang: soal non-TKP bisa TWK atau TIU, tapi getCat(n) tidak valid
+    // → gunakan hitungSkor() saja, tampilkan jumlah soal bukan /150 dll
+    let qTWK=0,qTIU=0,qTKP=0;
+    questions.forEach(q=>{if(q.isTKP)qTKP++;else qTWK++;});
+    // tidak bisa bedakan TWK vs TIU di soal salah tanpa metadata kategori
+    mTWK=qTWK*5; mTIU=0; mTKP=qTKP*5;
+  } else {
+    const bank=getSoalBank(activeSet);
+    mTWK=bank.twk.length>0?bank.twk.length*5:150;
+    mTIU=bank.tiu.length>0?bank.tiu.length*5:175;
+    mTKP=bank.tkp.length>0?bank.tkp.length*5:225;
+  }
+  }
 
   document.getElementById('scoreDetail').innerHTML=`<h3>📊 Detail Skor</h3><table>
     <tr><td>📚 TWK</td><td><strong>${s.twk}</strong> / ${mTWK}</td></tr>
@@ -1273,11 +1304,8 @@ function finishQuiz(){
       ${pass.all?'🎉 SELAMAT! Anda LULUS Passing Grade SKD!':'⚠️ Belum lulus passing grade. Terus semangat berlatih!'}
     </div>`;
 
-  // === PERUBAHAN TITIK 2: sembunyikan skor jika dari soal salah ===
-  const sd=document.getElementById('scoreDetail');
-  const ps=document.getElementById('passStatus');
-  sd.style.display=wasSoalSalah?'none':'';
-  ps.style.display=wasSoalSalah?'none':'';
+  // ← SEMBUNYIKAN PASSING GRADE JIKA DARI SOAL SALAH
+  document.getElementById('passStatus').style.display=wasSoalSalah?'none':'';
 
   goTo('resultPage');
 }
