@@ -1077,22 +1077,13 @@ function renderQCQuestion(){
   document.getElementById('qcQNum').textContent=`SOAL ${idx+1}`;
   document.getElementById('qcQTxt').innerHTML=d.q;
 
-  let optsHtml='';
-  if(d.isTKP){
-    d.opt.forEach((o,i)=>{
-      optsHtml+=`<div class="qc-opt" onclick="pilihQCJawaban(${i})">
-        <div class="qc-opt-letter">${PREFIXES[i]}</div>
-        <div class="qc-opt-text">${o} <span style="font-size:11px;color:var(--secondary);font-weight:700;">(${d.scores[i]})</span></div>
-      </div>`;
-    });
-  } else {
-    d.opt.forEach((o,i)=>{
-      optsHtml+=`<div class="qc-opt" onclick="pilihQCJawaban(${i})">
-        <div class="qc-opt-letter">${PREFIXES[i]}</div>
-        <div class="qc-opt-text">${o}</div>
-      </div>`;
-    });
-  }
+    let optsHtml='';
+  d.opt.forEach((o,i)=>{
+    optsHtml+=`<div class="qc-opt" onclick="pilihQCJawaban(${i})">
+      <div class="qc-opt-letter">${PREFIXES[i]}</div>
+      <div class="qc-opt-text">${o}</div>
+    </div>`;
+  });
   document.getElementById('qcOpts').innerHTML=optsHtml;
 
   const fb=document.getElementById('qcFeedback');
@@ -1106,9 +1097,11 @@ function renderQCQuestion(){
 function pilihQCJawaban(idx){
   const soal=qcState.soal[qcState.curIdx];
   const opts=document.querySelectorAll('.qc-opt');
-  // Disable semua
-  opts.forEach(o=>o.classList.add('disabled'));
-  opts.forEach(o=>o.onclick=null);
+  
+  opts.forEach(o=>{
+    o.classList.add('disabled');
+    o.onclick=null;
+  });
 
   const fb=document.getElementById('qcFeedback');
   let isBenar=false;
@@ -1116,15 +1109,30 @@ function pilihQCJawaban(idx){
   if(soal.isTKP){
     const maxScore=Math.max(...soal.scores);
     const chosen=soal.scores[idx];
+    
     opts[idx].classList.add(chosen===maxScore?'correct':'wrong');
-    // Tunjukkan yang terbaik jika salah
+    
     if(chosen!==maxScore){
       const bestIdx=soal.scores.findIndex(s=>s===maxScore);
-      if(bestIdx>=0)opts[bestIdx].classList.add('correct');
+      if(bestIdx>=0) opts[bestIdx].classList.add('correct');
     }
+    
+    // Munculkan skor di setiap opsi setelah menjawab
+    opts.forEach((optEl, i)=>{
+      const textEl=optEl.querySelector('.qc-opt-text');
+      if(textEl && !textEl.querySelector('.qc-score-reveal')){
+        const scoreSpan=document.createElement('span');
+        scoreSpan.className='qc-score-reveal';
+        scoreSpan.style.cssText='font-size:11px;margin-left:6px;font-weight:700;';
+        scoreSpan.textContent=`(${soal.scores[i]} poin)`;
+        textEl.appendChild(scoreSpan);
+      }
+    });
+    
     isBenar=(chosen===maxScore);
-    fb.textContent=isBenar?`✅ Tepat! Skor tertinggi: ${maxScore}`:`❌ Skor kamu: ${chosen} | Terbaik: ${maxScore}`;
+    fb.textContent=isBenar?`✅ Tepat! Skor maksimal: ${maxScore}`:`❌ Skor kamu: ${chosen} poin | Skor terbaik: ${maxScore} poin`;
     fb.className='qc-feedback '+(isBenar?'benar':'salah');
+    
   } else {
     opts[idx].classList.add(idx===soal.a?'correct':'wrong');
     if(idx!==soal.a) opts[soal.a].classList.add('correct');
@@ -1140,7 +1148,8 @@ function pilihQCJawaban(idx){
 
   const btnNext=document.getElementById('btnQcNext');
   btnNext.className='btn-qc-next show';
-  // Jika soal terakhir
+  btnNext.onclick=qcNextQuestion;
+  
   if(qcState.curIdx>=qcState.soal.length-1){
     btnNext.textContent='🏁 Lihat Hasil';
     btnNext.onclick=finishQuizCepat;
