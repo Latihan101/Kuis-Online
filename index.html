@@ -68,6 +68,8 @@ input:checked+.slider:before{transform:translateX(22px);}
 .status-badge.selesai{background:#d4edda;color:#155724;}
 .status-badge.belum{background:#f8d7da;color:#721c24;}
 
+
+
 /* ===== MATERI PAGE ===== */
 .materi-card{border:none;border-radius:18px;padding:18px;color:white;cursor:pointer;text-align:center;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:bold;font-size:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);width: 100%;min-height: 110px;justify-content: center;}
 .materi-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
@@ -522,6 +524,16 @@ input:checked+.slider:before{transform:translateX(22px);}
   </div>
 </div>
 
+<!-- ==================== HALAMAN EVALUASI DARI QUIZLIST ==================== -->
+<div id="evaluasiListPage" class="page">
+  <div class="result-card">
+    <h1>📝 Evaluasi Jawaban</h1>
+    <p style="color:#666;font-size:14px;" id="evalListTitle">📖 Latihan SKD Paket 1</p>
+    <div id="evalListScoreSummary" style="margin:10px 0;padding:10px;background:#f8f9fa;border-radius:10px;font-size:13px;"></div>
+    <div id="evalListContent" style="max-height:600px;overflow-y:auto;text-align:left;"></div>
+    <button class="btn-close-eval" style="display:block;width:100%;margin-top:14px;" onclick="goTo('quizlistPage')">← Kembali ke Daftar Soal</button>
+  </div>
+</div>
 <!-- ==================== HALAMAN HASIL ==================== -->
 <div id="resultPage" class="page">
   <div class="result-card">
@@ -618,7 +630,7 @@ window.addEventListener('keyup',e=>{if(e.key==='PrintScreen')flashOverlay();});
 function flashOverlay(){const o=document.getElementById('screenshotOverlay');o.style.display='block';setTimeout(()=>o.style.display='none',500);}
 
 // ==================== PAGE NAVIGATION ====================
-const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','petunjukPage','tentangPage','quizPage','resultPage'];
+const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage'];
 let currentPage='homePage';
 let currentMateriKategori='';
 
@@ -822,22 +834,117 @@ function refreshQuizList(){
     const badgesHtml=done?
       `<span class="skor-badge twk">TWK:${twk}/${maxTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${maxTIU}</span><span class="skor-badge tkp">TKP:${tkp}/${maxTKP}</span>`
       :`<span class="skor-badge belum">-</span><span class="skor-badge belum">-</span><span class="skor-badge belum">-</span>`;
-    c.innerHTML+=`<div class="quiz-item" onclick="startQuiz(${m.id})">
-      <div class="quiz-header">
-        <div class="quiz-left"><span class="quiz-icon">${m.icon}</span><span>${m.name} (${totalSoal} soal)</span></div>
-        <div class="quiz-right">${badgesHtml}</div>
-      </div>
-      <div class="quiz-detail">
-        <div class="total-skor-container">
-          <span class="total-skor-label">Total Skor:</span>
-          <span class="total-skor-value ${done?'completed':''}">${total} / ${maxTotal}</span>
+
+    c.innerHTML+=`<div class="quiz-item">
+      <div onclick="startQuiz(${m.id})">
+        <div class="quiz-header">
+          <div class="quiz-left"><span class="quiz-icon">${m.icon}</span><span>${m.name} (${totalSoal} soal)</span></div>
+          <div class="quiz-right">${badgesHtml}</div>
         </div>
-        <span class="status-badge ${done?'selesai':'belum'}">${done?'✅ Selesai':'⏳ Belum Dikerjakan'}</span>
+        <div class="quiz-detail">
+          <div class="total-skor-container">
+            <span class="total-skor-label">Total Skor:</span>
+            <span class="total-skor-value ${done?'completed':''}">${total} / ${maxTotal}</span>
+          </div>
+          <span class="status-badge ${done?'selesai':'belum'}">${done?'✅ Selesai':'⏳ Belum Dikerjakan'}</span>
+        </div>
       </div>
+      ${done ? `
+      <button class="btn-eval-toggle" onclick="event.stopPropagation();showEvaluasiFromList(${m.id})">
+        📋 Lihat Evaluasi & Pembahasan ▶
+      </button>
+      ` : ''}
     </div>`;
   });
 }
+// ==================== EVALUASI DARI QUIZLIST (HALAMAN PENUH) ====================
+function showEvaluasiFromList(setId){
+  const bank = getSoalBank(setId);
+  
+  // Bangun originals
+  const orig = [];
+  bank.twk.forEach((d,i)=>orig.push({
+    question:d.q,
+    options:[...d.opt],
+    answer:d.a,
+    isTKP:false,
+    optionScores:null,
+    pembahasan:d.pembahasan||'',
+    nomor:i+1
+  }));
+  bank.tiu.forEach((d,i)=>orig.push({
+    question:d.q,
+    options:[...d.opt],
+    answer:d.a,
+    isTKP:false,
+    optionScores:null,
+    pembahasan:d.pembahasan||'',
+    nomor:bank.twk.length+i+1
+  }));
+  bank.tkp.forEach((d,i)=>orig.push({
+    question:d.q,
+    options:[...d.opts],
+    answer:null,
+    isTKP:true,
+    optionScores:[...d.scores],
+    pembahasan:d.pembahasan||'',
+    nomor:bank.twk.length+bank.tiu.length+i+1
+  }));
 
+  const savedTWK = parseInt(localStorage.getItem(`skorTWK_latihan${setId}`)) || 0;
+  const savedTIU = parseInt(localStorage.getItem(`skorTIU_latihan${setId}`)) || 0;
+  const savedTKP = parseInt(localStorage.getItem(`skorTKP_latihan${setId}`)) || 0;
+  const savedTotal = savedTWK + savedTIU + savedTKP;
+
+  const maxTWK = bank.twk.length*5;
+  const maxTIU = bank.tiu.length*5;
+  const maxTKP = bank.tkp.length>0 ? bank.tkp.length*5 : 225;
+  const maxTotal = maxTWK + maxTIU + maxTKP;
+
+  // Set judul
+  document.getElementById('evalListTitle').textContent = `📖 Latihan SKD Paket ${setId}`;
+
+  // Ringkasan skor
+  document.getElementById('evalListScoreSummary').innerHTML = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+      <span style="background:#6f42c120;padding:4px 12px;border-radius:20px;font-weight:bold;">📚 TWK: ${savedTWK}/${maxTWK}</span>
+      <span style="background:#8B451320;padding:4px 12px;border-radius:20px;font-weight:bold;">🔢 TIU: ${savedTIU}/${maxTIU}</span>
+      <span style="background:#20c99720;padding:4px 12px;border-radius:20px;font-weight:bold;">⭐ TKP: ${savedTKP}/${maxTKP}</span>
+      <span style="background:#0d6efd20;padding:4px 12px;border-radius:20px;font-weight:bold;">✅ Total: ${savedTotal}/${maxTotal}</span>
+    </div>
+  `;
+
+  // Bangun evaluasi
+  let html = '';
+  for(let i=0;i<orig.length;i++){
+    const q = orig[i];
+    const n = q.nomor;
+    const cat = getCat(n);
+    const pembahasanText = q.pembahasan || '';
+
+    let jawBenar = '';
+    if(q.isTKP){
+      const maxS = Math.max(...q.optionScores);
+      const bIdx = q.optionScores.findIndex(s=>s===maxS);
+      jawBenar = `<div class="jawaban-benar">⭐ <strong>Jawaban terbaik:</strong> ${PREFIXES[bIdx]}. ${q.options[bIdx]} <strong>(Skor: ${maxS})</strong></div>`;
+    } else {
+      jawBenar = `<div class="jawaban-benar">✅ <strong>Jawaban benar:</strong> ${PREFIXES[q.answer]}. ${q.options[q.answer]}</div>`;
+    }
+
+    html += `<div class="evaluasi-item belum">
+      <div class="soal-teks">📝 Soal ${n} [${cat.name}]</div>
+      <div class="soal-isi">${q.question}</div>
+      <div class="jawaban-user">📌 <strong>Catatan:</strong> Jawaban Anda tersimpan, kerjakan ulang untuk melihat detail jawaban Anda.</div>
+      ${jawBenar}
+      ${pembahasanText ? `<div class="pembahasan-box"><strong>💡 Pembahasan</strong><br>${pembahasanText}</div>` : ''}
+    </div>`;
+  }
+
+  document.getElementById('evalListContent').innerHTML = html;
+  goTo('evaluasiListPage');
+}
+
+  
 function refreshHomeStats(){
   let best=[];
   for(let i=1;i<=5;i++){const s=localStorage.getItem(`bestScore_latihan${i}`);if(s)best.push(parseInt(s));}
@@ -1115,6 +1222,8 @@ window.addEventListener('popstate',function(){
       timerInterval=null;
       document.getElementById('sidebarToggle').style.display='none';
     }
+    goTo('quizlistPage');
+  } else if(currentPage=='evaluasiListPage'){
     goTo('quizlistPage');
   } else if(currentPage=='materiContentPage'){
     goTo('materiPage');
