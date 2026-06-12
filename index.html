@@ -854,19 +854,18 @@ input:checked+.slider:before{transform:translateX(22px);}
     <h3>📋 Daftar Soal</h3>
     <button class="close-sidebar" onclick="toggleSidebar()">×</button>
   </div>
-  <div class="sidebar-content" style="display:flex;flex-direction:column;flex:1;min-height:0;padding:18px 18px 12px 18px;overflow:hidden;">
-    <div class="soal-grid" id="soalGrid" style="flex:1;overflow-y:auto;min-height:0;margin-bottom:6px;padding-bottom:2px;align-content:flex-start;"></div>
-    <div style="flex-shrink:0;padding-top:6px;border-top:1px solid #ddd;font-size:12px;color:#666;margin-top:0;">
-      <p style="margin-bottom:4px;"><strong>Legend:</strong></p>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;">
-        <span style="background:#0d6efd;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🔵 Aktif</span>
-        <span style="background:#198754;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🟢 Dijawab</span>
-        <span style="background:#dc3545;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🔴 Belum</span>
-      </div>
-      <p style="margin-top:6px;">🟣 TWK (1-30) | 🟤 TIU (31-65) | 🟢 TKP (66-110)</p>
-      <p style="margin-top:2px;">Passing Grade: TWK=65, TIU=80, TKP=166</p>
+  <div class="sidebar-content" style="display:flex;flex-direction:column;height:calc(100vh - 60px);padding:12px;overflow:hidden;">
+    <div class="soal-grid" id="soalGrid" style="flex:1;overflow-y:auto;min-height:0;align-content:flex-start;gap:10px;display:grid;grid-template-columns:repeat(5,1fr);margin-bottom:0;"></div>
+    <div style="flex-shrink:0;padding-top:8px;border-top:1px solid #ddd;font-size:12px;color:#666;">
+        <p style="margin-bottom:4px;"><strong>Legend:</strong></p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <span style="background:#0d6efd;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🔵 Aktif</span>
+            <span style="background:#198754;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🟢 Dijawab</span>
+            <span style="background:#dc3545;color:white;padding:2px 8px;border-radius:10px;font-size:11px;">🔴 Belum</span>
+        </div>
+        <p style="margin-top:6px;">🟣 TWK (1-30) | 🟤 TIU (31-65) | 🟢 TKP (66-110)</p>
+        <p style="margin-top:2px;">Passing Grade: TWK=65, TIU=80, TKP=166</p>
     </div>
-  </div>
 </div>
 <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
