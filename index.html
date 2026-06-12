@@ -599,12 +599,12 @@ input:checked+.slider:before{transform:translateX(22px);}
 
 <!-- ==================== HALAMAN EVALUASI DARI QUIZLIST ==================== -->
 <div id="evaluasiListPage" class="page">
-  <div class="result-card">
-    <h1>📝 Evaluasi Jawaban</h1>
-    <p style="color:#666;font-size:14px;" id="evalListTitle">📖 Latihan SKD Paket 1</p>
-    <div id="evalListScoreSummary" style="margin:10px 0;padding:10px;background:#f8f9fa;border-radius:10px;font-size:13px;"></div>
-    <div id="evalListContent" style="max-height:600px;overflow-y:auto;text-align:left;"></div>
-    <button class="btn-close-eval" style="display:block;width:100%;margin-top:14px;" onclick="goTo('quizlistPage')">← Kembali ke Daftar Soal</button>
+  <div class="result-card" style="display:flex;flex-direction:column;max-height:90vh;padding-bottom:14px;">
+    <h1 style="flex-shrink:0;">📝 Evaluasi Jawaban</h1>
+    <p style="color:#666;font-size:14px;flex-shrink:0;" id="evalListTitle">📖 Latihan SKD Paket 1</p>
+    <div id="evalListScoreSummary" style="margin:10px 0;padding:10px;background:#f8f9fa;border-radius:10px;font-size:13px;flex-shrink:0;"></div>
+    <div id="evalListContent" style="flex:1;overflow-y:auto;text-align:left;min-height:200px;margin-bottom:0;padding-right:8px;"></div>
+    <button class="btn-close-eval" style="display:block;width:100%;margin-top:8px;flex-shrink:0;" onclick="goTo('quizlistPage')">← Kembali ke Daftar Soal</button>
   </div>
 </div>
 <!-- ==================== HALAMAN HASIL ==================== -->
