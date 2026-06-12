@@ -68,7 +68,33 @@ input:checked+.slider:before{transform:translateX(22px);}
 .status-badge.selesai{background:#d4edda;color:#155724;}
 .status-badge.belum{background:#f8d7da;color:#721c24;}
 
-
+/* ===== TOMBOL EVALUASI DI QUIZLIST ===== */
+.btn-eval-toggle {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: linear-gradient(135deg, #6f42c1, #a855f7);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+.btn-eval-toggle:hover {
+  background: linear-gradient(135deg, #5a32a3, #9333ea);
+  box-shadow: 0 4px 12px rgba(111,66,193,.4);
+}
+.btn-eval-toggle:active {
+  transform: scale(0.97);
+}
+.btn-eval-toggle .eval-icon {
+  font-size: 18px;
+}
 
 /* ===== MATERI PAGE ===== */
 .materi-card{border:none;border-radius:18px;padding:18px;color:white;cursor:pointer;text-align:center;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:bold;font-size:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);width: 100%;min-height: 110px;justify-content: center;}
@@ -305,7 +331,7 @@ input:checked+.slider:before{transform:translateX(22px);}
 .evaluasi-item .jawaban-user{font-size:13px;margin-bottom:4px;padding:6px 10px;border-radius:6px;background:#e9ecef;}
 .evaluasi-item .jawaban-benar{font-size:13px;margin-bottom:4px;padding:6px 10px;border-radius:6px;background:#d4edda;color:#155724;}
 .evaluasi-item .jawaban-user img,.evaluasi-item .jawaban-benar img{max-height:40px;vertical-align:middle;border-radius:6px;}
-.evaluasi-item .pembahasan-box{margin-top:10px;padding:10px 12px;border-radius:8px;background:#e8f4fd;border-left:4px solid #0d6efd;font-size:12px;color:#1a3a5c;line-height:1.6;}
+.evaluasi-item .pembahasan-box{margin-top:10px;padding:10px 12px;border-radius:8px;background:#e8f4fd;border-left:4px solid #0d6efd;font-size:12px;color:#1a3a5c;line-height:1.6;text-align:justify;}
 .evaluasi-item .pembahasan-box strong{display:block;margin-bottom:4px;color:#0d6efd;font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
 .btn-close-eval{padding:10px 18px;border:none;border-radius:10px;background:#6c757d;color:white;cursor:pointer;margin-top:10px;}
 
@@ -851,15 +877,23 @@ function refreshQuizList(){
       </div>
       ${done ? `
       <button class="btn-eval-toggle" onclick="event.stopPropagation();showEvaluasiFromList(${m.id})">
-        📋 Lihat Evaluasi & Pembahasan ▶
+        <span class="eval-icon">📋</span> Lihat Evaluasi & Pembahasan <span style="font-size:16px;">→</span>
       </button>
       ` : ''}
     </div>`;
   });
 }
+
 // ==================== EVALUASI DARI QUIZLIST (HALAMAN PENUH) ====================
 function showEvaluasiFromList(setId){
   const bank = getSoalBank(setId);
+  
+  // Ambil jawaban user yang tersimpan
+  const storedAnswers = localStorage.getItem(`userAnswers_latihan${setId}`);
+  const storedScores = localStorage.getItem(`userScores_latihan${setId}`);
+  
+  let savedAnswers = storedAnswers ? JSON.parse(storedAnswers) : [];
+  let savedScores = storedScores ? JSON.parse(storedScores) : [];
   
   // Bangun originals
   const orig = [];
@@ -907,36 +941,67 @@ function showEvaluasiFromList(setId){
   // Ringkasan skor
   document.getElementById('evalListScoreSummary').innerHTML = `
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-      <span style="background:#6f42c120;padding:4px 12px;border-radius:20px;font-weight:bold;">📚 TWK: ${savedTWK}/${maxTWK}</span>
-      <span style="background:#8B451320;padding:4px 12px;border-radius:20px;font-weight:bold;">🔢 TIU: ${savedTIU}/${maxTIU}</span>
-      <span style="background:#20c99720;padding:4px 12px;border-radius:20px;font-weight:bold;">⭐ TKP: ${savedTKP}/${maxTKP}</span>
-      <span style="background:#0d6efd20;padding:4px 12px;border-radius:20px;font-weight:bold;">✅ Total: ${savedTotal}/${maxTotal}</span>
+      <span style="background:#6f42c120;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:13px;">📚 TWK: ${savedTWK}/${maxTWK}</span>
+      <span style="background:#8B451320;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:13px;">🔢 TIU: ${savedTIU}/${maxTIU}</span>
+      <span style="background:#20c99720;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:13px;">⭐ TKP: ${savedTKP}/${maxTKP}</span>
+      <span style="background:#0d6efd20;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:13px;">✅ Total: ${savedTotal}/${maxTotal}</span>
     </div>
   `;
 
-  // Bangun evaluasi
-  let html = '';
+  // Bangun evaluasi - SAMA PERSIS DENGAN showEvaluasi()
+  let html = '<h3 style="color:#0d6efd;margin-bottom:14px;">📝 Evaluasi Jawaban & Pembahasan</h3>';
+
   for(let i=0;i<orig.length;i++){
-    const q = orig[i];
-    const n = q.nomor;
+    const n = i+1;
     const cat = getCat(n);
+    const q = orig[i];
     const pembahasanText = q.pembahasan || '';
 
+    let jawUser = 'Tidak dijawab';
     let jawBenar = '';
+    let statusCls = 'belum';
+    let statusIcon = '⏳';
+
     if(q.isTKP){
-      const maxS = Math.max(...q.optionScores);
-      const bIdx = q.optionScores.findIndex(s=>s===maxS);
-      jawBenar = `<div class="jawaban-benar">⭐ <strong>Jawaban terbaik:</strong> ${PREFIXES[bIdx]}. ${q.options[bIdx]} <strong>(Skor: ${maxS})</strong></div>`;
+      const userScore = (savedScores[i] !== undefined && savedScores[i] !== null) ? savedScores[i] : null;
+      if(userScore !== null){
+        const idx = q.optionScores.findIndex(s=>s===userScore);
+        jawUser = idx>=0 ? `${PREFIXES[idx]}. ${q.options[idx]} <span style="font-weight:bold;color:#6f42c1">(Skor: ${userScore})</span>` : 'Tidak dijawab';
+        const maxS = Math.max(...q.optionScores);
+        const bIdx = q.optionScores.findIndex(s=>s===maxS);
+        jawBenar = `Jawaban terbaik: ${PREFIXES[bIdx]}. ${q.options[bIdx]} <strong>(Skor: ${maxS})</strong>`;
+        const isB = userScore===maxS;
+        statusCls = isB?'benar':'salah';
+        statusIcon = isB?'✅':'❌';
+      } else {
+        const maxS = Math.max(...q.optionScores);
+        const bIdx = q.optionScores.findIndex(s=>s===maxS);
+        jawBenar = `Jawaban terbaik: ${PREFIXES[bIdx]}. ${q.options[bIdx]} <strong>(Skor: ${maxS})</strong>`;
+      }
     } else {
-      jawBenar = `<div class="jawaban-benar">✅ <strong>Jawaban benar:</strong> ${PREFIXES[q.answer]}. ${q.options[q.answer]}</div>`;
+      const userAns = (savedAnswers[i] !== undefined && savedAnswers[i] !== null) ? savedAnswers[i] : null;
+      if(userAns !== null){
+        jawUser = `${PREFIXES[userAns]}. ${q.options[userAns]}`;
+        jawBenar = `${PREFIXES[q.answer]}. ${q.options[q.answer]}`;
+        const isB = userAns===q.answer;
+        statusCls = isB?'benar':'salah';
+        statusIcon = isB?'✅':'❌';
+      } else {
+        jawBenar = `${PREFIXES[q.answer]}. ${q.options[q.answer]}`;
+      }
     }
 
-    html += `<div class="evaluasi-item belum">
-      <div class="soal-teks">📝 Soal ${n} [${cat.name}]</div>
+    let statusLabel = '';
+    if(statusCls==='benar') statusLabel='<span style="color:#198754;font-weight:bold;font-size:12px;">✅ BENAR</span>';
+    else if(statusCls==='salah') statusLabel='<span style="color:#dc3545;font-weight:bold;font-size:12px;">❌ SALAH</span>';
+    else statusLabel='<span style="color:#856404;font-weight:bold;font-size:12px;">⏳ BELUM DIJAWAB</span>';
+
+    html+=`<div class="evaluasi-item ${statusCls}">
+      <div class="soal-teks">${statusIcon} Soal ${n} [${cat.name}] — ${statusLabel}</div>
       <div class="soal-isi">${q.question}</div>
-      <div class="jawaban-user">📌 <strong>Catatan:</strong> Jawaban Anda tersimpan, kerjakan ulang untuk melihat detail jawaban Anda.</div>
-      ${jawBenar}
-      ${pembahasanText ? `<div class="pembahasan-box"><strong>💡 Pembahasan</strong><br>${pembahasanText}</div>` : ''}
+      <div class="jawaban-user">📌 <strong>Jawaban Anda:</strong> ${jawUser}</div>
+      ${jawBenar?`<div class="jawaban-benar">✅ <strong>Jawaban Benar:</strong> ${jawBenar}</div>`:''}
+      ${pembahasanText?`<div class="pembahasan-box"><strong>💡 Pembahasan</strong><br>${pembahasanText}</div>`:''}
     </div>`;
   }
 
@@ -1092,6 +1157,9 @@ function finishQuiz(){
   localStorage.setItem(`skorTWK_latihan${activeSet}`,s.twk);
   localStorage.setItem(`skorTIU_latihan${activeSet}`,s.tiu);
   localStorage.setItem(`skorTKP_latihan${activeSet}`,s.tkp);
+    // Simpan jawaban user untuk evaluasi nanti
+  localStorage.setItem(`userAnswers_latihan${activeSet}`, JSON.stringify(userAnswers));
+  localStorage.setItem(`userScores_latihan${activeSet}`, JSON.stringify(userScores));
   const key=`bestScore_latihan${activeSet}`;
   const prev=localStorage.getItem(key);
   if(prev===null||s.total>parseInt(prev))localStorage.setItem(key,s.total);
