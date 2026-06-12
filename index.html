@@ -134,6 +134,9 @@ input:checked+.slider:before{transform:translateX(22px);}
   text-align: justify;
   margin-bottom: 14px;
   min-height: 300px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 14px;
 }
 .materi-content-full h2 {
   color: #0d6efd;
@@ -225,6 +228,13 @@ input:checked+.slider:before{transform:translateX(22px);}
   gap: 10px;
   margin-top: 10px;
   flex-wrap: wrap;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 10px 0;
+  border-top: 1px solid #e9ecef;
+  z-index: 5;
 }
 .materi-nav-bottom button {
   flex: 1;
@@ -246,6 +256,24 @@ input:checked+.slider:before{transform:translateX(22px);}
 .materi-nav-bottom .btn-twk { background: #6f42c1; }
 .materi-nav-bottom .btn-tiu { background: #8B4513; }
 .materi-nav-bottom .btn-tkp { background: #20c997; }
+/* ===== STICKY HEADER & FOOTER UNTUK HALAMAN MATERI ===== */
+#materiContentPage .card {
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+}
+#materiContentPage .page-title {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+  padding-bottom: 10px;
+}
+#materiContentPage .back-btn {
+  flex-shrink: 0;
+  margin-top: 8px;
+}
   
 /* ===== BUTTONS ===== */
 .reset-btn{width:100%;padding:12px;border:none;border-radius:16px;background:#dc3545;color:white;cursor:pointer;margin-top:8px;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;}
@@ -892,42 +920,39 @@ function refreshQuizList(){
 function showEvaluasiFromList(setId){
   const bank = getSoalBank(setId);
   
-  // Ambil jawaban user yang tersimpan
-  const storedAnswers = localStorage.getItem(`userAnswers_latihan${setId}`);
-  const storedScores = localStorage.getItem(`userScores_latihan${setId}`);
+  // Ambil data evaluasi yang tersimpan (soal yg sudah diacak + jawaban)
+  const storedEvalData = localStorage.getItem(`evalData_latihan${setId}`);
+  let savedAnswers = [];
+  let savedScores = [];
+  let savedQuestions = [];
   
-  let savedAnswers = storedAnswers ? JSON.parse(storedAnswers) : [];
-  let savedScores = storedScores ? JSON.parse(storedScores) : [];
+  if(storedEvalData){
+    try {
+      const parsed = JSON.parse(storedEvalData);
+      savedAnswers = parsed.answers || [];
+      savedScores = parsed.scores || [];
+      savedQuestions = parsed.questions || [];
+    } catch(e){}
+  }
   
-  // Bangun originals
-  const orig = [];
-  bank.twk.forEach((d,i)=>orig.push({
-    question:d.q,
-    options:[...d.opt],
-    answer:d.a,
-    isTKP:false,
-    optionScores:null,
-    pembahasan:d.pembahasan||'',
-    nomor:i+1
-  }));
-  bank.tiu.forEach((d,i)=>orig.push({
-    question:d.q,
-    options:[...d.opt],
-    answer:d.a,
-    isTKP:false,
-    optionScores:null,
-    pembahasan:d.pembahasan||'',
-    nomor:bank.twk.length+i+1
-  }));
-  bank.tkp.forEach((d,i)=>orig.push({
-    question:d.q,
-    options:[...d.opts],
-    answer:null,
-    isTKP:true,
-    optionScores:[...d.scores],
-    pembahasan:d.pembahasan||'',
-    nomor:bank.twk.length+bank.tiu.length+i+1
-  }));
+  // Gunakan soal yang tersimpan (sudah diacak), atau fallback ke soal asli
+  let evalQuestions = savedQuestions.length > 0 ? savedQuestions : [];
+  
+  // Jika tidak ada data tersimpan, bangun dari bank (soal asli, tidak diacak)
+  if(evalQuestions.length === 0){
+    bank.twk.forEach(d=>evalQuestions.push({
+      question:d.q, options:[...d.opt], answer:d.a, isTKP:false,
+      optionScores:null, pembahasan:d.pembahasan||''
+    }));
+    bank.tiu.forEach(d=>evalQuestions.push({
+      question:d.q, options:[...d.opt], answer:d.a, isTKP:false,
+      optionScores:null, pembahasan:d.pembahasan||''
+    }));
+    bank.tkp.forEach(d=>evalQuestions.push({
+      question:d.q, options:[...d.opts], answer:null, isTKP:true,
+      optionScores:[...d.scores], pembahasan:d.pembahasan||''
+    }));
+  }
 
   const savedTWK = parseInt(localStorage.getItem(`skorTWK_latihan${setId}`)) || 0;
   const savedTIU = parseInt(localStorage.getItem(`skorTIU_latihan${setId}`)) || 0;
@@ -939,10 +964,8 @@ function showEvaluasiFromList(setId){
   const maxTKP = bank.tkp.length>0 ? bank.tkp.length*5 : 225;
   const maxTotal = maxTWK + maxTIU + maxTKP;
 
-  // Set judul
   document.getElementById('evalListTitle').textContent = `📖 Latihan SKD Paket ${setId}`;
 
-  // Ringkasan skor
   document.getElementById('evalListScoreSummary').innerHTML = `
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
       <span style="background:#6f42c120;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:13px;">📚 TWK: ${savedTWK}/${maxTWK}</span>
@@ -952,13 +975,12 @@ function showEvaluasiFromList(setId){
     </div>
   `;
 
-  // Bangun evaluasi - SAMA PERSIS DENGAN showEvaluasi()
   let html = '<h3 style="color:#0d6efd;margin-bottom:14px;">📝 Evaluasi Jawaban & Pembahasan</h3>';
 
-  for(let i=0;i<orig.length;i++){
+  for(let i=0;i<evalQuestions.length;i++){
     const n = i+1;
     const cat = getCat(n);
-    const q = orig[i];
+    const q = evalQuestions[i];
     const pembahasanText = q.pembahasan || '';
 
     let jawUser = 'Tidak dijawab';
@@ -966,7 +988,7 @@ function showEvaluasiFromList(setId){
     let statusCls = 'belum';
     let statusIcon = '⏳';
 
-        if(q.isTKP){
+    if(q.isTKP){
       const userScore = (savedScores[i] !== undefined && savedScores[i] !== null) ? savedScores[i] : null;
       if(userScore !== null){
         const idx = q.optionScores.findIndex(s=>s===userScore);
@@ -978,7 +1000,6 @@ function showEvaluasiFromList(setId){
         statusCls = isB?'benar':'salah';
         statusIcon = isB?'✅':'❌';
       }
-      // ✅ Jika tidak dijawab, jawBenar tetap kosong (tidak ditampilkan)
     } else {
       const userAns = (savedAnswers[i] !== undefined && savedAnswers[i] !== null) ? savedAnswers[i] : null;
       if(userAns !== null){
@@ -988,7 +1009,6 @@ function showEvaluasiFromList(setId){
         statusCls = isB?'benar':'salah';
         statusIcon = isB?'✅':'❌';
       }
-      // ✅ Jika tidak dijawab, jawBenar tetap kosong (tidak ditampilkan)
     }
 
     let statusLabel = '';
@@ -1157,9 +1177,21 @@ function finishQuiz(){
   localStorage.setItem(`skorTWK_latihan${activeSet}`,s.twk);
   localStorage.setItem(`skorTIU_latihan${activeSet}`,s.tiu);
   localStorage.setItem(`skorTKP_latihan${activeSet}`,s.tkp);
-    // Simpan jawaban user untuk evaluasi nanti
-  localStorage.setItem(`userAnswers_latihan${activeSet}`, JSON.stringify(userAnswers));
-  localStorage.setItem(`userScores_latihan${activeSet}`, JSON.stringify(userScores));
+      // Simpan jawaban user + soal yang sudah diacak untuk evaluasi nanti
+  const savedData = {
+    answers: userAnswers,
+    scores: userScores,
+    questions: questions.map(q => ({
+      question: q.question,
+      options: q.options,
+      answer: q.answer,
+      isTKP: q.isTKP,
+      optionScores: q.optionScores,
+      pembahasan: q.pembahasan || ''
+    }))
+  };
+  localStorage.setItem(`evalData_latihan${activeSet}`, JSON.stringify(savedData));
+  
   const key=`bestScore_latihan${activeSet}`;
   const prev=localStorage.getItem(key);
   if(prev===null||s.total>parseInt(prev))localStorage.setItem(key,s.total);
