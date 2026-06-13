@@ -550,18 +550,82 @@ input:checked+.slider:before{transform:translateX(22px);}
 
 /* ========== PENCAPAIAN ========== */
 .pencapaian-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.badge-card{border-radius:14px;padding:14px 10px;text-align:center;border:1.5px solid var(--border);background:#F8FAFC;transition:.2s;position:relative;}
-.badge-card.unlocked{background:#fff;box-shadow:var(--shadow);}
-.badge-card.locked .badge-icon{filter:grayscale(1);opacity:.3;}
-.badge-card .badge-icon{font-size:28px;margin-bottom:6px;}
-.badge-card .badge-name{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:3px;}
-.badge-card .badge-desc{font-size:10px;color:var(--gray);line-height:1.4;}
-.badge-tier-tag{position:absolute;top:7px;right:7px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:#E3F2FD;color:var(--blue);}
-.badge-status{font-size:10px;font-weight:700;margin-top:5px;color:#00897B;}
-.badge-card.locked .badge-status{color:#94A3B8;}
 .pencapaian-progress-bar{background:var(--border);border-radius:10px;height:10px;overflow:hidden;margin:10px 0 16px;}
 .pencapaian-progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#1565C0,#7B1FA2);transition:width .6s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;}
 
+/* Base Badge Card */
+.badge-card{border-radius:14px;padding:14px 10px;text-align:center;transition:.2s;position:relative;}
+.badge-card .badge-icon{font-size:28px;margin-bottom:5px;}
+.badge-card .badge-name{font-size:12px;font-weight:700;margin-bottom:3px;}
+.badge-card .badge-desc{font-size:10px;line-height:1.4;}
+.badge-card.locked .badge-icon{filter:grayscale(1);opacity:.35;}
+.badge-card.locked .badge-desc{color:var(--gray);}
+.badge-tier-tag{position:absolute;top:7px;right:7px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.badge-unlocked-check{margin-top:5px;font-size:10px;font-weight:700;}
+
+/* Tier 1 - Pemula */
+.tier-1 .pencapaian-tier-label{background:#D3D1C7;color:#2C2C2A;}
+.tier-1 .badge-card{border:1.5px solid #D3D1C7;background:linear-gradient(135deg,#F1EFE8,#ffffff);}
+.tier-1 .badge-card.unlocked{border-color:#888780;background:linear-gradient(135deg,#D3D1C7,#F1EFE8);}
+.tier-1 .badge-card .badge-name{color:#444441;}
+.tier-1 .badge-card.unlocked .badge-name{color:#2C2C2A;}
+.tier-1 .badge-tier-tag{background:#B4B2A9;color:#2C2C2A;}
+.tier-1 .badge-unlocked-check{color:#444441;}
+
+/* Tier 2 - Pemula Lanjut */
+.tier-2 .pencapaian-tier-label{background:#9FE1CB;color:#04342C;}
+.tier-2 .badge-card{border:1.5px solid #9FE1CB;background:linear-gradient(135deg,#E1F5EE,#ffffff);}
+.tier-2 .badge-card.unlocked{border-color:#1D9E75;background:linear-gradient(135deg,#9FE1CB,#E1F5EE);}
+.tier-2 .badge-card .badge-name{color:#085041;}
+.tier-2 .badge-card.unlocked .badge-name{color:#04342C;}
+.tier-2 .badge-tier-tag{background:#5DCAA5;color:#04342C;}
+.tier-2 .badge-unlocked-check{color:#085041;}
+
+/* Tier 3 - Menengah */
+.tier-3 .pencapaian-tier-label{background:#B5D4F4;color:#042C53;}
+.tier-3 .badge-card{border:1.5px solid #85B7EB;background:linear-gradient(135deg,#E6F1FB,#ffffff);}
+.tier-3 .badge-card.unlocked{border-color:#378ADD;background:linear-gradient(135deg,#B5D4F4,#E6F1FB);}
+.tier-3 .badge-card .badge-name{color:#0C447C;}
+.tier-3 .badge-card.unlocked .badge-name{color:#042C53;}
+.tier-3 .badge-tier-tag{background:#85B7EB;color:#042C53;}
+.tier-3 .badge-unlocked-check{color:#0C447C;}
+
+/* Tier 4 - Mahir */
+.tier-4 .pencapaian-tier-label{background:#CECBF6;color:#26215C;}
+.tier-4 .badge-card{border:1.5px solid #AFA9EC;background:linear-gradient(135deg,#EEEDFE,#ffffff);}
+.tier-4 .badge-card.unlocked{border-color:#7F77DD;background:linear-gradient(135deg,#CECBF6,#EEEDFE);}
+.tier-4 .badge-card .badge-name{color:#3C3489;}
+.tier-4 .badge-card.unlocked .badge-name{color:#26215C;}
+.tier-4 .badge-tier-tag{background:#AFA9EC;color:#26215C;}
+.tier-4 .badge-unlocked-check{color:#3C3489;}
+
+/* Tier 5 - Ahli */
+.tier-5 .pencapaian-tier-label{background:#FAC775;color:#412402;}
+.tier-5 .badge-card{border:1.5px solid #FAC775;background:linear-gradient(135deg,#FAEEDA,#ffffff);}
+.tier-5 .badge-card.unlocked{border-color:#BA7517;background:linear-gradient(135deg,#FAC775,#FAEEDA);box-shadow:0 2px 12px rgba(186,117,23,.25);}
+.tier-5 .badge-card .badge-name{color:#633806;}
+.tier-5 .badge-card.unlocked .badge-name{color:#412402;}
+.tier-5 .badge-tier-tag{background:#EF9F27;color:#412402;}
+.tier-5 .badge-unlocked-check{color:#633806;}
+
+/* Tier 6 - Master */
+.tier-6 .pencapaian-tier-label{background:#F5C4B3;color:#4A1B0C;}
+.tier-6 .badge-card{border:1.5px solid #F0997B;background:linear-gradient(135deg,#FAECE7,#ffffff);}
+.tier-6 .badge-card.unlocked{border-color:#D85A30;background:linear-gradient(135deg,#F5C4B3,#FAECE7);box-shadow:0 2px 12px rgba(216,90,48,.25);}
+.tier-6 .badge-card .badge-name{color:#712B13;}
+.tier-6 .badge-card.unlocked .badge-name{color:#4A1B0C;}
+.tier-6 .badge-tier-tag{background:#F0997B;color:#4A1B0C;}
+.tier-6 .badge-unlocked-check{color:#712B13;}
+
+/* Tier 7 - Legendaris */
+.tier-7 .pencapaian-tier-label{background:#F4C0D1;color:#4B1528;}
+.tier-7 .badge-card{border:1.5px solid #ED93B1;background:linear-gradient(135deg,#FBEAF0,#ffffff);}
+.tier-7 .badge-card.unlocked{border-color:#D4537E;background:linear-gradient(135deg,#F4C0D1,#FBEAF0);box-shadow:0 2px 14px rgba(212,83,126,.3);}
+.tier-7 .badge-card .badge-name{color:#72243E;}
+.tier-7 .badge-card.unlocked .badge-name{color:#4B1528;}
+.tier-7 .badge-tier-tag{background:#ED93B1;color:#4B1528;}
+.tier-7 .badge-unlocked-check{color:#72243E;}
+  
 /* ========== SIMULASI ========== */
 .simulasi-info-card{background:#FFF8E1;border-left:4px solid #F57C00;padding:14px;border-radius:0 14px 14px 0;margin-bottom:16px;font-size:13px;line-height:1.7;}
 .simulasi-info-card strong{color:#BF360C;}
