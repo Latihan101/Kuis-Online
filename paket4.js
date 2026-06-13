@@ -335,62 +335,62 @@ var paket4 = {
     pembahasan: ""
   },
   { // No 56
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
-    pembahasan: ""
+    q:`<img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+	  opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
+	  a:3,
+	  pembahasan: ""
   },
   { // No 57
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
-    pembahasan: ""
+    q:`<span style="display:block;margin-bottom:6px;font-weight:bold;color:#000000;">Tentukan satu gambar yang tidak mempunyai persamaan dengan gambar-gambar lainnya ...</span><img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+	  opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
+	  a:3,
+	  pembahasan: ""
   },
   { // No 58
-    q: "",
+    q:`<span style="display:block;margin-bottom:6px;font-weight:bold;color:#000000;">Tentukan satu gambar yang tidak mempunyai persamaan dengan gambar-gambar lainnya ...</span><img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,	  opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
 	  a:1,
 	  pembahasan: ""
   },
   { // No 59
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
-    pembahasan: ""
+    q:`<img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+	  opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
+	  a:3,
+	  pembahasan: ""
   },
   { // No 60
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
-    pembahasan: ""
+    q:`<img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+      opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
+	  a:4,
+	  pembahasan: ""
   },
   { // No 61
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
-    pembahasan: ""
+    q:`<img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+	  opt:["Gambar A","Gambar B","Gambar C","Gambar D","Gambar E"],
+	  a:4,
+	  pembahasan: ""
   },
   { // No 62
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
+    q: "MUMUK >< ...",
+    opt: ["Padat","Lubak","Keropos","Hanur","Kuat"],
+    a: 0,
     pembahasan: ""
   },
   { // No 63
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
+    q: "STANZA = ....",
+    opt: ["Halte","Romantis","Gelap","Puisi","Bait"],
+    a: 4,
     pembahasan: ""
   },
   { // No 64
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
+    q: "EKSPLOITASI >< ...",
+    opt: ["Konservasi","Interpretasi","Perlindungan","Konservatori","Kuno"],
+    a: 0,
     pembahasan: ""
   },
   { // No 65
-    q: "",
-    opt: ["","","","",""],
-    a: 1,
+    q:`<img style="max-width:100%;border-radius:8px;margin:6px 0;display:block;" src="" />`,
+    opt:["J dan R","J dan S","K dan S","I dan R","I dan S"],
+    a:1,
     pembahasan: ""
   } 
   ],
