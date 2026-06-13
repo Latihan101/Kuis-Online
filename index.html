@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -87,16 +86,6 @@ body{background:linear-gradient(135deg,#1e3a8a 0%,#4f46e5 50%,#7c3aed 100%);min-
 .logout-modal-btns button{padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;}
 .btn-logout-confirm{background:linear-gradient(135deg,#dc2626,#ef4444);color:white;}
 .btn-logout-cancel{background:linear-gradient(135deg,#475569,#64748b);color:white;}
-
-/* Quit confirm modal */
-.quit-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.7);z-index:20002;justify-content:center;align-items:center;}
-.quit-modal.show{display:flex;}
-.quit-modal-content{background:white;padding:24px;border-radius:20px;max-width:300px;width:90%;text-align:center;animation:fadeIn .3s ease;}
-.quit-modal-content h3{margin-bottom:8px;color:var(--dark);font-weight:800;font-size:17px;}
-.quit-modal-content p{margin-bottom:18px;color:var(--gray);font-size:13px;}
-.quit-modal-btns{display:flex;gap:10px;justify-content:center;}
-.btn-quit-confirm{background:linear-gradient(135deg,#dc2626,#ef4444);color:white;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;}
-.btn-quit-cancel{background:linear-gradient(135deg,#475569,#64748b);color:white;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;}
 
 /* ==================== ORIGINAL STYLES ==================== */
 .logo{text-align:center;margin-bottom:18px;}
@@ -505,7 +494,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       </div>
     </div>
     <button class="btn-login" onclick="doLogin()">🚀 Masuk</button>
-    <div class="login-footer">Version 4.3 | © 2026 Latihan SKD</div>
+    <div class="login-footer">Version 4.4 | © 2026 Latihan SKD</div>
   </div>
 </div>
 
@@ -518,19 +507,6 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     <div class="logout-modal-btns">
       <button class="btn-logout-confirm" onclick="doLogout()">Ya, Logout</button>
       <button class="btn-logout-cancel" onclick="closeLogoutModal()">Batal</button>
-    </div>
-  </div>
-</div>
-
-<!-- QUIT APP CONFIRM MODAL -->
-<div id="quitModal" class="quit-modal">
-  <div class="quit-modal-content">
-    <div style="font-size:44px;margin-bottom:10px;">🚪</div>
-    <h3>Keluar Aplikasi?</h3>
-    <p>Yakin ingin menutup aplikasi?</p>
-    <div class="quit-modal-btns">
-      <button class="btn-quit-confirm" onclick="confirmQuitApp()">Ya, Keluar</button>
-      <button class="btn-quit-cancel" onclick="closeQuitModal()">Batal</button>
     </div>
   </div>
 </div>
@@ -559,17 +535,17 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <div style="color:rgba(255,255,255,.7);font-size:18px;">›</div>
     </div>
     <div class="menu-grid-6">
-      <button class="menu-card soal" onclick="goTo('quizlistPage')"><span class="menu-icon">📚</span><span class="menu-label">Latihan</span></button>
-      <button class="menu-card simulasi" onclick="goTo('simulasiPage')"><span class="menu-icon">⏰</span><span class="menu-label">Simulasi</span></button>
-      <button class="menu-card quiz-cepat" onclick="goTo('quizCepatPage')"><span class="menu-icon">⚡</span><span class="menu-label">Kuis Cepat</span></button>
-      <button class="menu-card materi" onclick="goTo('materiPage')"><span class="menu-icon">📖</span><span class="menu-label">Materi</span></button>
-      <button class="menu-card pencapaian" onclick="goTo('pencapaianPage')"><span class="menu-icon">🏅</span><span class="menu-label">Pencapaian</span></button>
-      <button class="menu-card stats" onclick="goTo('statistikPage')"><span class="menu-icon">📊</span><span class="menu-label">Statistik</span></button>
-      <button class="menu-card petunjuk" onclick="goTo('petunjukPage')"><span class="menu-icon">📝</span><span class="menu-label">Petunjuk</span></button>
-      <button class="menu-card tentang" onclick="goTo('tentangPage')"><span class="menu-icon">ℹ️</span><span class="menu-label">Tentang</span></button>
+      <button class="menu-card soal" onclick="playSound('menu');goTo('quizlistPage')"><span class="menu-icon">📚</span><span class="menu-label">Latihan</span></button>
+      <button class="menu-card simulasi" onclick="playSound('menu');goTo('simulasiPage')"><span class="menu-icon">⏰</span><span class="menu-label">Simulasi</span></button>
+      <button class="menu-card quiz-cepat" onclick="playSound('menu');goTo('quizCepatPage')"><span class="menu-icon">⚡</span><span class="menu-label">Kuis Cepat</span></button>
+      <button class="menu-card materi" onclick="playSound('menu');goTo('materiPage')"><span class="menu-icon">📖</span><span class="menu-label">Materi</span></button>
+      <button class="menu-card pencapaian" onclick="playSound('menu');goTo('pencapaianPage')"><span class="menu-icon">🏅</span><span class="menu-label">Pencapaian</span></button>
+      <button class="menu-card stats" onclick="playSound('menu');goTo('statistikPage')"><span class="menu-icon">📊</span><span class="menu-label">Statistik</span></button>
+      <button class="menu-card petunjuk" onclick="playSound('menu');goTo('petunjukPage')"><span class="menu-icon">📝</span><span class="menu-label">Petunjuk</span></button>
+      <button class="menu-card tentang" onclick="playSound('menu');goTo('tentangPage')"><span class="menu-icon">ℹ️</span><span class="menu-label">Tentang</span></button>
     </div>
     <div class="info-acak">🔄 Setiap membuka soal, pilihan jawaban akan diacak!</div>
-    <div class="version">Version 4.3 | © 2026 Latihan SKD</div>
+    <div class="version">Version 4.4 | © 2026 Latihan SKD</div>
   </div>
 </div>
 
@@ -603,8 +579,8 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
         <span class="akun-info-value" id="akunQCSesi">0</span>
       </div>
     </div>
-    <button class="btn-logout-akun" onclick="showLogoutModal()">🚪 Logout dari Akun Ini</button>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali ke Menu</button>
+    <button class="btn-logout-akun" onclick="playSound('back');showLogoutModal()">🚪 Logout dari Akun Ini</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali ke Menu</button>
   </div>
 </div>
 
@@ -619,8 +595,8 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       </div>
     </div>
     <div id="quizListContainer" style="flex:1;overflow-y:auto;min-height:0;padding-right:4px;"></div>
-    <button class="reset-btn" style="flex-shrink:0;margin-top:6px;" onclick="showResetModal()">🗑️ Reset Semua Progress</button>
-    <button class="back-btn" style="flex-shrink:0;margin-top:6px;" onclick="goTo('homePage')">← Kembali</button>
+    <button class="reset-btn" style="flex-shrink:0;margin-top:6px;" onclick="playSound('back');showResetModal()">🗑️ Reset Semua Progress</button>
+    <button class="back-btn" style="flex-shrink:0;margin-top:6px;" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -630,7 +606,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     <div class="page-title">⚡ Quiz Cepat</div>
     <p style="color:var(--gray);font-size:13px;margin-bottom:16px;">Jawab soal sebanyak mungkin dalam waktu terbatas. Pilih kategori:</p>
     <div class="quiz-cepat-grid" id="quizCepatGrid"></div>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -648,8 +624,8 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <button class="qc-timer-btn" onclick="selectQCTimer(5,this)"><span class="t-num">5</span><span>menit</span></button>
       <button class="qc-timer-btn" onclick="selectQCTimer(10,this)"><span class="t-num">10</span><span>menit</span></button>
     </div>
-    <button class="btn-mulai-qc" onclick="mulaiQuizCepat()">🚀 Mulai Quiz!</button>
-    <button class="back-btn" onclick="goTo('quizCepatPage')">← Kembali</button>
+    <button class="btn-mulai-qc" onclick="playSound('start');mulaiQuizCepat()">🚀 Mulai Quiz!</button>
+    <button class="back-btn" onclick="playSound('back');goTo('quizCepatPage')">← Kembali</button>
   </div>
 </div>
 
@@ -697,9 +673,9 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     </div>
     <div style="background:var(--gray-light);border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;" id="qcBestInfo"></div>
     <div class="qc-result-btns">
-      <button class="btn-qc-ulang" onclick="ulangQuizCepat()">🔄 Ulangi</button>
-      <button class="btn-qc-lain" onclick="goTo('quizCepatPage')">⚡ Kategori Lain</button>
-      <button class="btn-qc-home" onclick="goTo('homePage')">🏠 Menu</button>
+      <button class="btn-qc-ulang" onclick="playSound('start');ulangQuizCepat()">🔄 Ulangi</button>
+      <button class="btn-qc-lain" onclick="playSound('back');goTo('quizCepatPage')">⚡ Kategori Lain</button>
+      <button class="btn-qc-home" onclick="playSound('back');goTo('homePage')">🏠 Menu</button>
     </div>
   </div>
 </div>
@@ -709,10 +685,10 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
   <div class="card">
     <div class="page-title">📖 Materi SKD</div>
     <p style="color:var(--gray);font-size:13px;margin-bottom:14px;">Pilih kategori materi:</p>
-    <button class="materi-card twk" onclick="showMateri('twk')"><span class="materi-icon">📚</span><span>TWK</span><span class="materi-desc">Tes Wawasan Kebangsaan</span></button>
-    <button class="materi-card tiu" onclick="showMateri('tiu')"><span class="materi-icon">🔢</span><span>TIU</span><span class="materi-desc">Tes Intelegensi Umum</span></button>
-    <button class="materi-card tkp" onclick="showMateri('tkp')"><span class="materi-icon">⭐</span><span>TKP</span><span class="materi-desc">Tes Karakteristik Pribadi</span></button>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="materi-card twk" onclick="playSound('menu');showMateri('twk')"><span class="materi-icon">📚</span><span>TWK</span><span class="materi-desc">Tes Wawasan Kebangsaan</span></button>
+    <button class="materi-card tiu" onclick="playSound('menu');showMateri('tiu')"><span class="materi-icon">🔢</span><span>TIU</span><span class="materi-desc">Tes Intelegensi Umum</span></button>
+    <button class="materi-card tkp" onclick="playSound('menu');showMateri('tkp')"><span class="materi-icon">⭐</span><span>TKP</span><span class="materi-desc">Tes Karakteristik Pribadi</span></button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -721,7 +697,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
   <div class="card">
     <div class="page-title" id="materiContentTitle">📖 Materi</div>
     <div id="materiContentFull" class="materi-content-full"></div>
-    <button class="back-btn" onclick="goTo('materiPage')">← Kembali ke Daftar Materi</button>
+    <button class="back-btn" onclick="playSound('back');goTo('materiPage')">← Kembali ke Daftar Materi</button>
   </div>
 </div>
 
@@ -739,7 +715,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <div id="statsHistory" style="margin-top:12px;"></div>
       <div id="statsQCHistory" style="margin-top:12px;"></div>
     </div>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -749,7 +725,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     <div class="page-title">🏅 Pencapaian</div>
     <p class="pencapaian-desc" style="color:var(--gray);font-size:13px;flex-shrink:0;">Kumpulkan semua badge dengan terus berlatih!</p>
     <div class="pencapaian-scroll" id="pencapaianScroll"></div>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -764,8 +740,8 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       • Soal diambil dari <strong>semua paket</strong> yang tersedia<br>
       • Hasil muncul setelah waktu habis atau semua soal selesai
     </div>
-    <button class="btn-mulai-simulasi" onclick="mulaiSimulasi()">🚀 MULAI SIMULASI UJIAN</button>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="btn-mulai-simulasi" onclick="playSound('start');mulaiSimulasi()">🚀 MULAI SIMULASI UJIAN</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -791,7 +767,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <p>• Pelajari materi terlebih dahulu sebelum mengerjakan soal</p>
       <p>• Gunakan Quiz Cepat untuk melatih kecepatan menjawab</p>
     </div>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -813,6 +789,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <p>• Grafik progress skor per paket</p>
       <p>• Pencapaian/Badge 7 Tier dari Pemula hingga Legendaris</p>
       <p>• ⚡ Quiz Cepat: jawab soal sebanyak mungkin dalam 1–10 menit</p>
+      <p>• 🔊 Efek suara interaktif</p>
     </div>
     <div class="info-block" style="background:var(--gray-light);">
       <p><strong>📊 Passing Grade:</strong></p>
@@ -821,7 +798,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <p>• TWK: 30 soal | TIU: 35 soal | TKP: 45 soal</p>
       <p>• Total: 110 soal | Skor Maksimal: 550</p>
     </div>
-    <button class="back-btn" onclick="goTo('homePage')">← Kembali</button>
+    <button class="back-btn" onclick="playSound('back');goTo('homePage')">← Kembali</button>
   </div>
 </div>
 
@@ -857,7 +834,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     <p style="color:var(--gray);font-size:14px;flex-shrink:0;" id="evalListTitle">📖 Latihan SKD Paket 1</p>
     <div id="evalListScoreSummary" style="margin:10px 0;padding:10px;background:var(--gray-light);border-radius:10px;font-size:13px;flex-shrink:0;"></div>
     <div id="evalListContent" style="flex:1;overflow-y:auto;text-align:left;min-height:0;padding-right:6px;"></div>
-    <button class="btn-close-eval" style="display:block;width:100%;margin-top:8px;flex-shrink:0;" onclick="goTo('quizlistPage')">← Kembali ke Daftar Soal</button>
+    <button class="btn-close-eval" style="display:block;width:100%;margin-top:8px;flex-shrink:0;" onclick="playSound('back');goTo('quizlistPage')">← Kembali ke Daftar Soal</button>
   </div>
 </div>
 
@@ -869,9 +846,9 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
     <div id="scoreDetail" class="score-detail"></div>
     <div id="passStatus" class="pass-status"></div>
     <div class="result-btns">
-      <button class="btn-restart" onclick="restartQuiz()">🔄 Ulangi Soal</button>
+      <button class="btn-restart" onclick="playSound('start');restartQuiz()">🔄 Ulangi Soal</button>
       <button class="btn-evaluasi" onclick="showEvaluasi()">📋 Evaluasi</button>
-      <button class="btn-home" onclick="backToHome()">🏠 Menu Utama</button>
+      <button class="btn-home" onclick="playSound('back');backToHome()">🏠 Menu Utama</button>
     </div>
     <div id="evaluasiPanel" class="evaluasi-panel"></div>
     <button id="btnCloseEval" class="btn-close-eval" style="display:none;" onclick="closeEvaluasi()">✖ Tutup Evaluasi</button>
@@ -953,14 +930,88 @@ document.addEventListener('cut',e=>e.preventDefault());
 window.addEventListener('keyup',e=>{if(e.key==='PrintScreen')flashOverlay();});
 function flashOverlay(){const o=document.getElementById('screenshotOverlay');o.style.display='block';setTimeout(()=>o.style.display='none',500);}
 
+// ==================== SOUND ENGINE (Web Audio API) ====================
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+  return audioCtx;
+}
+function playTone(freq, type, duration, gain, delay=0){
+  const ctx=getAudioCtx();if(!ctx)return;
+  const o=ctx.createOscillator();
+  const g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type=type;o.frequency.setValueAtTime(freq,ctx.currentTime+delay);
+  g.gain.setValueAtTime(gain,ctx.currentTime+delay);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+duration);
+  o.start(ctx.currentTime+delay);
+  o.stop(ctx.currentTime+delay+duration);
+}
+function playSound(type){
+  try{
+    switch(type){
+      case 'menu':    // klik menu — dua nada naik singkat
+        playTone(440,'sine',0.08,0.15);
+        playTone(660,'sine',0.08,0.1,0.07);
+        break;
+      case 'back':    // kembali — nada turun
+        playTone(440,'sine',0.06,0.12);
+        playTone(330,'sine',0.08,0.1,0.06);
+        break;
+      case 'select':  // pilih jawaban — klik ringan
+        playTone(600,'sine',0.06,0.12);
+        break;
+      case 'correct': // benar — fanfare naik
+        playTone(523,'triangle',0.12,0.2);
+        playTone(659,'triangle',0.12,0.2,0.12);
+        playTone(784,'triangle',0.15,0.2,0.24);
+        break;
+      case 'wrong':   // salah — nada rendah
+        playTone(220,'sawtooth',0.08,0.15);
+        playTone(180,'sawtooth',0.1,0.12,0.1);
+        break;
+      case 'next':    // next soal — klik kecil
+        playTone(520,'sine',0.05,0.1);
+        break;
+      case 'prev':    // prev soal — klik kecil turun
+        playTone(400,'sine',0.05,0.1);
+        break;
+      case 'start':   // mulai — ascending chord
+        playTone(392,'triangle',0.1,0.15);
+        playTone(523,'triangle',0.1,0.15,0.1);
+        playTone(659,'triangle',0.12,0.15,0.2);
+        break;
+      case 'finish':  // selesai — victory jingle
+        playTone(523,'triangle',0.15,0.2);
+        playTone(659,'triangle',0.15,0.2,0.15);
+        playTone(784,'triangle',0.15,0.2,0.30);
+        playTone(1047,'triangle',0.2,0.25,0.48);
+        break;
+      case 'timeout': // waktu habis — alarm
+        playTone(880,'square',0.1,0.2);
+        playTone(440,'square',0.1,0.2,0.15);
+        playTone(880,'square',0.1,0.2,0.30);
+        break;
+      case 'login':   // login berhasil
+        playTone(440,'sine',0.1,0.15);
+        playTone(554,'sine',0.1,0.15,0.12);
+        playTone(659,'sine',0.12,0.18,0.24);
+        break;
+      case 'newbest': // rekor baru
+        playTone(523,'triangle',0.1,0.2);
+        playTone(659,'triangle',0.1,0.2,0.1);
+        playTone(784,'triangle',0.1,0.2,0.2);
+        playTone(1047,'triangle',0.15,0.25,0.32);
+        playTone(1319,'triangle',0.2,0.3,0.5);
+        break;
+    }
+  }catch(e){}
+}
+
 // ==================== STATE CONSTANTS ====================
-const SESSION_KEY = 'skd_logged_in_user';   // localStorage — persisten
-const ACTIVE_PAGE_KEY = 'skd_active_page';   // localStorage — restore setelah refresh
-
-// Halaman yang TIDAK boleh di-restore (halaman sementara/in-progress)
+const SESSION_KEY = 'skd_logged_in_user';
+const ACTIVE_PAGE_KEY = 'skd_active_page';
 const NON_RESTORABLE_PAGES = ['loginPage','quizPage','quizCepatPlayPage'];
-
-// Parent map: ke mana kembali saat Back ditekan
 const PAGE_PARENT = {
   quizlistPage: 'homePage',
   materiPage: 'homePage',
@@ -1017,10 +1068,11 @@ function doLogin(){
     document.getElementById('inputPassword').value='';
     document.getElementById('btnEye').textContent='👁️';
     document.getElementById('inputPassword').type='password';
-    // Setelah login, navigasi ke homePage dan reset history
+    playSound('login');
     _showPage('homePage', true);
     refreshHomeStats();
   } else {
+    playSound('wrong');
     errEl.textContent='⚠️ Username atau password salah!';
     errEl.classList.add('show');
     document.getElementById('inputPassword').value='';
@@ -1037,20 +1089,23 @@ function doLogout(){
   localStorage.removeItem(ACTIVE_PAGE_KEY);
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
-  document.getElementById('sidebarToggle').style.display='none';
+  // FIX #2: Pastikan tombol daftar soal disembunyikan saat logout
+  hideSidebarToggle();
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
   _showPage('loginPage', true);
 }
 
-// ==================== QUIT APP ====================
-function showQuitModal(){ document.getElementById('quitModal').classList.add('show'); }
-function closeQuitModal(){ document.getElementById('quitModal').classList.remove('show'); }
-function confirmQuitApp(){
-  closeQuitModal();
-  // Tidak ada cara native menutup browser, kita hanya tutup modal
-  // Untuk Android TWA bisa window.close() tapi bisa diabaikan browser
-  try { window.close(); } catch(e){}
+// ==================== SIDEBAR TOGGLE HELPERS ====================
+// FIX #2: Fungsi terpusat untuk show/hide tombol Daftar Soal
+function showSidebarToggle(){
+  document.getElementById('sidebarToggle').style.display='block';
+}
+function hideSidebarToggle(){
+  document.getElementById('sidebarToggle').style.display='none';
+  // Tutup sidebar jika terbuka
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
 }
 
 // ==================== NAVIGATION CORE ====================
@@ -1058,11 +1113,11 @@ const PAGES = ['homePage','quizlistPage','materiPage','materiContentPage','stati
   'petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage','pencapaianPage',
   'quizCepatPage','quizCepatConfirmPage','quizCepatPlayPage','quizCepatResultPage','akunPage','loginPage'];
 
+// Halaman yang BOLEH menampilkan tombol Daftar Soal
+const PAGES_WITH_SIDEBAR = ['quizPage'];
+
 let currentPage = 'loginPage';
 
-/**
- * _showPage: render halaman tanpa memanipulasi history
- */
 function _showPage(pageId){
   PAGES.forEach(p=>{
     const el=document.getElementById(p);
@@ -1072,20 +1127,22 @@ function _showPage(pageId){
   if(target) target.classList.add('active');
   currentPage = pageId;
   window.scrollTo(0,0);
+
+  // FIX #2: Tampilkan/sembunyikan tombol Daftar Soal sesuai halaman aktif
+  if(PAGES_WITH_SIDEBAR.includes(pageId)){
+    showSidebarToggle();
+  } else {
+    hideSidebarToggle();
+  }
 }
 
-/**
- * goTo: navigasi publik — update history + render halaman
- */
 function goTo(pageId){
   if(currentPage===pageId) return;
-  // Cegah akses halaman app jika belum login
   if(pageId!=='loginPage' && !getLoggedInUser()) return;
 
   // Stop timer quiz jika keluar dari halaman quiz
   if(currentPage==='quizPage' && pageId!=='quizPage'){
     if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
-    document.getElementById('sidebarToggle').style.display='none';
   }
   // Stop QC timer jika keluar dari play page
   if(currentPage==='quizCepatPlayPage' && pageId!=='quizCepatPlayPage'){
@@ -1109,14 +1166,12 @@ function goTo(pageId){
   if(pageId==='quizCepatPage') renderQuizCepatGrid();
   if(pageId==='akunPage') refreshAkunPage();
 
-  // Push ke browser history agar Back berfungsi
   history.pushState({page: pageId}, '', '');
 }
 
 // ==================== ANDROID BACK BUTTON ====================
 window.addEventListener('popstate', function(e){
   const state = e.state;
-  const targetPage = (state && state.page) ? state.page : null;
 
   // Tutup sidebar jika terbuka
   const sb = document.getElementById('sidebar');
@@ -1127,7 +1182,7 @@ window.addEventListener('popstate', function(e){
   }
 
   // Tutup modal jika terbuka
-  const modals = ['logoutModal','resetModal','quitModal'];
+  const modals = ['logoutModal','resetModal'];
   let modalClosed = false;
   modals.forEach(id=>{
     const m = document.getElementById(id);
@@ -1141,29 +1196,30 @@ window.addEventListener('popstate', function(e){
     return;
   }
 
-  // Jika di loginPage, tidak ada yang bisa dilakukan
-  if(currentPage === 'loginPage'){
-    history.pushState({page: 'loginPage'}, '', '');
-    return;
-  }
-
-  // Jika di homePage → tanya apakah keluar dari app
-  if(currentPage === 'homePage'){
-    history.pushState({page: 'homePage'}, '', '');
-    showQuitModal();
+  // Jika di loginPage atau homePage, biarkan sistem Android yang tangani
+  if(currentPage === 'loginPage' || currentPage === 'homePage'){
+    history.pushState({page: currentPage}, '', '');
     return;
   }
 
   // Halaman lain → kembali ke parent
+  playSound('back');
   const parent = PAGE_PARENT[currentPage] || 'homePage';
+
+  // Stop timer jika keluar dari quiz
+  if(currentPage==='quizPage'){
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  }
+  if(currentPage==='quizCepatPlayPage'){
+    if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
+  }
+
   _showPage(parent);
   saveActivePage(parent);
 
-  // Refresh konten parent jika perlu
   if(parent==='homePage'){refreshHomeStats();refreshHomeUsername();}
   if(parent==='quizlistPage') refreshQuizList();
   if(parent==='quizCepatPage') renderQuizCepatGrid();
-  if(parent==='materiPage'){}
 
   history.pushState({page: parent}, '', '');
 });
@@ -1172,9 +1228,7 @@ window.addEventListener('popstate', function(e){
 (function initApp(){
   const user = getLoggedInUser();
   if(user){
-    // User sudah login — restore halaman terakhir
     const lastPage = getLastActivePage();
-    // Pastikan halaman yang di-restore valid
     const restorable = PAGES.filter(p => !NON_RESTORABLE_PAGES.includes(p));
     const targetPage = restorable.includes(lastPage) ? lastPage : 'homePage';
 
@@ -1182,14 +1236,12 @@ window.addEventListener('popstate', function(e){
     refreshHomeStats();
     refreshHomeUsername();
 
-    // Refresh konten halaman yang di-restore
     if(targetPage==='quizlistPage') refreshQuizList();
     if(targetPage==='statistikPage') refreshStatistik();
     if(targetPage==='pencapaianPage') refreshPencapaian();
     if(targetPage==='quizCepatPage') renderQuizCepatGrid();
     if(targetPage==='akunPage') refreshAkunPage();
 
-    // Setup history stack: home dulu, lalu halaman aktif
     if(targetPage !== 'homePage'){
       history.replaceState({page: 'homePage'}, '', '');
       history.pushState({page: targetPage}, '', '');
@@ -1197,7 +1249,6 @@ window.addEventListener('popstate', function(e){
       history.replaceState({page: 'homePage'}, '', '');
     }
   } else {
-    // Belum login
     _showPage('loginPage');
     history.replaceState({page: 'loginPage'}, '', '');
   }
@@ -1273,7 +1324,7 @@ function showMateri(k){
   cd.className='materi-content-full '+(bg[k]||'');
   const nl={twk:'📚 TWK',tiu:'🔢 TIU',tkp:'⭐ TKP'};
   let nav='<div class="materi-nav-bottom">';
-  for(let x in nl){if(x!==k)nav+=`<button class="btn-${x}" onclick="showMateri('${x}')">${nl[x]}</button>`;}
+  for(let x in nl){if(x!==k)nav+=`<button class="btn-${x}" onclick="playSound('menu');showMateri('${x}')">${nl[x]}</button>`;}
   nav+='</div>';
   cd.innerHTML=m.konten+nav;
   goTo('materiContentPage');
@@ -1418,7 +1469,7 @@ function renderQuizCepatGrid(){
       const b=getQCBestScore(cat,m);
       return b>0?`<span class="qc-stat highlight">⏱️${m}m: ${b}</span>`:'';
     }).filter(x=>x).join('');
-    html+=`<div class="qc-card ${cat}" onclick="pilihanQC('${cat}')">
+    html+=`<div class="qc-card ${cat}" onclick="playSound('menu');pilihanQC('${cat}')">
       <div class="qc-header">
         <div class="qc-icon">${c.icon}</div>
         <div class="qc-info">
@@ -1452,6 +1503,7 @@ function pilihanQC(cat){
 }
 
 function selectQCTimer(menit,btn){
+  playSound('select');
   qcState.timerMenit=menit;
   document.querySelectorAll('.qc-timer-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -1499,7 +1551,7 @@ function renderQCQuestion(){
   document.getElementById('qcQTxt').innerHTML=d.q;
   let optsHtml='';
   d.opt.forEach((o,i)=>{
-    optsHtml+=`<div class="qc-opt" onclick="pilihQCJawaban(${i})">
+    optsHtml+=`<div class="qc-opt" onclick="playSound('select');pilihQCJawaban(${i})">
       <div class="qc-opt-letter">${PREFIXES[i]}</div>
       <div class="qc-opt-text">${o}</div>
     </div>`;
@@ -1540,6 +1592,8 @@ function pilihQCJawaban(idx){
     fb.textContent=isBenar?'✅ Benar!':'❌ Salah! Jawaban benar: '+PREFIXES[soal.a]+'. '+soal.opt[soal.a];
     fb.className='qc-feedback '+(isBenar?'benar':'salah');
   }
+  // Suara benar/salah di QC
+  playSound(isBenar?'correct':'wrong');
   if(isBenar){qcState.benar++;qcState.streakCur++;if(qcState.streakCur>qcState.streakMax)qcState.streakMax=qcState.streakCur;}
   else{qcState.salah++;qcState.streakCur=0;qcState.noWrong=false;}
   qcState.totalDijawab++;
@@ -1549,14 +1603,14 @@ function pilihQCJawaban(idx){
   if(qcState.curIdx>=qcState.soal.length-1){btnNext.textContent='🏁 Lihat Hasil';btnNext.onclick=finishQuizCepat;}
 }
 
-function qcNextQuestion(){qcState.curIdx++;if(qcState.curIdx>=qcState.soal.length)finishQuizCepat();else renderQCQuestion();}
+function qcNextQuestion(){playSound('next');qcState.curIdx++;if(qcState.curIdx>=qcState.soal.length)finishQuizCepat();else renderQCQuestion();}
 
 function startQCTimer(){
   if(qcState.interval)clearInterval(qcState.interval);
   updateQCTimerDisplay();
   qcState.interval=setInterval(()=>{
     qcState.timeLeft--;updateQCTimerDisplay();
-    if(qcState.timeLeft<=0){clearInterval(qcState.interval);qcState.interval=null;finishQuizCepat();}
+    if(qcState.timeLeft<=0){clearInterval(qcState.interval);qcState.interval=null;playSound('timeout');finishQuizCepat();}
   },1000);
 }
 
@@ -1600,6 +1654,8 @@ function finishQuizCepat(){
   document.getElementById('qcStatTotal').textContent=total;
   const newBestEl=document.getElementById('qcNewBest');
   newBestEl.style.display=isNewBest&&benar>0?'block':'none';
+  if(isNewBest&&benar>0) playSound('newbest');
+  else playSound('finish');
   const bestOverall=getQCBestScore(cat,menit);
   document.getElementById('qcBestInfo').innerHTML=`
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;">
@@ -1765,7 +1821,7 @@ function refreshQuizList(){
       `<span class="skor-badge twk">TWK:${twk}/${mTWK}</span><span class="skor-badge tiu">TIU:${tiu}/${mTIU}</span><span class="skor-badge tkp">TKP:${tkp}/${mTKP}</span>`
       :`<span class="skor-badge belum">-</span><span class="skor-badge belum">-</span><span class="skor-badge belum">-</span>`;
     c.innerHTML+=`<div class="quiz-item">
-      <div onclick="startQuiz(${m.id})">
+      <div onclick="playSound('start');startQuiz(${m.id})">
         <div class="quiz-header">
           <div class="quiz-left"><span class="quiz-icon">${m.icon}</span><span>${m.name} (${total} soal)</span></div>
           <div class="quiz-right">${badges}</div>
@@ -1778,7 +1834,7 @@ function refreshQuizList(){
           <span class="status-badge ${done?'selesai':'belum'}">${done?'✅ Selesai':'⏳ Belum'}</span>
         </div>
       </div>
-      ${done?`<button class="btn-eval-toggle" onclick="event.stopPropagation();showEvaluasiFromList(${m.id})"><span class="eval-icon">📋</span> Lihat Evaluasi & Pembahasan <span>→</span></button>`:''}
+      ${done?`<button class="btn-eval-toggle" onclick="event.stopPropagation();playSound('menu');showEvaluasiFromList(${m.id})"><span class="eval-icon">📋</span> Lihat Evaluasi & Pembahasan <span>→</span></button>`:''}
     </div>`;
   });
 }
@@ -1962,8 +2018,8 @@ function mulaiSimulasi(){
   document.getElementById('evaluasiPanel').style.display='none';
   document.getElementById('btnCloseEval').style.display='none';
   document.getElementById('quizTitle').textContent='⏰ Simulasi Ujian SKD';
-  document.getElementById('sidebarToggle').style.display='block';
-  goTo('quizPage');loadQuestion();updateGrid();
+  goTo('quizPage'); // FIX #2: _showPage di dalam goTo akan otomatis show sidebar toggle
+  loadQuestion();updateGrid();
   const td=document.getElementById('timerDisplay'),tb=document.getElementById('timerBadge');
   td.textContent='100:00';td.style.opacity='1';
   td.classList.remove('timer-warning','timer-danger','timer-blink');
@@ -1983,8 +2039,8 @@ function startQuiz(setId){
   document.getElementById('evaluasiPanel').style.display='none';
   document.getElementById('btnCloseEval').style.display='none';
   document.getElementById('quizTitle').textContent=`📖 Latihan SKD Paket ${setId}`;
-  document.getElementById('sidebarToggle').style.display='block';
-  goTo('quizPage');loadQuestion();updateGrid();
+  goTo('quizPage'); // FIX #2: _showPage di dalam goTo akan otomatis show sidebar toggle
+  loadQuestion();updateGrid();
   const timerOn=getTimerEnabled();
   const td=document.getElementById('timerDisplay'),tb=document.getElementById('timerBadge');
   tb.style.display='';
@@ -2009,7 +2065,7 @@ function loadQuestion(){
   let html='';
   questions[curQ].options.forEach((opt,idx)=>{
     let checked=questions[curQ].isTKP?(userScores[curQ]===questions[curQ].optionScores[idx]):(userAnswers[curQ]===idx);
-    html+=`<label class="option"><input type="radio" name="ans" value="${idx}" ${checked?'checked':''}><span class="choice-letter">${PREFIXES[idx]}</span><span class="choice-text">${opt}</span></label>`;
+    html+=`<label class="option" onclick="playSound('select')"><input type="radio" name="ans" value="${idx}" ${checked?'checked':''}><span class="choice-letter">${PREFIXES[idx]}</span><span class="choice-text">${opt}</span></label>`;
   });
   document.getElementById('quizOptions').innerHTML=html;
   const btn=document.getElementById('btnNextFinish');
@@ -2028,13 +2084,13 @@ function saveAnswer(){
   }
 }
 
-function nextQuestion(){saveAnswer();if(curQ<questions.length-1){curQ++;loadQuestion();}}
-function prevQuestion(){saveAnswer();if(curQ>0){curQ--;loadQuestion();}}
+function nextQuestion(){playSound('next');saveAnswer();if(curQ<questions.length-1){curQ++;loadQuestion();}}
+function prevQuestion(){playSound('prev');saveAnswer();if(curQ>0){curQ--;loadQuestion();}}
 
 function startTimer(){
   if(timerInterval)clearInterval(timerInterval);
   timerInterval=setInterval(()=>{
-    if(timeLeft<=0){clearInterval(timerInterval);finishQuiz();return;}
+    if(timeLeft<=0){clearInterval(timerInterval);playSound('timeout');finishQuiz();return;}
     timeLeft--;
     const m=Math.floor(timeLeft/60),s=timeLeft%60;
     const el=document.getElementById('timerDisplay');
@@ -2060,7 +2116,7 @@ function updateGrid(){
   grid.innerHTML=html;
 }
 
-function goToSoal(i){saveAnswer();curQ=i;loadQuestion();toggleSidebar();}
+function goToSoal(i){playSound('select');saveAnswer();curQ=i;loadQuestion();toggleSidebar();}
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');
   const isOpen=sb.classList.toggle('open');
@@ -2071,7 +2127,7 @@ function toggleSidebar(){
 function finishQuiz(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   saveAnswer();
-  document.getElementById('sidebarToggle').style.display='none';
+  // FIX #2: Saat selesai, sidebar toggle akan otomatis tersembunyi lewat goTo('resultPage')
   const wasSimulasi=simulasiMode;
   let s;
   if(!wasSimulasi){
@@ -2110,6 +2166,8 @@ function finishQuiz(){
   </table><div class="total-score">🎯 Nilai Akhir: ${s.persen}%</div>`;
   const pass={twk:s.twk>=PASSING.TWK,tiu:s.tiu>=PASSING.TIU,tkp:s.tkp>=PASSING.TKP};
   pass.all=pass.twk&&pass.tiu&&pass.tkp;
+  // Suara hasil
+  playSound(pass.all?'finish':'wrong');
   document.getElementById('passStatus').style.display='';
   document.getElementById('passStatus').innerHTML=`
     <div style="margin-bottom:10px;font-weight:700;color:var(--dark);">📋 STATUS PASSING GRADE:</div>
@@ -2128,7 +2186,6 @@ function restartQuiz(){if(activeSet>0)startQuiz(activeSet);else goTo('homePage')
 function backToHome(){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   if(qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
-  document.getElementById('sidebarToggle').style.display='none';
   simulasiMode=false;goTo('homePage');refreshHomeStats();
 }
 
@@ -2196,6 +2253,7 @@ function resetAllProgress(){
     localStorage.removeItem(`qcAkurasi90_${cat}`);
   });
   refreshQuizList();refreshHomeStats();closeResetModal();
+  playSound('back');
   alert('✅ Semua progress telah direset!');
 }
 </script>
