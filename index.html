@@ -729,6 +729,7 @@ input:checked+.slider:before{transform:translateX(22px);}
   .menu-grid{grid-template-columns:1fr 1fr;}
   .stats-row{gap:8px;}
 }
+@keyframes slideUpPop{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .page.active{animation:fadeIn .25s ease;}
 </style>
@@ -1445,6 +1446,17 @@ input:checked+.slider:before{transform:translateX(22px);}
   </button>
 </div>
 
+<div id="achPopup" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;background:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1.5px solid #E2E8F0;min-width:280px;max-width:340px;animation:slideUpPop .4s ease;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div id="achPopupIcon" style="font-size:36px;flex-shrink:0;">🏅</div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1565C0;margin-bottom:3px;">🎉 Pencapaian Baru!</div>
+      <div id="achPopupName" style="font-size:14px;font-weight:800;color:#1E293B;margin-bottom:2px;">—</div>
+      <div id="achPopupDesc" style="font-size:11px;color:#64748b;">—</div>
+    </div>
+  </div>
+</div>
+  
 <div id="screenshotOverlay" class="screenshot-overlay"></div>
 
 <!-- ========== SCRIPTS ========== -->
@@ -2073,6 +2085,7 @@ function finishQuizCepat(){
   const bestOverall=getQCBestScore(cat,menit);
   document.getElementById('qcBestInfo').innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;"><span style="font-size:13px;color:var(--gray);">🏆 Rekor ${menit} menit:</span><span style="font-size:16px;font-weight:800;color:${c.color};">${bestOverall} benar</span>${total>0?`<span style="font-size:12px;color:var(--gray);">· Akurasi: ${pct}%</span>`:''}</div>`;
   goTo('quizCepatResultPage');
+  checkNewAchievements();
 }
 function ulangQuizCepat(){mulaiQuizCepat();}
 
@@ -2404,6 +2417,7 @@ function finishQuiz(){
   bannerEl.textContent=pass.all?'🎉 SELAMAT! Anda LULUS Passing Grade SKD!':'⚠️ Belum lulus passing grade. Terus semangat berlatih!';
   playSound(pass.all?'finish':'wrong');
   goTo('resultPage');
+  checkNewAchievements();
 }
 function restartQuiz(){if(activeSet>0)startQuiz(activeSet);else goTo('homePage');}
 function backToHome(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}simulasiMode=false;goTo('homePage');refreshHomeStats();}
@@ -2422,6 +2436,46 @@ function showEvaluasi(){
 function closeEvaluasi(){document.getElementById('evaluasiPanel').style.display='none';document.getElementById('btnCloseEval').style.display='none';}
 function showResetModal(){document.getElementById('resetModal').classList.add('show');}
 function closeResetModal(){document.getElementById('resetModal').classList.remove('show');}
+// ========== ACHIEVEMENT POPUP ==========
+let achQueue=[];
+let achShowing=false;
+let achUnlocked=JSON.parse(localStorage.getItem('achUnlocked')||'[]');
+
+function checkNewAchievements(){
+  const stats=getBadgeStats();
+  const newlyUnlocked=[];
+  BADGE_TIERS.forEach(tier=>{
+    tier.badges.forEach(b=>{
+      if(b.check(stats)&&!achUnlocked.includes(b.id)){
+        achUnlocked.push(b.id);
+        newlyUnlocked.push(b);
+      }
+    });
+  });
+  if(newlyUnlocked.length>0){
+    localStorage.setItem('achUnlocked',JSON.stringify(achUnlocked));
+    newlyUnlocked.forEach(b=>achQueue.push(b));
+    showNextAch();
+  }
+}
+
+function showNextAch(){
+  if(achShowing||achQueue.length===0)return;
+  achShowing=true;
+  const b=achQueue.shift();
+  document.getElementById('achPopupIcon').textContent=b.icon;
+  document.getElementById('achPopupName').textContent=b.name;
+  document.getElementById('achPopupDesc').textContent=b.desc;
+  const popup=document.getElementById('achPopup');
+  popup.style.display='block';
+  playSound('newbest');
+  setTimeout(()=>{
+    popup.style.display='none';
+    achShowing=false;
+    if(achQueue.length>0)setTimeout(showNextAch,400);
+  },3500);
+}
+  
 function resetAllProgress(){
   for(let i=1;i<=5;i++){['bestScore','skorTWK','skorTIU','skorTKP'].forEach(k=>localStorage.removeItem(`${k}_latihan${i}`));localStorage.removeItem(`evalData_latihan${i}`);localStorage.removeItem(`paketUlangi_${i}`);}
   localStorage.removeItem('simulasi_last');localStorage.removeItem('simulasiCount');localStorage.removeItem('simulasiLulusBerturut');localStorage.removeItem('materiOpened');localStorage.removeItem('menuVisited');
