@@ -874,7 +874,7 @@ input:checked+.slider:before{transform:translateX(22px);}
 <div id="quizlistPage" class="page">
   <div style="background:var(--bg);height:100vh;display:flex;flex-direction:column;">
     
-    <!-- HEADER - TETAP DI ATAS -->
+    <!-- HEADER TETAP DI ATAS -->
     <div class="page-header" style="border-radius:0;margin-bottom:0;flex-shrink:0;">
       <button class="btn-back" onclick="playSound('back');goTo('homePage')">←</button>
       <h2>📚 Pilih Latihan SKD</h2>
@@ -884,17 +884,8 @@ input:checked+.slider:before{transform:translateX(22px);}
       </div>
     </div>
     
-    <!-- INFO SINGKAT - TETAP -->
-    <div style="padding:12px 16px 0;flex-shrink:0;">
-      <p style="color:var(--gray);font-size:13px;margin-bottom:6px;">Pilih paket soal untuk mulai berlatih. Total 5 paket tersedia!</p>
-      <div style="background:var(--border);border-radius:10px;height:6px;overflow:hidden;margin-bottom:4px;">
-        <div id="quizlistProgressBar" style="height:100%;border-radius:10px;background:linear-gradient(90deg,#1565C0,#7B1FA2);transition:width .6s ease;width:0%;"></div>
-      </div>
-      <p style="font-size:10px;color:var(--gray);text-align:right;margin-bottom:8px;" id="quizlistProgressText">0/5 paket selesai</p>
-    </div>
-    
     <!-- KONTEN SCROLLABLE -->
-    <div style="flex:1;overflow-y:auto;padding:0 16px 16px;">
+    <div style="flex:1;overflow-y:auto;padding:16px;">
       <div id="quizListContainer"></div>
       <button class="btn-reset" onclick="playSound('back');showResetModal()">🗑️ Reset Semua Progress</button>
     </div>
