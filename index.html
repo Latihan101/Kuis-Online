@@ -1536,7 +1536,7 @@ const PAGE_PARENT={
   quizlistPage:'homePage',materiPage:'homePage',materiContentPage:'materiPage',
   statistikPage:'homePage',simulasiPage:'homePage',petunjukPage:'homePage',
   tentangPage:'homePage',pencapaianPage:'homePage',quizCepatPage:'homePage',
-  quizCepatConfirmPage:'quizCepatPage',quizCepatResultPage:'quizCepatPage',
+  quizCepatConfirmPage:'quizCepatPage',quizCepatResultPage:'quizCepatPage',quizCepatPlayPage:'quizCepatPage',
   akunPage:'homePage',resultPage:'quizlistPage',
   evaluasiListPage:'quizlistPage',
 };
@@ -1705,6 +1705,8 @@ window.addEventListener('popstate',function(e){
   playSound('back');
   const parent=currentPage==='quizPage'
   ? (quizSource==='simulasi'?'simulasiPage':'quizlistPage')
+  : currentPage==='quizCepatPlayPage'
+  ? 'quizCepatPage'
   : (PAGE_PARENT[currentPage]||'homePage');
   if(currentPage==='quizPage'){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
   if(currentPage==='quizCepatPlayPage'){if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}}
