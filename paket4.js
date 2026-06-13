@@ -2,7 +2,7 @@
 var paket4 = {
   twk: [
   { // No 1
-    q: "",
+    q: "aaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aaaaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aa aaaa aaa aa aa aaaa aa aa aaa aaa aa aa aaa aaa aaa aaa  aaaa aaa aaa a aa a aaa a aaa a a aaa aaa a aa",
     opt: ["","","","",""],
     a: 4,
     pembahasan: ""
