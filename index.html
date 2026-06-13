@@ -946,14 +946,22 @@ function doLogin(){
 }
 
 function showApp(username){
+  // Sembunyikan login
   const lp = document.getElementById('loginPage');
   lp.classList.remove('active');
   lp.style.display = 'none';
-  // Update nama di akun card
+  // Sembunyikan semua page dulu
+  PAGES.forEach(p=>{
+    const el=document.getElementById(p);
+    if(el){el.classList.remove('active');el.style.display='';}
+  });
+  // Update nama
   document.getElementById('akunUsername').textContent = username;
-  // Navigasi ke home
-  currentPage = 'loginPage';
-  goTo('homePage');
+  // Tampilkan home langsung tanpa goTo
+  const home = document.getElementById('homePage');
+  home.classList.add('active');
+  currentPage = 'homePage';
+  window.scrollTo(0,0);
   refreshHomeStats();
 }
 
