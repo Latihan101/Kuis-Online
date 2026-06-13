@@ -1720,7 +1720,7 @@ window.addEventListener('popstate',function(e){
   const user=getLoggedInUser();
   if(user){
     const lastPage=getLastActivePage();
-    const FORCE_HOME_ON_REFRESH=['quizlistPage'];
+    const FORCE_HOME_ON_REFRESH=['quizlistPage','simulasiPage','pencapaianPage','statistikPage','materiPage','materiContentPage','quizCepatPage','quizCepatConfirmPage','quizCepatResultPage','akunPage','petunjukPage','tentangPage','resultPage','evaluasiListPage'];
 const restorable=PAGES.filter(p=>!NON_RESTORABLE.includes(p)&&!FORCE_HOME_ON_REFRESH.includes(p));
 const targetPage=restorable.includes(lastPage)?lastPage:'homePage';
     _showPage(targetPage);
