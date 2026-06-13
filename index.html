@@ -442,7 +442,10 @@ input:checked+.slider:before{transform:translateX(22px);}
 .btn-prev:active,.btn-next:active,.btn-finish:active{transform:scale(.95);}
 
 /* Sidebar */
-.sidebar-toggle-btn{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:200;}
+.sidebar-toggle-btn{
+  /* position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:200; */
+  display:none !important;
+}
 .btn-sidebar{
   background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;
   border:2px solid rgba(255,255,255,.3);border-radius:50px;
@@ -923,9 +926,12 @@ input:checked+.slider:before{transform:translateX(22px);}
         <div class="question-txt" id="quizQuestion"></div>
         <div id="quizOptions"></div>
         <div class="quiz-nav">
-          <button class="btn-prev" onclick="prevQuestion()">◀ Prev</button>
-          <button id="btnNextFinish" class="btn-next" onclick="nextQuestion()">Next ▶</button>
-        </div>
+  <button class="btn-prev" onclick="prevQuestion()">◀ Prev</button>
+  <button id="btnNextFinish" class="btn-next" onclick="nextQuestion()">Next ▶</button>
+</div>
+
+<!-- TOMBOL DAFTAR SOAL DI BAWAH NAVIGASI -->
+<button style="width:100%;padding:12px;margin-top:8px;border:none;border-radius:12px;background:linear-gradient(135deg,#1565C0,#1976D2);color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 8px rgba(21,101,192,.25);" onclick="toggleSidebar()">📋 Daftar Soal</button>
       </div>
     </div>
   </div>
