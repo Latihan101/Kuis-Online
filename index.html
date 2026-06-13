@@ -552,7 +552,8 @@ input:checked+.slider:before{transform:translateX(22px);}
 .pencapaian-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .pencapaian-progress-bar{background:var(--border);border-radius:10px;height:10px;overflow:hidden;margin:10px 0 16px;}
 .pencapaian-progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#1565C0,#7B1FA2);transition:width .6s ease;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:700;}
-
+.pencapaian-tier-label{display:inline-block;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:800;margin:14px 0 10px;letter-spacing:.3px;}
+  
 /* Base Badge Card */
 .badge-card{border-radius:14px;padding:14px 10px;text-align:center;transition:.2s;position:relative;}
 .badge-card .badge-icon{font-size:28px;margin-bottom:5px;}
@@ -1717,8 +1718,9 @@ window.addEventListener('popstate',function(e){
   const user=getLoggedInUser();
   if(user){
     const lastPage=getLastActivePage();
-    const restorable=PAGES.filter(p=>!NON_RESTORABLE.includes(p));
-    const targetPage=restorable.includes(lastPage)?lastPage:'homePage';
+    const FORCE_HOME_ON_REFRESH=['quizlistPage'];
+const restorable=PAGES.filter(p=>!NON_RESTORABLE.includes(p)&&!FORCE_HOME_ON_REFRESH.includes(p));
+const targetPage=restorable.includes(lastPage)?lastPage:'homePage';
     _showPage(targetPage);
     refreshHomeStats();
     setRandomQuote();
