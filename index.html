@@ -87,6 +87,16 @@ body{background:linear-gradient(135deg,#1e3a8a 0%,#4f46e5 50%,#7c3aed 100%);min-
 .btn-logout-confirm{background:linear-gradient(135deg,#dc2626,#ef4444);color:white;}
 .btn-logout-cancel{background:linear-gradient(135deg,#475569,#64748b);color:white;}
 
+/* Quit confirm modal */
+.quit-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,.7);z-index:20002;justify-content:center;align-items:center;}
+.quit-modal.show{display:flex;}
+.quit-modal-content{background:white;padding:24px;border-radius:20px;max-width:300px;width:90%;text-align:center;animation:fadeIn .3s ease;}
+.quit-modal-content h3{margin-bottom:8px;color:var(--dark);font-weight:800;font-size:17px;}
+.quit-modal-content p{margin-bottom:18px;color:var(--gray);font-size:13px;}
+.quit-modal-btns{display:flex;gap:10px;justify-content:center;}
+.btn-quit-confirm{background:linear-gradient(135deg,#dc2626,#ef4444);color:white;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;}
+.btn-quit-cancel{background:linear-gradient(135deg,#475569,#64748b);color:white;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px;}
+
 /* ==================== ORIGINAL STYLES ==================== */
 .logo{text-align:center;margin-bottom:18px;}
 .logo .icon{margin-bottom:8px;}
@@ -511,11 +521,24 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
   </div>
 </div>
 
+<!-- QUIT APP CONFIRM MODAL -->
+<div id="quitModal" class="quit-modal">
+  <div class="quit-modal-content">
+    <div style="font-size:44px;margin-bottom:10px;">🚪</div>
+    <h3>Keluar Aplikasi?</h3>
+    <p>Yakin ingin menutup aplikasi?</p>
+    <div class="quit-modal-btns">
+      <button class="btn-quit-confirm" onclick="confirmQuitApp()">Ya, Keluar</button>
+      <button class="btn-quit-cancel" onclick="closeQuitModal()">Batal</button>
+    </div>
+  </div>
+</div>
+
 <!-- HOME -->
 <div id="homePage" class="page">
   <div class="card">
     <div class="logo">
-      <div class="icon">🎓</div>
+      <div class="icon"><img style="width: 150px; height: auto;" src="http://google.com" /></div>
       <h1>Latihan SKD CPNS</h1>
       <p>Soal TWK, TIU dan TKP</p>
     </div>
@@ -526,7 +549,6 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
       <div class="stat-item"><div class="stat-number">110</div><div class="stat-label">Soal/Latihan</div></div>
       <div class="stat-item"><div class="stat-number" id="homeBestScore">-</div><div class="stat-label">Skor Terbaik</div></div>
     </div>
-    <!-- Akun mini strip -->
     <div onclick="goTo('akunPage')" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0f766e,#14b8a6);border-radius:14px;padding:11px 16px;cursor:pointer;margin-bottom:14px;transition:.2s;" onmouseenter="this.style.opacity='.9'" onmouseleave="this.style.opacity='1'" onpointerdown="this.style.transform='scale(0.98)'" onpointerup="this.style.transform=''">
       <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👤</div>
       <div style="flex:1;">
@@ -930,25 +952,50 @@ document.addEventListener('cut',e=>e.preventDefault());
 window.addEventListener('keyup',e=>{if(e.key==='PrintScreen')flashOverlay();});
 function flashOverlay(){const o=document.getElementById('screenshotOverlay');o.style.display='block';setTimeout(()=>o.style.display='none',500);}
 
-// ==================== LOGIN SYSTEM ====================
-const SESSION_KEY = 'skd_session_user';
+// ==================== STATE CONSTANTS ====================
+const SESSION_KEY = 'skd_logged_in_user';   // localStorage — persisten
+const ACTIVE_PAGE_KEY = 'skd_active_page';   // localStorage — restore setelah refresh
 
-function getLoggedInUser(){
-  return localStorage.getItem(SESSION_KEY) || null;
+// Halaman yang TIDAK boleh di-restore (halaman sementara/in-progress)
+const NON_RESTORABLE_PAGES = ['loginPage','quizPage','quizCepatPlayPage'];
+
+// Parent map: ke mana kembali saat Back ditekan
+const PAGE_PARENT = {
+  quizlistPage: 'homePage',
+  materiPage: 'homePage',
+  materiContentPage: 'materiPage',
+  statistikPage: 'homePage',
+  simulasiPage: 'homePage',
+  petunjukPage: 'homePage',
+  tentangPage: 'homePage',
+  pencapaianPage: 'homePage',
+  quizCepatPage: 'homePage',
+  quizCepatConfirmPage: 'quizCepatPage',
+  quizCepatResultPage: 'quizCepatPage',
+  akunPage: 'homePage',
+  quizPage: 'quizlistPage',
+  resultPage: 'quizlistPage',
+  evaluasiListPage: 'quizlistPage',
+};
+
+// ==================== AUTH HELPERS ====================
+function getLoggedInUser(){ return localStorage.getItem(SESSION_KEY) || null; }
+function setLoggedInUser(u){ localStorage.setItem(SESSION_KEY, u); }
+function clearLoggedInUser(){ localStorage.removeItem(SESSION_KEY); }
+
+// ==================== PAGE STATE HELPERS ====================
+function saveActivePage(pageId){
+  if(!NON_RESTORABLE_PAGES.includes(pageId)){
+    localStorage.setItem(ACTIVE_PAGE_KEY, pageId);
+  }
 }
+function getLastActivePage(){ return localStorage.getItem(ACTIVE_PAGE_KEY) || 'homePage'; }
 
-function setLoggedInUser(username){
-  localStorage.setItem(SESSION_KEY, username);
-}
-
-function clearLoggedInUser(){
-  localStorage.removeItem(SESSION_KEY);
-}
-
+// ==================== LOGIN UI ====================
 function togglePasswordVisibility(){
   const inp = document.getElementById('inputPassword');
   const btn = document.getElementById('btnEye');
-  if(inp.type === 'password'){inp.type='text';btn.textContent='🙈';}
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
   else{inp.type='password';btn.textContent='👁️';}
 }
 
@@ -956,86 +1003,205 @@ function doLogin(){
   const u = document.getElementById('inputUsername').value.trim().toLowerCase();
   const p = document.getElementById('inputPassword').value;
   const errEl = document.getElementById('loginError');
-
-  if(!u || !p){
-    errEl.textContent = '⚠️ Username dan password tidak boleh kosong!';
-    errEl.classList.add('show');
-    return;
+  if(!u||!p){
+    errEl.textContent='⚠️ Username dan password tidak boleh kosong!';
+    errEl.classList.add('show'); return;
   }
-
-  const pengguna = typeof daftarPengguna !== 'undefined' ? daftarPengguna : [];
-  const match = pengguna.find(x => x.username.toLowerCase() === u && x.password === p);
-
+  const pengguna = typeof daftarPengguna!=='undefined' ? daftarPengguna : [];
+  const match = pengguna.find(x=>x.username.toLowerCase()===u && x.password===p);
   if(match){
     errEl.classList.remove('show');
     setLoggedInUser(match.username);
-    document.getElementById('loginPage').classList.remove('active');
-    document.getElementById('loginPage').style.display = 'none';
-    currentPage = 'loginPage';
-    goTo('homePage');
+    document.getElementById('inputUsername').value='';
+    document.getElementById('inputPassword').value='';
+    document.getElementById('btnEye').textContent='👁️';
+    document.getElementById('inputPassword').type='password';
+    // Setelah login, navigasi ke homePage dan reset history
+    _showPage('homePage', true);
     refreshHomeStats();
-    refreshHomeUsername();
-    document.getElementById('inputUsername').value = '';
-    document.getElementById('inputPassword').value = '';
-    document.getElementById('btnEye').textContent = '👁️';
-    document.getElementById('inputPassword').type = 'password';
   } else {
-    errEl.textContent = '⚠️ Username atau password salah!';
+    errEl.textContent='⚠️ Username atau password salah!';
     errEl.classList.add('show');
-    document.getElementById('inputPassword').value = '';
+    document.getElementById('inputPassword').value='';
     document.getElementById('inputPassword').focus();
   }
 }
 
-function showLogoutModal(){
-  document.getElementById('logoutModal').classList.add('show');
-}
-
-function closeLogoutModal(){
-  document.getElementById('logoutModal').classList.remove('show');
-}
+function showLogoutModal(){ document.getElementById('logoutModal').classList.add('show'); }
+function closeLogoutModal(){ document.getElementById('logoutModal').classList.remove('show'); }
 
 function doLogout(){
   closeLogoutModal();
   clearLoggedInUser();
+  localStorage.removeItem(ACTIVE_PAGE_KEY);
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
   document.getElementById('sidebarToggle').style.display='none';
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
+  _showPage('loginPage', true);
+}
+
+// ==================== QUIT APP ====================
+function showQuitModal(){ document.getElementById('quitModal').classList.add('show'); }
+function closeQuitModal(){ document.getElementById('quitModal').classList.remove('show'); }
+function confirmQuitApp(){
+  closeQuitModal();
+  // Tidak ada cara native menutup browser, kita hanya tutup modal
+  // Untuk Android TWA bisa window.close() tapi bisa diabaikan browser
+  try { window.close(); } catch(e){}
+}
+
+// ==================== NAVIGATION CORE ====================
+const PAGES = ['homePage','quizlistPage','materiPage','materiContentPage','statistikPage','simulasiPage',
+  'petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage','pencapaianPage',
+  'quizCepatPage','quizCepatConfirmPage','quizCepatPlayPage','quizCepatResultPage','akunPage','loginPage'];
+
+let currentPage = 'loginPage';
+
+/**
+ * _showPage: render halaman tanpa memanipulasi history
+ */
+function _showPage(pageId){
   PAGES.forEach(p=>{
     const el=document.getElementById(p);
     if(el){el.classList.remove('active');el.style.display='';}
   });
-  currentPage = 'homePage';
-  const lp = document.getElementById('loginPage');
-  lp.style.display = '';
-  lp.classList.add('active');
-  currentPage = 'loginPage';
-  document.getElementById('inputUsername').value = '';
-  document.getElementById('inputPassword').value = '';
-  document.getElementById('inputPassword').type = 'password';
-  document.getElementById('btnEye').textContent = '👁️';
+  const target=document.getElementById(pageId);
+  if(target) target.classList.add('active');
+  currentPage = pageId;
   window.scrollTo(0,0);
 }
 
-// Inisialisasi: cek apakah user sudah login saat halaman pertama kali dibuka
-(function initAuth(){
+/**
+ * goTo: navigasi publik — update history + render halaman
+ */
+function goTo(pageId){
+  if(currentPage===pageId) return;
+  // Cegah akses halaman app jika belum login
+  if(pageId!=='loginPage' && !getLoggedInUser()) return;
+
+  // Stop timer quiz jika keluar dari halaman quiz
+  if(currentPage==='quizPage' && pageId!=='quizPage'){
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+    document.getElementById('sidebarToggle').style.display='none';
+  }
+  // Stop QC timer jika keluar dari play page
+  if(currentPage==='quizCepatPlayPage' && pageId!=='quizCepatPlayPage'){
+    if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
+  }
+
+  _showPage(pageId);
+  saveActivePage(pageId);
+
+  // Tandai kunjungan menu
+  const menuMap={quizlistPage:'latihan',materiPage:'materi',statistikPage:'statistik',
+    simulasiPage:'simulasi',petunjukPage:'petunjuk',tentangPage:'tentang',
+    pencapaianPage:'pencapaian',quizCepatPage:'quizcepat',akunPage:'akun'};
+  if(menuMap[pageId]) markMenuVisited(menuMap[pageId]);
+
+  // Refresh konten halaman
+  if(pageId==='quizlistPage') refreshQuizList();
+  if(pageId==='homePage'){refreshHomeStats();refreshHomeUsername();}
+  if(pageId==='statistikPage') refreshStatistik();
+  if(pageId==='pencapaianPage') refreshPencapaian();
+  if(pageId==='quizCepatPage') renderQuizCepatGrid();
+  if(pageId==='akunPage') refreshAkunPage();
+
+  // Push ke browser history agar Back berfungsi
+  history.pushState({page: pageId}, '', '');
+}
+
+// ==================== ANDROID BACK BUTTON ====================
+window.addEventListener('popstate', function(e){
+  const state = e.state;
+  const targetPage = (state && state.page) ? state.page : null;
+
+  // Tutup sidebar jika terbuka
+  const sb = document.getElementById('sidebar');
+  if(sb && sb.classList.contains('open')){
+    toggleSidebar();
+    history.pushState({page: currentPage}, '', '');
+    return;
+  }
+
+  // Tutup modal jika terbuka
+  const modals = ['logoutModal','resetModal','quitModal'];
+  let modalClosed = false;
+  modals.forEach(id=>{
+    const m = document.getElementById(id);
+    if(m && (m.classList.contains('show') || m.style.display==='flex')){
+      m.classList.remove('show');
+      modalClosed = true;
+    }
+  });
+  if(modalClosed){
+    history.pushState({page: currentPage}, '', '');
+    return;
+  }
+
+  // Jika di loginPage, tidak ada yang bisa dilakukan
+  if(currentPage === 'loginPage'){
+    history.pushState({page: 'loginPage'}, '', '');
+    return;
+  }
+
+  // Jika di homePage → tanya apakah keluar dari app
+  if(currentPage === 'homePage'){
+    history.pushState({page: 'homePage'}, '', '');
+    showQuitModal();
+    return;
+  }
+
+  // Halaman lain → kembali ke parent
+  const parent = PAGE_PARENT[currentPage] || 'homePage';
+  _showPage(parent);
+  saveActivePage(parent);
+
+  // Refresh konten parent jika perlu
+  if(parent==='homePage'){refreshHomeStats();refreshHomeUsername();}
+  if(parent==='quizlistPage') refreshQuizList();
+  if(parent==='quizCepatPage') renderQuizCepatGrid();
+  if(parent==='materiPage'){}
+
+  history.pushState({page: parent}, '', '');
+});
+
+// ==================== APP INIT ====================
+(function initApp(){
   const user = getLoggedInUser();
   if(user){
-    document.getElementById('loginPage').classList.remove('active');
-    document.getElementById('loginPage').style.display = 'none';
-    currentPage = 'loginPage';
-    goTo('homePage');
+    // User sudah login — restore halaman terakhir
+    const lastPage = getLastActivePage();
+    // Pastikan halaman yang di-restore valid
+    const restorable = PAGES.filter(p => !NON_RESTORABLE_PAGES.includes(p));
+    const targetPage = restorable.includes(lastPage) ? lastPage : 'homePage';
+
+    _showPage(targetPage);
     refreshHomeStats();
     refreshHomeUsername();
+
+    // Refresh konten halaman yang di-restore
+    if(targetPage==='quizlistPage') refreshQuizList();
+    if(targetPage==='statistikPage') refreshStatistik();
+    if(targetPage==='pencapaianPage') refreshPencapaian();
+    if(targetPage==='quizCepatPage') renderQuizCepatGrid();
+    if(targetPage==='akunPage') refreshAkunPage();
+
+    // Setup history stack: home dulu, lalu halaman aktif
+    if(targetPage !== 'homePage'){
+      history.replaceState({page: 'homePage'}, '', '');
+      history.pushState({page: targetPage}, '', '');
+    } else {
+      history.replaceState({page: 'homePage'}, '', '');
+    }
   } else {
-    document.getElementById('loginPage').style.display = '';
-    document.getElementById('loginPage').classList.add('active');
-    currentPage = 'loginPage';
+    // Belum login
+    _showPage('loginPage');
+    history.replaceState({page: 'loginPage'}, '', '');
   }
 })();
-  
+
 // ==================== TRACKING MATERI & MENU ====================
 function markMateriOpened(kat){
   const d=JSON.parse(localStorage.getItem('materiOpened')||'{}');
@@ -1048,59 +1214,28 @@ function markMenuVisited(menu){
 }
 function getMenuVisited(){return JSON.parse(localStorage.getItem('menuVisited')||'{}');}
 
-// ==================== NAVIGATION ====================
-const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','statistikPage','simulasiPage','petunjukPage','tentangPage','quizPage','resultPage','evaluasiListPage','pencapaianPage','quizCepatPage','quizCepatConfirmPage','quizCepatPlayPage','quizCepatResultPage','akunPage'];
-let currentPage='loginPage';
-
-function goTo(pageId){
-  if(currentPage===pageId)return;
-  if(pageId !== 'loginPage' && !getLoggedInUser()) return;
-  PAGES.forEach(p=>{
-    const el=document.getElementById(p);
-    if(el){el.classList.remove('active');el.style.display='';}
-  });
-  const target=document.getElementById(pageId);
-  if(target){target.classList.add('active');}
-  currentPage=pageId;
-  window.scrollTo(0,0);
-  const menuMap={quizlistPage:'latihan',materiPage:'materi',statistikPage:'statistik',simulasiPage:'simulasi',petunjukPage:'petunjuk',tentangPage:'tentang',pencapaianPage:'pencapaian',quizCepatPage:'quizcepat',akunPage:'akun'};
-  if(menuMap[pageId])markMenuVisited(menuMap[pageId]);
-  if(pageId==='quizlistPage')refreshQuizList();
-  if(pageId==='homePage'){refreshHomeStats();refreshHomeUsername();}
-  if(pageId==='statistikPage')refreshStatistik();
-  if(pageId==='pencapaianPage')refreshPencapaian();
-  if(pageId==='quizCepatPage')renderQuizCepatGrid();
-  if(pageId==='akunPage')refreshAkunPage();
-}
-
+// ==================== HOME ====================
 function refreshHomeUsername(){
-  const u = getLoggedInUser() || '—';
-  const el = document.getElementById('homeUsernameStrip');
-  if(el) el.textContent = u;
+  const u=getLoggedInUser()||'—';
+  const el=document.getElementById('homeUsernameStrip');
+  if(el) el.textContent=u;
 }
 
 function refreshAkunPage(){
-  const u = getLoggedInUser() || '—';
-  const setEl = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
-  setEl('akunUsername', u);
-  setEl('akunUsernameInfo', u);
-  let best=[], done=0, lulus=0;
+  const u=getLoggedInUser()||'—';
+  const setEl=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
+  setEl('akunUsername',u);setEl('akunUsernameInfo',u);
+  let best=[],done=0,lulus=0;
   for(let i=1;i<=5;i++){
     const twk=localStorage.getItem(`skorTWK_latihan${i}`);
     const tiu=localStorage.getItem(`skorTIU_latihan${i}`);
     const tkp=localStorage.getItem(`skorTKP_latihan${i}`);
-    if(twk&&tiu&&tkp){
-      done++;
-      const t=parseInt(twk)||0,u2=parseInt(tiu)||0,k=parseInt(tkp)||0;
-      best.push(t+u2+k);
-      if(t>=65&&u2>=80&&k>=166)lulus++;
-    }
+    if(twk&&tiu&&tkp){done++;const t=parseInt(twk)||0,u2=parseInt(tiu)||0,k=parseInt(tkp)||0;best.push(t+u2+k);if(t>=65&&u2>=80&&k>=166)lulus++;}
   }
-  setEl('akunBestScore', best.length>0?Math.max(...best)+' / 550':'Belum ada');
-  setEl('akunPaketDone', done+' / 5');
-  setEl('akunLulus', lulus+' paket');
+  setEl('akunBestScore',best.length>0?Math.max(...best)+' / 550':'Belum ada');
+  setEl('akunPaketDone',done+' / 5');setEl('akunLulus',lulus+' paket');
   const qcSesi=['twk','tiu','tkp'].reduce((s,c)=>s+getQCTotalSesi(c),0);
-  setEl('akunQCSesi', qcSesi+' sesi');
+  setEl('akunQCSesi',qcSesi+' sesi');
 }
 
 // ==================== TIMER TOGGLE ====================
@@ -1151,6 +1286,7 @@ let userAnswers=[],userScores=[];
 let timerInterval=null,timeLeft=6000;
 let simulasiMode=false;
 let qcCurrentStreak=0,qcMaxStreak=0;
+
 function incPaketUlangi(setId){
   const key=`paketUlangi_${setId}`;
   const v=parseInt(localStorage.getItem(key)||'0')+1;
@@ -2061,24 +2197,6 @@ function resetAllProgress(){
   refreshQuizList();refreshHomeStats();closeResetModal();
   alert('✅ Semua progress telah direset!');
 }
-
-// ==================== ANDROID BACK ====================
-history.pushState({app:'skd'},'','');
-window.addEventListener('popstate',function(){
-  history.pushState({app:'skd'},'','');
-  if(currentPage==='loginPage')return;
-  if(currentPage==='quizPage'||currentPage==='resultPage'){
-    if(currentPage==='quizPage'){if(timerInterval)clearInterval(timerInterval);timerInterval=null;document.getElementById('sidebarToggle').style.display='none';}
-    goTo('quizlistPage');
-  } else if(currentPage==='evaluasiListPage'){goTo('quizlistPage');}
-  else if(currentPage==='materiContentPage'){goTo('materiPage');}
-  else if(currentPage==='quizCepatPlayPage'){if(qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}goTo('quizCepatConfirmPage');}
-  else if(currentPage==='quizCepatConfirmPage'){goTo('quizCepatPage');}
-  else if(currentPage==='quizCepatResultPage'){goTo('quizCepatPage');}
-  else if(currentPage==='akunPage'){goTo('homePage');}
-  else if(['quizlistPage','materiPage','statistikPage','simulasiPage','petunjukPage','tentangPage','pencapaianPage','quizCepatPage'].includes(currentPage)){goTo('homePage');}
-  else if(currentPage==='homePage'){/* Stay */}
-});
 </script>
 </body>
 </html>
