@@ -848,10 +848,17 @@ input:checked+.slider:before{transform:translateX(22px);}
 <!-- =========== AKUN PAGE =========== -->
 <div id="akunPage" class="page">
   <div style="background:var(--bg);min-height:100vh;padding-bottom:80px;">
-    <div class="page-header">
+    
+    <!-- HEADER FIXED -->
+    <div style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:50;background:#fff;display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);">
       <button class="btn-back" onclick="playSound('back');goTo('homePage')">←</button>
-      <h2>👤 Profil Saya</h2>
+      <h2 style="font-size:17px;font-weight:800;color:var(--dark);flex:1;margin:0;">👤 Profil Saya</h2>
     </div>
+    
+    <!-- SPACER -->
+    <div style="height:70px;"></div>
+    
+    <!-- KONTEN -->
     <div class="akun-wrap">
       <div class="akun-hero">
         <div class="akun-avatar-big">👤</div>
@@ -867,6 +874,7 @@ input:checked+.slider:before{transform:translateX(22px);}
       </div>
       <button class="btn-logout" onclick="playSound('back');showLogoutModal()">🚪 Logout dari Akun Ini</button>
     </div>
+    
   </div>
 </div>
 
@@ -1664,12 +1672,20 @@ function refreshHomeStats(){
   const strip=document.getElementById('homeUsernameStrip');if(strip)strip.textContent=user;
   const gDay=document.getElementById('homeGreetingDay');
   if(gDay){const h=new Date().getHours();gDay.textContent=h<11?'Selamat pagi, ':h<15?'Selamat siang, ':h<18?'Selamat sore, ':'Selamat malam, ';}
-  let best=[],done=0;
+  let best=[],done=0,totalSoalSelesai=0,totalSemuaSoal=0;
   for(let i=1;i<=5;i++){
     const twk=localStorage.getItem(`skorTWK_latihan${i}`);
     const tiu=localStorage.getItem(`skorTIU_latihan${i}`);
     const tkp=localStorage.getItem(`skorTKP_latihan${i}`);
-    if(twk&&tiu&&tkp){done++;const t=(parseInt(twk)||0)+(parseInt(tiu)||0)+(parseInt(tkp)||0);best.push(t);}
+    const bank=getSoalBank(i);
+    const jumlahSoal=bank.twk.length+bank.tiu.length+bank.tkp.length;
+    totalSemuaSoal+=jumlahSoal;
+    if(twk&&tiu&&tkp){
+      done++;
+      totalSoalSelesai+=jumlahSoal;
+      const t=(parseInt(twk)||0)+(parseInt(tiu)||0)+(parseInt(tkp)||0);
+      best.push(t);
+    }
   }
   const bestVal=best.length>0?Math.max(...best):0;
   const el=document.getElementById('homeStatBest');if(el)el.textContent=bestVal>0?bestVal+'/550':'—';
@@ -1680,7 +1696,8 @@ function refreshHomeStats(){
   const heroProgbar=document.getElementById('heroProgbar');
   if(donutFill){const circ=201;donutFill.style.strokeDashoffset=circ*(1-pct/100);}
   if(donutPct)donutPct.textContent=pct+'%';
-  if(heroCount)heroCount.innerHTML=`<strong>${done*22}</strong> dari 110 soal selesai`;
+  // FIX: Tampilkan total soal selesai vs total semua soal
+  if(heroCount)heroCount.innerHTML=`<strong>${totalSoalSelesai}</strong> dari ${totalSemuaSoal} soal selesai`;
   if(heroProgbar)heroProgbar.style.width=pct+'%';
   const lvl=Math.min(8,Math.max(1,done+Math.floor(getBadgeStats().totalLulus/2)));
   const lvlEl=document.getElementById('homeLevelBadge');if(lvlEl)lvlEl.textContent=`Level ${lvl}`;
@@ -1688,6 +1705,7 @@ function refreshHomeStats(){
   const streakEl=document.getElementById('homeStreak');if(streakEl)streakEl.textContent=Math.min(totalSesi,99);
 }
 
+// =========== Refresh Akun Page =================
 function refreshAkunPage(){
   const u=getLoggedInUser()||'—';
   const setEl=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
