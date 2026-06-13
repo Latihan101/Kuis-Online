@@ -946,9 +946,9 @@ function doLogin(){
 }
 
 function showApp(username){
-  // Sembunyikan login
-  document.getElementById('loginPage').classList.remove('active');
-  document.getElementById('loginPage').style.display = 'none';
+  const lp = document.getElementById('loginPage');
+  lp.classList.remove('active');
+  lp.style.display = 'none';
   // Update nama di akun card
   document.getElementById('akunUsername').textContent = username;
   // Navigasi ke home
@@ -991,6 +991,8 @@ function doLogout(){
 (function initAuth(){
   const user = getLoggedInUser();
   if(user){
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('loginPage').classList.remove('active');
     // Sudah pernah login, langsung masuk
     showApp(user);
   }
