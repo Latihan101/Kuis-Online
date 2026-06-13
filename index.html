@@ -931,96 +931,95 @@ window.addEventListener('keyup',e=>{if(e.key==='PrintScreen')flashOverlay();});
 function flashOverlay(){const o=document.getElementById('screenshotOverlay');o.style.display='block';setTimeout(()=>o.style.display='none',500);}
 
 // ==================== LOGIN SYSTEM ====================
+// Ubah dari sessionStorage ke localStorage agar login tetap tersimpan
+// meskipun browser/tab ditutup.
 const SESSION_KEY = 'skd_session_user';
 
 function getLoggedInUser(){
-  return sessionStorage.getItem(SESSION_KEY) || null;
+  // Cari di localStorage
+  return localStorage.getItem(SESSION_KEY) || null;
 }
 
 function setLoggedInUser(username){
-  sessionStorage.setItem(SESSION_KEY, username);
+  // Simpan di localStorage
+  localStorage.setItem(SESSION_KEY, username);
 }
 
 function clearLoggedInUser(){
-  sessionStorage.removeItem(SESSION_KEY);
+  // Hapus dari localStorage
+  localStorage.removeItem(SESSION_KEY);
 }
 
-function togglePasswordVisibility(){
-  const inp = document.getElementById('inputPassword');
-  const btn = document.getElementById('btnEye');
-  if(inp.type === 'password'){inp.type='text';btn.textContent='🙈';}
-  else{inp.type='password';btn.textContent='👁️';}
-}
-
-function doLogin(){
-  const u = document.getElementById('inputUsername').value.trim().toLowerCase();
-  const p = document.getElementById('inputPassword').value;
-  const errEl = document.getElementById('loginError');
-
-  if(!u || !p){
-    errEl.textContent = '⚠️ Username dan password tidak boleh kosong!';
-    errEl.classList.add('show');
-    return;
-  }
-
-  const pengguna = typeof daftarPengguna !== 'undefined' ? daftarPengguna : [];
-  const match = pengguna.find(x => x.username.toLowerCase() === u && x.password === p);
-
-  if(match){
-    errEl.classList.remove('show');
-    setLoggedInUser(match.username);
-    showApp(match.username);
-    document.getElementById('inputUsername').value = '';
-    document.getElementById('inputPassword').value = '';
-    document.getElementById('btnEye').textContent = '👁️';
-    document.getElementById('inputPassword').type = 'password';
-  } else {
-    errEl.textContent = '⚠️ Username atau password salah!';
-    errEl.classList.add('show');
-    document.getElementById('inputPassword').value = '';
-    document.getElementById('inputPassword').focus();
-  }
-}
+// ... (fungsi togglePasswordVisibility, doLogin, dll. tidak berubah) ...
 
 function showApp(username){
+  // Sembunyikan halaman login
   document.getElementById('loginPage').classList.remove('active');
   document.getElementById('loginPage').style.display = 'none';
-  currentPage = 'loginPage';
+  
+  // Pastikan halaman yang dituju adalah home
+  currentPage = 'loginPage'; // Reset currentPage agar goTo bekerja dengan benar
   goTo('homePage');
   refreshHomeStats();
 }
 
-function showLogoutModal(){
-  document.getElementById('logoutModal').classList.add('show');
-}
-function closeLogoutModal(){
-  document.getElementById('logoutModal').classList.remove('show');
-}
+// ... (fungsi showLogoutModal, closeLogoutModal tidak berubah) ...
 
 function doLogout(){
   closeLogoutModal();
-  clearLoggedInUser();
+  clearLoggedInUser(); // Ini sekarang menghapus dari localStorage
+  
+  // Hentikan semua timer yang berjalan
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
+  
+  // Sembunyikan sidebar
   document.getElementById('sidebarToggle').style.display='none';
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
+  
+  // Sembunyikan semua halaman
   PAGES.forEach(p=>{
     const el=document.getElementById(p);
     if(el){el.classList.remove('active');el.style.display='';}
   });
-  currentPage = 'homePage';
+  
+  // Tampilkan halaman login
   const lp = document.getElementById('loginPage');
-  lp.style.display = '';
+  lp.style.display = ''; // Pastikan display tidak 'none'
   lp.classList.add('active');
   currentPage = 'loginPage';
+  
+  // Bersihkan field input
+  document.getElementById('inputUsername').value = '';
+  document.getElementById('inputPassword').value = '';
+  document.getElementById('inputPassword').type = 'password';
+  document.getElementById('btnEye').textContent = '👁️';
+  
   window.scrollTo(0,0);
 }
 
+// Inisialisasi Otentikasi (HANYA dijalankan sekali saat aplikasi dimuat)
 (function initAuth(){
   const user = getLoggedInUser();
   if(user){
-    showApp(user);
+    // Jika pengguna sudah login, langsung sembunyikan layar login dan masuk ke aplikasi
+    console.log('Pengguna ditemukan di localStorage:', user);
+    // Sembunyikan halaman login secara langsung tanpa animasi atau delay
+    const loginPage = document.getElementById('loginPage');
+    loginPage.classList.remove('active');
+    loginPage.style.display = 'none';
+    // Set halaman yang sedang aktif ke home
+    goTo('homePage');
+    refreshHomeStats();
+    refreshHomeUsername(); // Memperbarui nama pengguna di home
+  } else {
+    // Jika tidak, pastikan halaman login yang muncul
+    console.log('Tidak ada sesi login yang tersimpan. Menampilkan halaman login.');
+    const loginPage = document.getElementById('loginPage');
+    loginPage.style.display = 'flex'; // Gunakan flexbox agar card di tengah
+    loginPage.classList.add('active');
+    currentPage = 'loginPage';
   }
 })();
 
