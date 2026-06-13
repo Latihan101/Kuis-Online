@@ -4,17 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Latihan SKD CPNS</title>
-<script>
-if(localStorage.getItem('skd_session_user')){
-  document.documentElement.style.setProperty('--show-login','none');
-}else{
-  document.documentElement.style.setProperty('--show-login','flex');
-}
-</script>
-<style>
-#loginPage{display:var(--show-login,flex);justify-content:center;align-items:center;min-height:calc(100vh - 32px);}
-#homePage{display:none;}
-</style>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
 :root {
@@ -47,6 +36,8 @@ body{background:linear-gradient(135deg,#1e3a8a 0%,#4f46e5 50%,#7c3aed 100%);min-
 .card{background:var(--white);border-radius:var(--radius);box-shadow:0 20px 60px rgba(30,58,138,.18);padding:22px;margin-bottom:20px;}
 
 /* ==================== LOGIN STYLES ==================== */
+#loginPage{display:flex;justify-content:center;align-items:center;min-height:calc(100vh - 32px);}
+#loginPage.active{display:flex;}
 .login-card{background:var(--white);border-radius:var(--radius);box-shadow:0 20px 60px rgba(30,58,138,.25);padding:32px 28px;width:100%;max-width:400px;}
 .login-logo{text-align:center;margin-bottom:28px;}
 .login-logo .login-icon{font-size:56px;margin-bottom:10px;}
@@ -476,7 +467,7 @@ canvas#progressChart{max-width:100%;height:180px;min-width:300px;}
 <body>
 
 <!-- ==================== LOGIN PAGE ==================== -->
-<div id="loginPage" class="page active">
+<div id="loginPage" class="page">
   <div class="login-card">
     <div class="login-logo">
       <div class="login-icon">🎓</div>
