@@ -872,23 +872,25 @@ input:checked+.slider:before{transform:translateX(22px);}
 
 <!-- =========== QUIZ LIST =========== -->
 <div id="quizlistPage" class="page">
-  <div style="background:var(--bg);height:100vh;display:flex;flex-direction:column;">
+  <div style="background:var(--bg);min-height:100vh;padding-bottom:80px;">
     
-    <!-- HEADER TETAP DI ATAS -->
-    <div class="page-header" style="flex-shrink:0;border-radius:0;margin-bottom:0;">
+    <!-- HEADER FIXED - TIDAK AKAN SCROLL -->
+    <div style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:50;background:#fff;display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);">
       <button class="btn-back" onclick="playSound('back');goTo('homePage')">←</button>
-      <h2>📚 Pilih Latihan SKD</h2>
+      <h2 style="font-size:17px;font-weight:800;color:var(--dark);flex:1;margin:0;">📚 Pilih Latihan SKD</h2>
       <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;">
         <span class="timer-on" id="timerLabel">⏱️ ON</span>
         <label class="switch"><input type="checkbox" id="timerToggle" checked><span class="slider"></span></label>
       </div>
     </div>
     
-    <!-- KONTEN SCROLLABLE - DENGAN min-height:0 -->
-    <div style="flex:1;min-height:0;overflow-y:auto;padding:16px;">
+    <!-- SPACER - menggantikan tinggi header -->
+    <div style="height:70px;"></div>
+    
+    <!-- KONTEN SCROLL (scroll mengikuti halaman normal) -->
+    <div style="padding:16px;">
       <div id="quizListContainer"></div>
       <button class="btn-reset" onclick="playSound('back');showResetModal()">🗑️ Reset Semua Progress</button>
-      <div style="height:16px;"></div>
     </div>
     
   </div>
