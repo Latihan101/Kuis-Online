@@ -1646,7 +1646,7 @@ function shuffleOpts(q){
     return{question:q.question,options:p.map(x=>x.text),answer:p.findIndex(x=>x.idx===q.answer),isTKP:false,optionScores:null,pembahasan:q.pembahasan||'',kategori:kat};
   }
 }
-function getSoalBank(id){const v='paket'+id;return typeof window[v]!=='undefined'?window[v]:{twk:[],tiu:[],tkp:[];};}
+function getSoalBank(id){const v='paket'+id;return typeof window[v]!=='undefined'?window[v]:{twk:[],tiu:[],tkp:[]};}
 function buildOriginals(id){
   const bank=getSoalBank(id),orig=[];
   bank.twk.forEach(d=>orig.push({question:d.q,options:[...d.opt],answer:d.a,isTKP:false,optionScores:null,pembahasan:d.pembahasan||'',kategori:'TWK'}));
