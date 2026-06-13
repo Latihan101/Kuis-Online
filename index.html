@@ -2159,21 +2159,19 @@ function refreshPencapaian(){
   const pct=Math.round(unlockedBadge/totalBadge*100);
   const pf=document.getElementById('pencapaianProgressFill');
   if(pf){pf.style.width=pct+'%';pf.textContent=pct+'%';}
-  const tierColors={1:'#B0BEC5',2:'#4DB6AC',3:'#42A5F5',4:'#AB47BC',5:'#FFA726',6:'#FF7043',7:'#EC407A'};
   let html='';
   BADGE_TIERS.forEach(tier=>{
-    const tc=tierColors[tier.tier];
-    html+=`<div style="margin-bottom:14px;">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;margin-bottom:8px;background:${tc}30;color:${tc};">${tier.label}</div>
+    html+=`<div class="pencapaian-tier-section tier-${tier.tier}" style="margin-bottom:14px;">
+      <div class="pencapaian-tier-label">${tier.label}</div>
       <div class="pencapaian-grid">`;
     tier.badges.forEach(b=>{
       const unlocked=b.check(stats);
-      html+=`<div class="badge-card ${unlocked?'unlocked':'locked'}" style="${unlocked?`border-color:${tc};`:''}">
-        <span class="badge-tier-tag" style="${unlocked?`background:${tc}20;color:${tc};`:''}">T${tier.tier}</span>
+      html+=`<div class="badge-card ${unlocked?'unlocked':'locked'}">
+        <span class="badge-tier-tag">T${tier.tier}</span>
         <div class="badge-icon">${b.icon}</div>
         <div class="badge-name">${b.name}</div>
         <div class="badge-desc">${b.desc}</div>
-        <div class="badge-status" style="${unlocked?`color:${tc}`:'color:#94A3B8'}">${unlocked?'✅ Diraih!':'🔒 Belum'}</div>
+        <div class="badge-unlocked-check">${unlocked?'✅ Diraih!':'🔒 Belum'}</div>
       </div>`;
     });
     html+='</div></div>';
