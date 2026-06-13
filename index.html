@@ -1537,7 +1537,7 @@ const PAGE_PARENT={
   statistikPage:'homePage',simulasiPage:'homePage',petunjukPage:'homePage',
   tentangPage:'homePage',pencapaianPage:'homePage',quizCepatPage:'homePage',
   quizCepatConfirmPage:'quizCepatPage',quizCepatResultPage:'quizCepatPage',
-  akunPage:'homePage',quizPage:'quizlistPage',resultPage:'quizlistPage',
+  akunPage:'homePage',resultPage:'quizlistPage',
   evaluasiListPage:'quizlistPage',
 };
 function getLoggedInUser(){return localStorage.getItem(SESSION_KEY)||null;}
@@ -1703,7 +1703,9 @@ window.addEventListener('popstate',function(e){
   if(mc){history.pushState({page:currentPage},'','');return;}
   if(currentPage==='loginPage'||currentPage==='homePage'){history.pushState({page:currentPage},'','');return;}
   playSound('back');
-  const parent=PAGE_PARENT[currentPage]||'homePage';
+  const parent=currentPage==='quizPage'
+  ? (quizSource==='simulasi'?'simulasiPage':'quizlistPage')
+  : (PAGE_PARENT[currentPage]||'homePage');
   if(currentPage==='quizPage'){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
   if(currentPage==='quizCepatPlayPage'){if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}}
   _showPage(parent);saveActivePage(parent);
@@ -1841,7 +1843,7 @@ function showMateri(k){
 }
 
 // ========== QUIZ STATE ==========
-let activeSet=1,questions=[],originals=[],curQ=0;
+let activeSet=1,questions=[],originals=[],curQ=0,quizSource='quizlist';
 let userAnswers=[],userScores=[];
 let timerInterval=null,timeLeft=6000;
 let simulasiMode=false;
@@ -2284,7 +2286,7 @@ function mulaiSimulasi(){
   sTKP.forEach(d=>originals.push({question:d.q,options:[...d.opts],answer:null,isTKP:true,optionScores:[...d.scores],pembahasan:d.pembahasan||'',kategori:'TKP'}));
   questions=originals.map(q=>shuffleOpts(q));
   curQ=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);
-  timeLeft=6000;simulasiMode=true;activeSet=0;
+  timeLeft=6000;simulasiMode=true;activeSet=0;quizSource='simulasi';
   document.getElementById('evaluasiPanel').style.display='none';document.getElementById('btnCloseEval').style.display='none';
   document.getElementById('quizTitle').textContent='⏰ Simulasi Ujian SKD';
   goTo('quizPage');loadQuestion();updateGrid();
@@ -2297,7 +2299,7 @@ function startQuiz(setId){
   if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
   const bank=getSoalBank(setId);
   if(bank.twk.length+bank.tiu.length+bank.tkp.length===0){alert(`⚠️ Paket ${setId} belum tersedia.`);return;}
-  activeSet=setId;simulasiMode=false;
+  activeSet=setId;simulasiMode=false;quizSource='quizlist';
   originals=buildOriginals(setId);
   questions=originals.map(q=>shuffleOpts(q));
   curQ=0;userAnswers=Array(questions.length).fill(null);userScores=Array(questions.length).fill(null);
