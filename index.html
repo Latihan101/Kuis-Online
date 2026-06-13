@@ -1225,29 +1225,33 @@ input:checked+.slider:before{transform:translateX(22px);}
 </div>
 
 <div id="quizCepatPlayPage" class="page">
-  <div style="background:var(--bg);min-height:100vh;padding:12px;padding-bottom:100px;">
+  <div style="background:var(--bg);min-height:100vh;padding-bottom:100px;">
     
-    <div class="qc-play-header">
-      <div>
-        <div class="qc-play-cat" id="qcPlayCat">TWK</div>
-        <div class="qc-play-score" id="qcPlayScore">Soal ke-1</div>
+    <div style="padding:0 12px;">
+      
+      <div class="qc-play-header">
+        <div>
+          <div class="qc-play-cat" id="qcPlayCat">TWK</div>
+          <div class="qc-play-score" id="qcPlayScore">Soal ke-1</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="qc-play-timer" id="qcPlayTimer">01:00</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:2px;" id="qcCorrectCount">✅ 0 Benar</div>
+        </div>
       </div>
-      <div style="text-align:right;">
-        <div class="qc-play-timer" id="qcPlayTimer">01:00</div>
-        <div style="font-size:10px;color:var(--gray);margin-top:2px;" id="qcCorrectCount">✅ 0 Benar</div>
+      
+      <div class="qc-progress-bar"><div class="qc-progress-fill" id="qcProgressFill" style="width:100%"></div></div>
+      
+      <div class="qc-question-card">
+        <div class="qc-q-num" id="qcQNum">SOAL 1</div>
+        <div class="qc-q-txt" id="qcQTxt"></div>
+        <div class="qc-options" id="qcOpts"></div>
       </div>
+      
+      <div class="qc-feedback" id="qcFeedback"></div>
+      <button class="btn-qc-next" id="btnQcNext" onclick="qcNextQuestion()">Soal Berikutnya →</button>
+      
     </div>
-    
-    <div class="qc-progress-bar"><div class="qc-progress-fill" id="qcProgressFill" style="width:100%"></div></div>
-    
-    <div class="qc-question-card">
-      <div class="qc-q-num" id="qcQNum">SOAL 1</div>
-      <div class="qc-q-txt" id="qcQTxt"></div>
-      <div class="qc-options" id="qcOpts"></div>
-    </div>
-    
-    <div class="qc-feedback" id="qcFeedback"></div>
-    <button class="btn-qc-next" id="btnQcNext" onclick="qcNextQuestion()">Soal Berikutnya →</button>
     
   </div>
 </div>
