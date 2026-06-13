@@ -969,14 +969,12 @@ function doLogin(){
   if(match){
     errEl.classList.remove('show');
     setLoggedInUser(match.username);
-    // Sembunyikan login
     document.getElementById('loginPage').classList.remove('active');
     document.getElementById('loginPage').style.display = 'none';
     currentPage = 'loginPage';
     goTo('homePage');
     refreshHomeStats();
     refreshHomeUsername();
-    // Kosongkan input
     document.getElementById('inputUsername').value = '';
     document.getElementById('inputPassword').value = '';
     document.getElementById('btnEye').textContent = '👁️';
@@ -989,18 +987,10 @@ function doLogin(){
   }
 }
 
-function showApp(username){
-  document.getElementById('loginPage').classList.remove('active');
-  document.getElementById('loginPage').style.display = 'none';
-  currentPage = 'loginPage';
-  goTo('homePage');
-  refreshHomeStats();
-  refreshHomeUsername();
-}
-
 function showLogoutModal(){
   document.getElementById('logoutModal').classList.add('show');
 }
+
 function closeLogoutModal(){
   document.getElementById('logoutModal').classList.remove('show');
 }
@@ -1029,11 +1019,10 @@ function doLogout(){
   window.scrollTo(0,0);
 }
 
-// Inisialisasi: cek apakah user sudah login
+// Inisialisasi: cek apakah user sudah login saat halaman pertama kali dibuka
 (function initAuth(){
   const user = getLoggedInUser();
   if(user){
-    // User sudah login -> langsung sembunyikan login, tampilkan home
     document.getElementById('loginPage').classList.remove('active');
     document.getElementById('loginPage').style.display = 'none';
     currentPage = 'loginPage';
@@ -1041,9 +1030,8 @@ function doLogout(){
     refreshHomeStats();
     refreshHomeUsername();
   } else {
-    // User belum login -> tampilkan login
-    document.getElementById('loginPage').classList.add('active');
     document.getElementById('loginPage').style.display = '';
+    document.getElementById('loginPage').classList.add('active');
     currentPage = 'loginPage';
   }
 })();
