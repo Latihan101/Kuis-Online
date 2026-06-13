@@ -35,16 +35,19 @@ body{
 }
 
 /* ========== PAGE SYSTEM ========== */
-.page{display:none;}
-.page.active{display:block;}
+/* FIX: semua .page disembunyikan, hanya .active yang tampil */
+.page { display:none !important; }
+.page.active { display:block !important; }
+/* FIX: loginPage dan quizCepatPlayPage butuh display:flex bukan block */
+#loginPage.active { display:flex !important; flex-direction:column; justify-content:center; align-items:center; }
+#quizCepatPlayPage.active { display:flex !important; }
 
 /* ========== LOGIN PAGE ========== */
 #loginPage{
   min-height:100vh;
   background:linear-gradient(160deg,#0D47A1 0%,#1565C0 40%,#1976D2 70%,#42A5F5 100%);
-  display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 24px;
+  padding:32px 24px;
 }
-#loginPage.active{display:flex;}
 .login-box{
   background:rgba(255,255,255,.97);border-radius:24px;
   padding:36px 28px;width:100%;max-width:380px;
@@ -163,12 +166,11 @@ body{
   font-size:11px;color:#fff;
 }
 .hero-right{position:relative;z-index:2;flex-shrink:0;}
-/* Donut ring */
 .donut-wrap{position:relative;width:80px;height:80px;}
 .donut-wrap svg{width:80px;height:80px;transform:rotate(-90deg);}
 .donut-bg{fill:none;stroke:rgba(255,255,255,.2);stroke-width:8;}
 .donut-fill{fill:none;stroke:#4DD0E1;stroke-width:8;stroke-linecap:round;
-  stroke-dasharray:201;stroke-dashoffset:40; /* 80% = 201*0.2=40 */
+  stroke-dasharray:201;stroke-dashoffset:40;
   transition:stroke-dashoffset 1s ease;
 }
 .donut-center{
@@ -177,7 +179,6 @@ body{
 }
 .donut-pct{font-size:18px;font-weight:900;line-height:1;}
 .donut-lbl{font-size:9px;opacity:.8;margin-top:2px;}
-/* Building illustration */
 .building-img{position:absolute;bottom:0;right:16px;font-size:52px;opacity:.25;pointer-events:none;z-index:1;}
 
 /* ========== STATS ROW ========== */
@@ -234,8 +235,6 @@ body{
 .menu-item-name{font-size:14px;font-weight:700;color:var(--dark);}
 .menu-item-desc{font-size:11px;color:var(--gray);line-height:1.4;}
 .menu-chevron{color:#CBD5E1;font-size:18px;font-weight:300;}
-
-/* Menu color variants */
 .menu-icon-wrap.blue{background:#E3F2FD;}
 .menu-icon-wrap.purple{background:#F3E5F5;}
 .menu-icon-wrap.orange{background:#FFF3E0;}
@@ -265,7 +264,7 @@ body{
 .nav-item.active .nav-icon{transform:scale(1.15);}
 .nav-active-dot{width:24px;height:3px;border-radius:3px;background:var(--blue);margin:0 auto;margin-top:4px;}
 
-/* ========== OTHER PAGES (keep original scrollable wrapper) ========== */
+/* ========== OTHER PAGES ========== */
 .inner-page{padding:16px;max-width:430px;margin:0 auto;}
 .page-header{
   display:flex;align-items:center;gap:12px;
@@ -281,7 +280,7 @@ body{
 }
 .page-header h2{font-size:17px;font-weight:800;color:var(--dark);flex:1;}
 
-/* ========== MODAL (Logout, Reset) ========== */
+/* ========== MODAL ========== */
 .modal-backdrop{
   display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);
   z-index:5000;justify-content:center;align-items:center;
@@ -392,8 +391,7 @@ input:checked+.slider:before{transform:translateX(22px);}
   cursor:pointer;margin-top:8px;transition:.2s;
 }
 
-/* ========== EVALUASI LIST, MATERI, STATISTIK, etc. ========== */
-/* (Full styles inherited from original — minimal overrides for color) */
+/* ========== EVALUASI ========== */
 .evaluasi-item{background:#F8FAFC;border-radius:12px;padding:14px;margin-bottom:10px;border-left:5px solid var(--border);}
 .evaluasi-item.benar{border-left-color:#00897B;background:#E0F2F1;}
 .evaluasi-item.salah{border-left-color:#C62828;background:#FFEBEE;}
@@ -503,8 +501,6 @@ input:checked+.slider:before{transform:translateX(22px);}
 .btn-r-ulangi{background:linear-gradient(135deg,#00695C,#00897B);color:#fff;}
 .btn-r-eval{background:linear-gradient(135deg,#7B1FA2,#AB47BC);color:#fff;}
 .btn-r-home{background:linear-gradient(135deg,#E65100,#F57C00);color:#fff;}
-
-/* Evaluasi panel (inline on result page) */
 .evaluasi-panel{display:none;margin-top:16px;text-align:left;border-top:2px solid var(--border);padding-top:16px;}
 .btn-close-eval{width:100%;padding:11px;border:none;border-radius:12px;background:#F1F5F9;color:#334155;cursor:pointer;margin-top:10px;font-weight:700;}
 
@@ -520,7 +516,7 @@ input:checked+.slider:before{transform:translateX(22px);}
 .materi-full h2{color:var(--blue);margin-bottom:14px;font-size:18px;border-bottom:2px solid var(--border);padding-bottom:8px;}
 .materi-full h3{color:#6A1B9A;margin:18px 0 8px;font-size:15px;padding-left:10px;border-left:3px solid #6A1B9A;}
 .materi-full p{margin-bottom:10px;}
-.materi-full ul,  .materi-full ol{margin:8px 0 12px 22px;}
+.materi-full ul,.materi-full ol{margin:8px 0 12px 22px;}
 .materi-full li{margin-bottom:6px;}
 .materi-full strong{color:var(--blue);}
 .materi-full .info-box{background:#E3F2FD;border-left:4px solid var(--blue);padding:11px 14px;border-radius:0 8px 8px 0;margin:12px 0;}
@@ -581,8 +577,6 @@ input:checked+.slider:before{transform:translateX(22px);}
 .qc-cat-info .qc-cat-sub{font-size:12px;opacity:.85;}
 .qc-cat-stats{padding:10px 20px 14px;background:rgba(0,0,0,.12);display:flex;gap:10px;flex-wrap:wrap;}
 .qc-stat-pill{font-size:11px;font-weight:700;opacity:.95;color:#fff;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;}
-
-/* QC confirm */
 .qc-confirm-card{background:#fff;border-radius:20px;padding:28px 22px;text-align:center;}
 .qc-confirm-icon{font-size:60px;margin-bottom:12px;}
 .qc-confirm-title{font-size:22px;font-weight:800;color:var(--dark);margin-bottom:6px;}
@@ -657,10 +651,6 @@ input:checked+.slider:before{transform:translateX(22px);}
 .info-block.gray-bg{background:#F8FAFC;border:1px solid var(--border);}
 .info-block.yellow-bg{background:#FFF8E1;}
 
-/* ========== EVALLIST PAGE ========== */
-.evallist-wrap{padding:16px;display:flex;flex-direction:column;height:calc(100vh - 80px);}
-.evallist-scroll{flex:1;overflow-y:auto;min-height:0;padding-right:4px;}
-
 /* ========== SCREEN PROTECT ========== */
 .screenshot-overlay{position:fixed;inset:0;background:#000;z-index:99999;display:none;pointer-events:none;}
 
@@ -707,7 +697,6 @@ input:checked+.slider:before{transform:translateX(22px);}
 
 <!-- =========== HOME =========== -->
 <div id="homePage" class="page">
-  <!-- Header -->
   <div class="top-header">
     <div class="header-row">
       <div class="user-info">
@@ -725,7 +714,6 @@ input:checked+.slider:before{transform:translateX(22px);}
     </div>
   </div>
 
-  <!-- Hero Progress Card -->
   <div class="hero-card-wrap">
     <div class="hero-card">
       <div class="hero-left">
@@ -749,13 +737,11 @@ input:checked+.slider:before{transform:translateX(22px);}
     </div>
   </div>
 
-  <!-- Error notices -->
   <div style="padding:0 16px;margin-top:12px;">
     <div id="errorNotice" class="error-notice">⚠️ File <strong>soal.js</strong> tidak ditemukan!</div>
     <div id="errorMateriNotice" class="error-notice" style="display:none;">⚠️ File materi tidak ditemukan!</div>
   </div>
 
-  <!-- Stats Row -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="s-icon blue">📚</div>
@@ -774,7 +760,6 @@ input:checked+.slider:before{transform:translateX(22px);}
     </div>
   </div>
 
-  <!-- Streak + Quote -->
   <div class="streak-section">
     <div class="streak-card">
       <div class="streak-left">
@@ -790,7 +775,6 @@ input:checked+.slider:before{transform:translateX(22px);}
     </div>
   </div>
 
-  <!-- Menu Grid -->
   <div class="section-title">Menu Utama</div>
   <div class="menu-grid">
     <div class="menu-item" onclick="playSound('menu');goTo('quizlistPage')">
@@ -858,8 +842,6 @@ input:checked+.slider:before{transform:translateX(22px);}
       <div class="menu-chevron">›</div>
     </div>
   </div>
-
-  <!-- Bottom padding -->
   <div style="height:20px;"></div>
 </div>
 
@@ -1389,25 +1371,43 @@ function togglePasswordVisibility(){
   if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
   else{inp.type='password';btn.textContent='👁️';}
 }
+
 function doLogin(){
   const u=document.getElementById('inputUsername').value.trim().toLowerCase();
   const p=document.getElementById('inputPassword').value;
   const errEl=document.getElementById('loginError');
   if(!u||!p){errEl.textContent='⚠️ Username dan password tidak boleh kosong!';errEl.classList.add('show');return;}
-  const pengguna=typeof daftarPengguna!=='undefined'?daftarPengguna:[];
+
+  // FIX: Ambil daftarPengguna, dengan fallback jika file JS tidak tersedia
+  let pengguna=[];
+  if(typeof daftarPengguna!=='undefined'&&Array.isArray(daftarPengguna)){
+    pengguna=daftarPengguna;
+  } else {
+    // Fallback default credentials jika daftarpengguna.js tidak ada
+    pengguna=[{username:'admin',password:'admin123'},{username:'user',password:'user123'}];
+  }
+
   const match=pengguna.find(x=>x.username.toLowerCase()===u&&x.password===p);
   if(match){
-    errEl.classList.remove('show');setLoggedInUser(match.username);
+    errEl.classList.remove('show');
+    setLoggedInUser(match.username);
     document.getElementById('inputUsername').value='';
     document.getElementById('inputPassword').value='';
     document.getElementById('btnEye').textContent='👁️';
     document.getElementById('inputPassword').type='password';
-    playSound('login');_showPage('homePage',true);refreshHomeStats();
+    playSound('login');
+    _showPage('homePage');
+    refreshHomeStats();
+    setRandomQuote();
   } else {
-    playSound('wrong');errEl.textContent='⚠️ Username atau password salah!';errEl.classList.add('show');
-    document.getElementById('inputPassword').value='';document.getElementById('inputPassword').focus();
+    playSound('wrong');
+    errEl.textContent='⚠️ Username atau password salah!';
+    errEl.classList.add('show');
+    document.getElementById('inputPassword').value='';
+    document.getElementById('inputPassword').focus();
   }
 }
+
 function showLogoutModal(){document.getElementById('logoutModal').classList.add('show');}
 function closeLogoutModal(){document.getElementById('logoutModal').classList.remove('show');}
 function doLogout(){
@@ -1417,7 +1417,7 @@ function doLogout(){
   hideSidebarToggle();
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
-  _showPage('loginPage',true);
+  _showPage('loginPage');
 }
 
 // ========== SIDEBAR TOGGLE ==========
@@ -1431,7 +1431,9 @@ function hideSidebarToggle(){
 // ========== BOTTOM NAV ==========
 const NAV_PAGES=['homePage','quizlistPage','statistikPage','akunPage'];
 const NAV_IDS=['navHome','navLatihan','navStat','navProfil'];
+// FIX: Halaman yang MENYEMBUNYIKAN bottom nav
 const BOTTOM_NAV_HIDE=['loginPage','quizPage','quizCepatPlayPage'];
+
 function navTo(pageId,navId){
   playSound('menu');goTo(pageId);
   NAV_IDS.forEach(id=>{
@@ -1457,26 +1459,51 @@ const PAGES=['homePage','quizlistPage','materiPage','materiContentPage','statist
   'quizCepatPage','quizCepatConfirmPage','quizCepatPlayPage','quizCepatResultPage','akunPage','loginPage'];
 const PAGES_WITH_SIDEBAR=['quizPage'];
 let currentPage='loginPage';
+
 function _showPage(pageId){
-  PAGES.forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
-  const target=document.getElementById(pageId);if(target)target.classList.add('active');
-  currentPage=pageId;window.scrollTo(0,0);
+  // Sembunyikan semua halaman
+  PAGES.forEach(p=>{
+    const el=document.getElementById(p);
+    if(el) el.classList.remove('active');
+  });
+  // Tampilkan halaman target
+  const target=document.getElementById(pageId);
+  if(target) target.classList.add('active');
+  currentPage=pageId;
+  window.scrollTo(0,0);
+
+  // Kelola bottom nav
   const nav=document.getElementById('bottomNav');
-  if(nav)nav.style.display=BOTTOM_NAV_HIDE.includes(pageId)?'none':'flex';
-  if(PAGES_WITH_SIDEBAR.includes(pageId))showSidebarToggle();
+  if(nav){
+    nav.style.display=BOTTOM_NAV_HIDE.includes(pageId)?'none':'flex';
+  }
+
+  // Kelola sidebar toggle
+  if(PAGES_WITH_SIDEBAR.includes(pageId)) showSidebarToggle();
   else hideSidebarToggle();
+
   updateNavHighlight(pageId);
 }
+
 function goTo(pageId){
   if(currentPage===pageId)return;
+  // Cek autentikasi — kecuali ke loginPage
   if(pageId!=='loginPage'&&!getLoggedInUser())return;
-  if(currentPage==='quizPage'&&pageId!=='quizPage'){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
-  if(currentPage==='quizCepatPlayPage'&&pageId!=='quizCepatPlayPage'){if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}}
-  _showPage(pageId);saveActivePage(pageId);
+  // Stop timer quiz jika meninggalkan quiz page
+  if(currentPage==='quizPage'&&pageId!=='quizPage'){
+    if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  }
+  if(currentPage==='quizCepatPlayPage'&&pageId!=='quizCepatPlayPage'){
+    if(qcState&&qcState.interval){clearInterval(qcState.interval);qcState.interval=null;}
+  }
+  _showPage(pageId);
+  saveActivePage(pageId);
+
   const menuMap={quizlistPage:'latihan',materiPage:'materi',statistikPage:'statistik',
     simulasiPage:'simulasi',petunjukPage:'petunjuk',tentangPage:'tentang',
     pencapaianPage:'pencapaian',quizCepatPage:'quizcepat',akunPage:'akun'};
   if(menuMap[pageId])markMenuVisited(menuMap[pageId]);
+
   if(pageId==='quizlistPage')refreshQuizList();
   if(pageId==='homePage'){refreshHomeStats();setRandomQuote();}
   if(pageId==='statistikPage')refreshStatistik();
@@ -1512,16 +1539,23 @@ window.addEventListener('popstate',function(e){
     const lastPage=getLastActivePage();
     const restorable=PAGES.filter(p=>!NON_RESTORABLE.includes(p));
     const targetPage=restorable.includes(lastPage)?lastPage:'homePage';
-    _showPage(targetPage);refreshHomeStats();setRandomQuote();
+    _showPage(targetPage);
+    refreshHomeStats();
+    setRandomQuote();
     if(targetPage==='quizlistPage')refreshQuizList();
     if(targetPage==='statistikPage')refreshStatistik();
     if(targetPage==='pencapaianPage')refreshPencapaian();
     if(targetPage==='quizCepatPage')renderQuizCepatGrid();
     if(targetPage==='akunPage')refreshAkunPage();
-    if(targetPage!=='homePage'){history.replaceState({page:'homePage'},'','');history.pushState({page:targetPage},'','');}
-    else{history.replaceState({page:'homePage'},'','');}
+    if(targetPage!=='homePage'){
+      history.replaceState({page:'homePage'},'','');
+      history.pushState({page:targetPage},'','');
+    } else {
+      history.replaceState({page:'homePage'},'','');
+    }
   } else {
-    _showPage('loginPage');history.replaceState({page:'loginPage'},'','');
+    _showPage('loginPage');
+    history.replaceState({page:'loginPage'},'','');
   }
 })();
 
@@ -1546,7 +1580,6 @@ function refreshHomeStats(){
   }
   const bestVal=best.length>0?Math.max(...best):0;
   const el=document.getElementById('homeStatBest');if(el)el.textContent=bestVal>0?bestVal+'/550':'—';
-  // Progress donut
   const pct=done>0?Math.round(done/5*100):0;
   const donutFill=document.getElementById('donutFill');
   const donutPct=document.getElementById('donutPct');
@@ -1556,10 +1589,8 @@ function refreshHomeStats(){
   if(donutPct)donutPct.textContent=pct+'%';
   if(heroCount)heroCount.innerHTML=`<strong>${done*22}</strong> dari 110 soal selesai`;
   if(heroProgbar)heroProgbar.style.width=pct+'%';
-  // Level
   const lvl=Math.min(8,Math.max(1,done+Math.floor(getBadgeStats().totalLulus/2)));
   const lvlEl=document.getElementById('homeLevelBadge');if(lvlEl)lvlEl.textContent=`Level ${lvl}`;
-  // Streak placeholder
   const totalSesi=['twk','tiu','tkp'].reduce((s,c)=>s+getQCTotalSesi(c),0);
   const streakEl=document.getElementById('homeStreak');if(streakEl)streakEl.textContent=Math.min(totalSesi,99);
 }
