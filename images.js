@@ -111,15 +111,27 @@ var IMAGES = {
   brain: '🧠',
   muscle: '💪',
   runner: '🏃',
-  shield: '🛡️'
+  shield: '🛡️',
+  
+  // Gambar (langsung dengan tag img + style)
+  alarm_fill: '<img src="images/alarm-fill.svg" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto; display: block;">',
+  logo: '<img src="images/logo.svg" style="width: 100px; height: 100px;">',
 };
 
 // Auto isi semua icon yang punya data-icon
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('[data-icon]').forEach(function(el) {
     var key = el.getAttribute('data-icon');
-    if (IMAGES[key]) {
-      el.textContent = IMAGES[key];
+    var value = IMAGES[key];
+    
+    if (!value) return;
+    
+    // Deteksi: kalau mengandung <img → langsung pakai innerHTML
+    if (value.includes('<img')) {
+      el.innerHTML = value;
+    } else {
+      // Emoji / teks biasa
+      el.textContent = value;
     }
   });
 });
