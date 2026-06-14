@@ -790,7 +790,7 @@ input:checked+.slider:before{transform:translateX(22px);}
       <label>Password</label>
       <div class="field-wrap">
         <input type="password" id="inputPassword" placeholder="Masukkan password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-        <button class="btn-eye" onclick="togglePasswordVisibility()" id="btnEye" type="button">👁️</button>
+        <button class="btn-eye" data-icon="eye2" onclick="togglePasswordVisibility()" id="btnEye" type="button"></button>
       </div>
     </div>
     <button class="btn-masuk" onclick="doLogin()">Masuk</button>
@@ -1805,9 +1805,16 @@ function getLastActivePage(){return localStorage.getItem(ACTIVE_PAGE_KEY)||'home
 
 // ========== AUTH UI ==========
 function togglePasswordVisibility(){
-  const inp=document.getElementById('inputPassword'),btn=document.getElementById('btnEye');
-  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
-  else{inp.type='password';btn.textContent='👁️';}
+  const inp = document.getElementById('inputPassword');
+  const btn = document.getElementById('btnEye');
+  
+  if(inp.type === 'password'){
+    inp.type = 'text';
+    btn.innerHTML = IMAGES['eye2_slash'];
+  } else {
+    inp.type = 'password';
+    btn.innerHTML = IMAGES['eye2'];
+  }
 }
 
 function doLogin(){
@@ -1831,7 +1838,7 @@ function doLogin(){
     setLoggedInUser(match.username);
     document.getElementById('inputUsername').value='';
     document.getElementById('inputPassword').value='';
-    document.getElementById('btnEye').textContent='👁️';
+    document.getElementById('btnEye').innerHTML = IMAGES['eye2'];
     document.getElementById('inputPassword').type='password';
     playSound('login');
     _showPage('homePage');
