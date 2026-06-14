@@ -744,6 +744,28 @@ input:checked+.slider:before{transform:translateX(22px);}
 @keyframes slideUpPop{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .page.active{animation:fadeIn .25s ease;}
+
+/* ===== GRID SKY HEADER ===== */
+.sky-header-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:2px;
+  padding:8px 12px 0;
+  position:relative;z-index:2;
+}
+.sky-cell{
+  border-radius:4px;overflow:hidden;cursor:pointer;
+  border:1.5px solid transparent;transition:border-color .2s,transform .15s;
+  position:relative;
+}
+.sky-cell:hover{transform:scale(1.12);z-index:10;}
+.sky-cell.sky-now{border-color:rgba(255,255,255,.75);box-shadow:0 0 6px rgba(255,255,255,.4);}
+.sky-cell canvas{display:block;width:100%;height:36px;}
+.sky-cell-lbl{
+  font-size:7px;font-weight:700;text-align:center;
+  color:rgba(255,255,255,.8);padding:1px 0 2px;
+  background:rgba(0,0,0,.2);
+}
 </style>
 </head>
 <body>
@@ -1560,181 +1582,188 @@ const QUOTES=[
   {q:"Sukses bukan kunci kebahagiaan. Kebahagiaanlah kunci sukses.",a:"Albert Schweitzer"},
 ];
 // ========== HEADER ANIMASI ==========
-// ========== HEADER ANIMASI REAL-TIME ==========
+// ========== HEADER ANIMASI — GRID 24 JAM ==========
 let _skyRaf = null;
-let _skyPrevHour = -1;
 let _skyBuilt = false;
 
-function updateHeaderAnim() {
-  if (_skyRaf) cancelAnimationFrame(_skyRaf);
-  _buildSkyDOM();
-  _skyRaf = requestAnimationFrame(_skyLoop);
+const SKY_STARS_CACHE = [];
+for(let i=0;i<20;i++) SKY_STARS_CACHE.push({
+  x:Math.random()*92+1, y:Math.random()*60+2,
+  r:Math.random()*1.2+0.5, phase:Math.random()*Math.PI*2
+});
+const SKY_CLOUDS = [{x:8,y:12,s:10},{x:30,y:9,s:9},{x:58,y:11,s:8},{x:80,y:8,s:7}];
+
+function _skyColorFor(h){
+  if(h<5)  return['#000814','#001d3d','#002d5f'];
+  if(h<6)  return['#0D2B6E','#8B3A00','#C85A00'];
+  if(h<7)  return['#0D47A1','#E65100','#FFA000'];
+  if(h<8)  return['#0D47A1','#1565C0','#42A5F5'];
+  if(h<11) return['#0D47A1','#1976D2','#29B6F6'];
+  if(h<15) return['#1565C0','#1E88E5','#29B6F6'];
+  if(h<17) return['#0D47A1','#BF360C','#E65100'];
+  if(h<18) return['#1A0050','#6A0D8C','#BF360C'];
+  if(h<19) return['#1A0050','#0D47A1','#BF360C'];
+  if(h<20) return['#100030','#0A2070','#1A0050'];
+  if(h<21) return['#050820','#001133','#0D47A1'];
+  return   ['#000510','#001133','#001d3d'];
+}
+function _starAlpha(h){ if(h<5)return 1;if(h<6)return .4;if(h<7)return .1;if(h<18)return 0;if(h<19)return .4;if(h<20)return .7;return 1; }
+function _cloudAlpha(h){ if(h<5||h>=20)return 0;if(h<6)return .4;if(h<7)return .7;if(h<11)return .85;if(h<15)return .7;if(h<18)return .5;if(h<20)return .2;return 0; }
+
+function _getSunPos(totalMin,W,H){
+  const f=(totalMin-360)/720;
+  if(f<=-0.12||f>=1.12)return null;
+  const fc=Math.max(0,Math.min(1,f));
+  const angle=Math.PI-fc*Math.PI;
+  return{x:W/2+W*0.46*Math.cos(angle), y:H+W*0.46*Math.sin(angle)*(-0.88),
+    op:f<0?Math.max(0,1+f/0.1):f>1?Math.max(0,1-(f-1)/0.1):1,
+    emoji:f<0.04?'🌅':f>0.96?'🌇':'☀️', sz:f>=0.4&&f<=0.6?13:10};
+}
+function _getMoonPos(totalMin,W,H){
+  let mf=totalMin-1080; if(mf<0)mf+=1440;
+  const f=mf/720;
+  if(f<=-0.12||f>=1.12)return null;
+  const fc=Math.max(0,Math.min(1,f));
+  const angle=Math.PI-fc*Math.PI;
+  return{x:W/2+W*0.46*Math.cos(angle), y:H+W*0.46*Math.sin(angle)*(-0.88),
+    op:f<0?Math.max(0,1+f/0.1):f>1?Math.max(0,1-(f-1)/0.1):1,
+    emoji:'🌙', sz:9};
 }
 
-function _buildSkyDOM() {
-  const wrap = document.getElementById('headerAnim');
-  if (!wrap || _skyBuilt) return;
-  _skyBuilt = true;
+function _drawSkyCell(ctx,W,H,hourOfCell,t){
+  const c=_skyColorFor(hourOfCell);
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,c[0]);g.addColorStop(.55,c[1]);g.addColorStop(1,c[2]);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 
-  wrap.innerHTML = `
-    <div id="_skyBg" style="position:absolute;inset:0;transition:background 4s ease;z-index:0;"></div>
-    <div id="_skyStars" style="position:absolute;inset:0;pointer-events:none;transition:opacity 3s ease;z-index:1;opacity:0;"></div>
-    <div id="_skyClouds" style="position:absolute;inset:0;pointer-events:none;transition:opacity 3s ease;z-index:2;opacity:0;"></div>
-    <div id="_skyExtras" style="position:absolute;inset:0;pointer-events:none;z-index:3;"></div>
-    <div id="_skyOrbit" style="position:absolute;width:300px;height:150px;bottom:0;left:50%;transform:translateX(-50%);z-index:4;pointer-events:none;overflow:visible;">
-      <div id="_skyBody" style="position:absolute;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1;will-change:transform;"></div>
-    </div>
-  `;
+  const sa=_starAlpha(hourOfCell);
+  if(sa>0){
+    SKY_STARS_CACHE.forEach(s=>{
+      const tw=0.6+0.4*Math.sin(t/1200+s.phase);
+      ctx.globalAlpha=sa*tw*0.85;
+      ctx.fillStyle='#fff';
+      ctx.beginPath();ctx.arc(s.x/100*W,s.y/100*H,s.r,0,Math.PI*2);ctx.fill();
+    });
+  }
+  ctx.globalAlpha=1;
 
-  // Inject keyframes sekali saja
-  if (!document.getElementById('_skyKf')) {
-    const s = document.createElement('style');
-    s.id = '_skyKf';
-    s.textContent = `
-      @keyframes _twinkle{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.1;transform:scale(.35)}}
-      @keyframes _drift{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}
-      @keyframes _float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-      @keyframes _shoot{0%{opacity:1;transform:rotate(28deg) translateX(0)}80%{opacity:.8}100%{opacity:0;transform:rotate(28deg) translateX(110px)}}
-    `;
+  const ca=_cloudAlpha(hourOfCell);
+  if(ca>0){
+    ctx.globalAlpha=ca*0.45;
+    ctx.font=`${W*0.35}px serif`;
+    SKY_CLOUDS.forEach(cl=>ctx.fillText('☁',cl.x/100*W,cl.y/100*H+W*0.35));
+    ctx.globalAlpha=1;
+  }
+
+  // Orbit tubuh langit
+  const totalMin=hourOfCell*60;
+  const sun=_getSunPos(totalMin,W,H);
+  if(sun){ctx.globalAlpha=sun.op;ctx.font=`${sun.sz}px serif`;ctx.fillText(sun.emoji,sun.x-sun.sz/2,sun.y+sun.sz/2);ctx.globalAlpha=1;}
+  const moon=_getMoonPos(totalMin,W,H);
+  if(moon){ctx.globalAlpha=moon.op;ctx.font=`${moon.sz}px serif`;ctx.fillText(moon.emoji,moon.x-moon.sz/2,moon.y+moon.sz/2);ctx.globalAlpha=1;}
+}
+
+function _headerSkyGradient(h){
+  const CFG={
+    0:'linear-gradient(135deg,#000814,#001d3d,#003566)',
+    5:'linear-gradient(135deg,#0D47A1,#BF360C,#F57F17)',
+    6:'linear-gradient(135deg,#0D47A1,#1565C0,#1976D2)',
+    11:'linear-gradient(135deg,#0D47A1,#1565C0,#1E88E5)',
+    15:'linear-gradient(135deg,#0D47A1,#BF360C,#E65100)',
+    18:'linear-gradient(135deg,#0D1030,#0D47A1,#BF360C)',
+    20:'linear-gradient(135deg,#000510,#001133,#0D47A1)',
+  };
+  const keys=[0,5,6,11,15,18,20].reverse();
+  const k=keys.find(k=>h>=k);
+  return CFG[k];
+}
+
+let _skyCanvases=[];
+let _skyPrevNowH=-1;
+
+function updateHeaderAnim(){
+  if(_skyRaf) cancelAnimationFrame(_skyRaf);
+  _buildSkyGrid();
+  _skyRaf=requestAnimationFrame(_skyGridLoop);
+}
+
+function _buildSkyGrid(){
+  const wrap=document.getElementById('headerAnim');
+  if(!wrap)return;
+
+  // Inject keyframes sekali
+  if(!document.getElementById('_skyKf')){
+    const s=document.createElement('style');s.id='_skyKf';
+    s.textContent=`@keyframes _twinkle{0%,100%{opacity:.9;transform:scale(1)}50%{opacity:.1;transform:scale(.35)}}`;
     document.head.appendChild(s);
   }
 
-  // Build stars (sekali)
-  let sh = '';
-  for (let i = 0; i < 22; i++) {
-    const x = (Math.random()*94+1).toFixed(1);
-    const y = (Math.random()*68+2).toFixed(1);
-    const sz = (Math.random()*1.8+.8).toFixed(1);
-    const dur = (1.5+Math.random()*2.5).toFixed(1);
-    const del = (Math.random()*2.5).toFixed(1);
-    sh += `<div style="position:absolute;left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;border-radius:50%;background:#fff;animation:_twinkle ${dur}s ease-in-out infinite ${del}s;"></div>`;
+  // Build grid HTML
+  let html='<div class="sky-header-grid" id="skyHeaderGrid">';
+  for(let h=0;h<24;h++){
+    html+=`<div class="sky-cell" id="skyCell_${h}" title="${String(h).padStart(2,'0')}:00">
+      <canvas id="skyCv_${h}" width="60" height="36"></canvas>
+      <div class="sky-cell-lbl">${String(h).padStart(2,'0')}</div>
+    </div>`;
   }
-  for (let i = 0; i < 3; i++) {
-    const x = (Math.random()*55+5).toFixed(0);
-    const y = (Math.random()*35+4).toFixed(0);
-    const del = (Math.random()*6).toFixed(1);
-    sh += `<div style="position:absolute;left:${x}%;top:${y}%;width:72px;height:1.5px;background:linear-gradient(90deg,rgba(255,255,255,.9),transparent);border-radius:2px;animation:_shoot 3.5s ease-in ${del}s infinite;transform:rotate(28deg);"></div>`;
-  }
-  document.getElementById('_skyStars').innerHTML = sh;
+  html+='</div>';
+  wrap.innerHTML=html;
 
-  // Build clouds (sekali)
-  const cData = [[5,10,26],[22,18,22],[48,13,28],[68,8,24],[84,20,20]];
-  document.getElementById('_skyClouds').innerHTML = cData.map(([x,y,sz],i) =>
-    `<div style="position:absolute;left:${x}%;top:${y}%;font-size:${sz}px;animation:_drift ${10+i*2}s ease-in-out infinite ${i*.8}s;opacity:.6;">☁️</div>`
-  ).join('');
+  // Cache canvas refs
+  _skyCanvases=[];
+  for(let h=0;h<24;h++) _skyCanvases.push(document.getElementById(`skyCv_${h}`));
+
+  // Klik sel jam → ubah greeting
+  for(let h=0;h<24;h++){
+    const cell=document.getElementById(`skyCell_${h}`);
+    if(cell) cell.addEventListener('click',(()=>{
+      const hh=h;
+      return ()=>{ playSound('select'); _showHourInfo(hh); };
+    })());
+  }
+
+  _skyBuilt=true;
 }
 
-function _skyLoop() {
-  const now = new Date();
-  const h = now.getHours();
-  const m = now.getMinutes();
-  const s = now.getSeconds();
+function _showHourInfo(h){
+  const phase=['Subuh','Subuh','Subuh','Subuh','Subuh','Fajar','Fajar',
+    'Pagi','Pagi','Pagi','Pagi','Pagi','Siang','Siang','Siang','Siang',
+    'Sore','Sore','Sore','Magrib','Magrib','Malam','Malam','Malam'][h];
+  const el=document.getElementById('homeGreetingDay');
+  if(el){ el.textContent=`${String(h).padStart(2,'0')}:00 — ${phase}`; }
+}
 
-  // Posisi matahari/bulan: arc setengah lingkaran
-  // Siang (06:00–18:00): terbit dari KIRI BAWAH → puncak TENGAH ATAS → terbenam KANAN BAWAH
-  // Malam (18:00–06:00): sama tapi bulan
-  const totalMin = h * 60 + m + s / 60;
-  const R = 150; // radius orbit (lebar div _skyOrbit = 300px, jadi center di x=150)
+function _skyGridLoop(ts){
+  if(!_skyBuilt){_skyRaf=requestAnimationFrame(_skyGridLoop);return;}
+  const nowH=new Date().getHours();
 
-  let frac, angleDeg;
-  const isSun = h >= 6 && h < 18;
-
-  if (isSun) {
-    // Jam 6:00 → frac=0 (kiri), Jam 12:00 → frac=0.5 (atas), Jam 18:00 → frac=1 (kanan)
-    frac = (totalMin - 360) / 720; // 0..1
-  } else {
-    // Bulan: Jam 18:00 → frac=0 (kiri), Jam 0:00 → frac=0.5 (atas), Jam 6:00 → frac=1 (kanan)
-    const moonMin = totalMin >= 1080 ? totalMin - 1080 : totalMin + 360;
-    frac = moonMin / 720;
-  }
-  frac = Math.max(0, Math.min(1, frac));
-
-  // frac=0 → angle=180° (kiri bawah), frac=0.5 → 90° (puncak), frac=1 → 0° (kanan bawah)
-  angleDeg = 180 - frac * 180;
-  const rad = angleDeg * Math.PI / 180;
-
-  // Koordinat di dalam div _skyOrbit (300x150)
-  // Center orbit ada di titik (150, 150) — bawah tengah div
-  const bx = 150 + R * Math.cos(rad); // 0(kiri)→150(tengah)→300(kanan)
-  const by = 150 - R * Math.sin(rad); // 150(bawah)→0(atas)→150(bawah)
-
-  const body = document.getElementById('_skyBody');
-  if (body) {
-    body.style.transform = `translate(${bx - 20}px, ${by - 20}px)`;
-
-    // Emoji & glow berdasarkan jam
-    if (h >= 6 && h < 7) {
-      body.textContent = '🌅';
-      body.style.fontSize = '26px';
-      body.style.filter = 'drop-shadow(0 0 8px rgba(255,140,40,.9))';
-    } else if (h >= 7 && h < 17) {
-      body.textContent = '☀️';
-      body.style.fontSize = (h >= 11 && h < 15) ? '34px' : '30px';
-      body.style.filter = (h >= 11 && h < 15)
-        ? 'drop-shadow(0 0 16px rgba(255,235,50,1))'
-        : 'drop-shadow(0 0 10px rgba(255,210,60,.75))';
-    } else if (h >= 17 && h < 19) {
-      body.textContent = '🌇';
-      body.style.fontSize = '26px';
-      body.style.filter = 'drop-shadow(0 0 8px rgba(255,90,20,.85))';
-    } else {
-      body.textContent = '🌙';
-      body.style.fontSize = '28px';
-      body.style.filter = 'drop-shadow(0 0 10px rgba(200,220,255,.65))';
+  // Update header background saat jam berubah
+  if(nowH!==_skyPrevNowH){
+    _skyPrevNowH=nowH;
+    const hdr=document.getElementById('topHeader');
+    if(hdr) hdr.style.background=_headerSkyGradient(nowH);
+    // Update highlight sel aktif
+    for(let h=0;h<24;h++){
+      const cell=document.getElementById(`skyCell_${h}`);
+      if(cell) cell.classList.toggle('sky-now',h===nowH);
+    }
+    // Update greeting
+    const gEl=document.getElementById('homeGreetingDay');
+    if(gEl){
+      const g=nowH<5?'Selamat subuh,':nowH<11?'Selamat pagi,':nowH<15?'Selamat siang,':nowH<18?'Selamat sore,':'Selamat malam,';
+      gEl.textContent=g;
     }
   }
 
-  // Update fase (hanya saat jam berubah, hemat DOM)
-  if (h !== _skyPrevHour) {
-    _skyPrevHour = h;
-    _applySkyPhase(h);
+  // Render semua 24 sel
+  for(let h=0;h<24;h++){
+    const cv=_skyCanvases[h];
+    if(!cv)continue;
+    const ctx=cv.getContext('2d');
+    _drawSkyCell(ctx,cv.width,cv.height,h,ts);
   }
 
-  _skyRaf = requestAnimationFrame(_skyLoop);
-}
-
-function _applySkyPhase(h) {
-  const header = document.getElementById('topHeader');
-  const bg = document.getElementById('_skyBg');
-  const stars = document.getElementById('_skyStars');
-  const clouds = document.getElementById('_skyClouds');
-  const extras = document.getElementById('_skyExtras');
-  if (!bg) return;
-
-  let phase;
-  if      (h >= 0  && h < 5)  phase = 'subuh';
-  else if (h >= 5  && h < 6)  phase = 'fajar';
-  else if (h >= 6  && h < 11) phase = 'pagi';
-  else if (h >= 11 && h < 15) phase = 'siang';
-  else if (h >= 15 && h < 18) phase = 'sore';
-  else if (h >= 18 && h < 20) phase = 'magrib';
-  else                         phase = 'malam';
-
-  const CFG = {
-    subuh:  { hdr:'linear-gradient(135deg,#000814 0%,#001d3d 50%,#003566 100%)', sky:'linear-gradient(180deg,#000814 0%,#001d3d 70%,#002d5f 100%)', stars:1, clouds:0 },
-    fajar:  { hdr:'linear-gradient(135deg,#0D47A1 0%,#BF360C 55%,#F57F17 100%)', sky:'linear-gradient(180deg,#0D47A1 0%,#E65100 60%,#FFA000 100%)', stars:.4, clouds:.5 },
-    pagi:   { hdr:'linear-gradient(135deg,#0D47A1 0%,#1565C0 50%,#1976D2 100%)', sky:'linear-gradient(180deg,#0D47A1 0%,#1976D2 55%,#29B6F6 100%)', stars:0, clouds:.85 },
-    siang:  { hdr:'linear-gradient(135deg,#0D47A1 0%,#1565C0 45%,#1E88E5 100%)', sky:'linear-gradient(180deg,#1565C0 0%,#1E88E5 45%,#29B6F6 100%)', stars:0, clouds:.7 },
-    sore:   { hdr:'linear-gradient(135deg,#0D47A1 0%,#BF360C 55%,#E65100 100%)', sky:'linear-gradient(180deg,#0D47A1 0%,#BF360C 60%,#E65100 100%)', stars:0, clouds:.6 },
-    magrib: { hdr:'linear-gradient(135deg,#0D1030 0%,#0D47A1 55%,#BF360C 100%)', sky:'linear-gradient(180deg,#1A0050 0%,#0D47A1 55%,#BF360C 100%)', stars:.6, clouds:.2 },
-    malam:  { hdr:'linear-gradient(135deg,#000510 0%,#001133 50%,#0D47A1 100%)', sky:'linear-gradient(180deg,#000510 0%,#001133 55%,#0D47A1 100%)', stars:1, clouds:0 },
-  };
-  const c = CFG[phase];
-  if (header) header.style.background = c.hdr;
-  bg.style.background = c.sky;
-  stars.style.opacity = c.stars;
-  clouds.style.opacity = c.clouds;
-
-  const EXTRAS = {
-    subuh:  `<div style="position:absolute;left:10%;bottom:22%;font-size:18px;opacity:.28;animation:_float 5s ease-in-out infinite;">🌄</div><div style="position:absolute;right:14%;bottom:26%;font-size:9px;opacity:.22;animation:_float 4s ease-in-out infinite .5s;">✨</div>`,
-    fajar:  `<div style="position:absolute;right:7%;bottom:18%;font-size:20px;opacity:.3;animation:_float 4s ease-in-out infinite;">🌸</div><div style="position:absolute;left:7%;top:24%;font-size:11px;opacity:.38;animation:_float 3s ease-in-out infinite .3s;">🌤️</div>`,
-    pagi:   `<div style="position:absolute;left:6%;top:22%;font-size:13px;opacity:.48;animation:_float 2.5s ease-in-out infinite;">🌸</div><div style="position:absolute;right:10%;top:17%;font-size:11px;opacity:.38;animation:_float 3s ease-in-out infinite .7s;">🐦</div><div style="position:absolute;left:32%;top:30%;font-size:9px;opacity:.38;animation:_float 2s ease-in-out infinite .3s;">✨</div>`,
-    siang:  `<div style="position:absolute;left:4%;top:20%;font-size:11px;opacity:.42;animation:_float 2s ease-in-out infinite;">💫</div><div style="position:absolute;right:6%;top:16%;font-size:9px;opacity:.38;animation:_float 1.5s ease-in-out infinite .5s;">✨</div><div style="position:absolute;left:42%;top:32%;font-size:10px;opacity:.32;animation:_float 2.5s ease-in-out infinite 1s;">💫</div>`,
-    sore:   `<div style="position:absolute;right:5%;bottom:16%;font-size:22px;opacity:.2;animation:_float 4s ease-in-out infinite;">🌅</div><div style="position:absolute;left:12%;bottom:24%;font-size:11px;opacity:.28;animation:_float 3.5s ease-in-out infinite .5s;">🍂</div><div style="position:absolute;right:24%;top:16%;font-size:9px;opacity:.38;animation:_float 3s ease-in-out infinite 1s;">🌤️</div>`,
-    magrib: `<div style="position:absolute;right:8%;bottom:20%;font-size:16px;opacity:.28;animation:_float 5s ease-in-out infinite;">🌆</div><div style="position:absolute;left:10%;top:18%;font-size:9px;opacity:.28;animation:_float 3s ease-in-out infinite .5s;">⭐</div>`,
-    malam:  `<div style="position:absolute;right:10%;bottom:22%;font-size:20px;opacity:.15;animation:_float 6s ease-in-out infinite;">🌙</div><div style="position:absolute;left:16%;top:14%;font-size:9px;opacity:.32;animation:_float 4s ease-in-out infinite 1s;">✨</div><div style="position:absolute;left:50%;bottom:26%;font-size:7px;opacity:.28;animation:_float 3s ease-in-out infinite .5s;">⭐</div>`,
-  };
-  if (extras) extras.innerHTML = EXTRAS[phase] || '';
+  _skyRaf=requestAnimationFrame(_skyGridLoop);
 }
 
 // ========== Quotes ==========
