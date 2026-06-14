@@ -1045,9 +1045,7 @@ input:checked+.slider:before{transform:translateX(22px);}
     <!-- NAVIGASI FIXED -->
 <div style="flex-shrink:0;background:#fff;padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:10px;">
   <button class="btn-prev" onclick="prevQuestion()" style="flex:1;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;background:#F1F5F9;color:var(--dark);">◀ Prev</button>
-  <button id="btnNextFinish" class="btn-next" onclick="nextQuestion()" style="flex:1;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#0D47A1,#1565C0);color:#fff;">Next ▶</button>
-</div>
-
+  <button id="btnNextFinish" class="btn-next" onclick="nextQuestion()">Next ▶</button></div>
 <!-- DAFTAR SOAL FIXED -->
 <div style="flex-shrink:0;background:#fff;padding:0 16px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));">
   <button onclick="toggleSidebar()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#E3F2FD;color:#1565C0;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid #BBDEFB;">📋 Daftar Soal</button>
@@ -1091,7 +1089,6 @@ input:checked+.slider:before{transform:translateX(22px);}
       <div class="result-btns">
         <button class="btn-r-ulangi" onclick="playSound('start');restartQuiz()">🔄 Ulangi</button>
         <button class="btn-r-eval" onclick="showEvaluasi()">📋 Evaluasi</button>
-        <button class="btn-r-home" onclick="playSound('back');backToHome()">🏠 Menu</button>
       </div>
       <div id="evaluasiPanel" class="evaluasi-panel"></div>
       <button id="btnCloseEval" class="btn-close-eval" style="display:none;" onclick="closeEvaluasi()">✖ Tutup Evaluasi</button>
@@ -1412,7 +1409,6 @@ input:checked+.slider:before{transform:translateX(22px);}
     <div class="qc-result-btns">
       <button class="btn-qc-ulang" onclick="playSound('start');ulangQuizCepat()">🔄 Ulangi</button>
       <button class="btn-qc-lain" onclick="playSound('back');goTo('quizCepatPage')">⚡ Lain</button>
-      <button class="btn-qc-home" onclick="playSound('back');goTo('homePage')">🏠 Menu</button>
     </div>
     
   </div>
@@ -2611,6 +2607,11 @@ function loadQuestion(){
   if(curQ===questions.length-1){btn.textContent='✅ Selesai';btn.className='btn-finish';btn.onclick=finishQuiz;}
   else{btn.textContent='Next ▶';btn.className='btn-next';btn.onclick=nextQuestion;}
   updateGrid();
+  const btnPrev=document.querySelector('.btn-prev');
+  if(btnPrev){
+    if(curQ===0){btnPrev.style.opacity='.4';btnPrev.style.pointerEvents='none';}
+    else{btnPrev.style.opacity='1';btnPrev.style.pointerEvents='auto';}
+  }
 }
 function saveAnswer(){const sel=document.querySelector('input[name="ans"]:checked');if(sel){const idx=parseInt(sel.value);if(questions[curQ].isTKP)userScores[curQ]=questions[curQ].optionScores[idx];else userAnswers[curQ]=idx;updateGrid();}}
 function nextQuestion(){playSound('next');saveAnswer();if(curQ<questions.length-1){curQ++;loadQuestion();}}
