@@ -120,7 +120,7 @@ var quizTWK= [
     pembahasan: ""
   },
   { // No 21
-    q: "abila di dalam masyarakat terdapat konsolidasi yang terdiri atas dua kelompok berlatar belakang etnis dan kebudayaan yang berbeda, maka akan berpotensi menimbulkan ...",
+    q: "Apabila di dalam masyarakat terdapat konsolidasi yang terdiri atas dua kelompok berlatar belakang etnis dan kebudayaan yang berbeda, maka akan berpotensi menimbulkan ...",
     opt: ["integrasi sosial","diferensiasi sosial","konflik sosial","disintegrasi sosial","reintegrasi sosial"],
     a: 1,
     pembahasan: ""
