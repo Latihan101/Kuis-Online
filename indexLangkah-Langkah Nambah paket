@@ -1,0 +1,158 @@
+Saya lihat strukturnya. Untuk menambah paket lebih dari 5, ada beberapa bagian kode yang perlu diubah. Berikut panduan lengkapnya:
+Yang Perlu Diubah
+1. Tambah script di bagian bawah HTML (setelah paket5.js):
+
+<script src="paket6.js"></script>
+<script src="paket7.js"></script>
+<!-- dst -->
+
+2. Ubah angka 5 jadi jumlah paket baru di beberapa tempat:
+Di fungsi refreshHomeStats, refreshStatistik, getBadgeStats, refreshAkunPage, dan lainnya ada loop for(let i=1;i<=5;i++) — ganti semua jadi misalnya i<=10.
+3. Ubah array quizMeta (sekitar baris const quizMeta=[...):
+
+const quizMeta=[
+  {id:1,name:'Paket 1',icon:'📘'},
+  {id:2,name:'Paket 2',icon:'📗'},
+  {id:3,name:'Paket 3',icon:'📙'},
+  {id:4,name:'Paket 4',icon:'📕'},
+  {id:5,name:'Paket 5',icon:'📔'},
+  {id:6,name:'Paket 6',icon:'📒'}, // tambah
+  {id:7,name:'Paket 7',icon:'📃'}, // tambah
+];
+
+4. Update stat card "Total Soal" di home (angka 110 hardcoded):
+
+<!-- Ganti ini: -->
+<div class="s-val">110</div>
+<!-- Jadi dinamis, atau ubah manual sesuai total soal -->
+
+
+Cara Paling Efisien: Buat Variabel Global
+Daripada ubah satu-satu, tambahkan ini di awal script:
+
+const TOTAL_PAKET = 7; // ← cukup ubah angka ini saja
+
+Lalu ganti semua i<=5 jadi i<=TOTAL_PAKET, dan ubah tampilan s-val total soal jadi:
+
+// Hitung otomatis
+let totalSoalAll = 0;
+for(let i=1;i<=TOTAL_PAKET;i++){
+  const b = getSoalBank(i);
+  totalSoalAll += b.twk.length + b.tiu.length + b.tkp.length;
+}
+
+//==========================================================================================//
+
+Setelah `const TOTAL_PAKET = 7;`, tambahkan ini — lalu ganti semua bagian yang hardcode angka 5:
+
+---
+
+## 1. Letakkan di paling atas script (setelah `// ========== CEK FILE ==========`)
+
+```javascript
+const TOTAL_PAKET = 7; // ← ubah angka ini jika tambah paket lagi
+```
+
+---
+
+## 2. Ganti fungsi `cek file` agar otomatis
+
+```javascript
+(function(){
+  const vars = Array.from({length:TOTAL_PAKET},(_,i)=>'paket'+(i+1));
+  if(!vars.some(v=>typeof window[v]!=='undefined'))
+    document.getElementById('errorNotice').style.display='block';
+  const mv=['materiTWK','materiTIU','materiTKP'];
+  if(!mv.some(v=>typeof window[v]!=='undefined'))
+    document.getElementById('errorMateriNotice').style.display='block';
+})();
+```
+
+---
+
+## 3. Ganti `quizMeta`
+
+```javascript
+const PAKET_ICONS = ['📘','📗','📙','📕','📔','📒','📃','📄','📑','🗒️'];
+const quizMeta = Array.from({length:TOTAL_PAKET},(_,i)=>({
+  id: i+1,
+  name: `Paket ${i+1}`,
+  icon: PAKET_ICONS[i] || '📋'
+}));
+```
+
+---
+
+## 4. Ganti `refreshHomeStats` — bagian loop
+
+Cari:
+```javascript
+for(let i=1;i<=5;i++){
+```
+Di dalam `refreshHomeStats`, ganti jadi:
+```javascript
+for(let i=1;i<=TOTAL_PAKET;i++){
+```
+
+Dan ganti stat card total soal yang hardcode `110` — di HTML ubah jadi:
+```html
+<div class="s-val" id="homeStatTotalSoal">110</div>
+```
+Lalu di akhir `refreshHomeStats` tambahkan:
+```javascript
+let totalSemuaSoalDinamis = 0;
+for(let i=1;i<=TOTAL_PAKET;i++){
+  const b = getSoalBank(i);
+  totalSemuaSoalDinamis += b.twk.length + b.tiu.length + b.tkp.length;
+}
+const elTot = document.getElementById('homeStatTotalSoal');
+if(elTot) elTot.textContent = totalSemuaSoalDinamis;
+
+const elLat = document.getElementById('homeStatLatihan');
+if(elLat) elLat.textContent = TOTAL_PAKET;
+```
+
+---
+
+## 5. Ganti semua loop lain yang pakai `i<=5`
+
+Cari dan ganti di fungsi-fungsi ini:
+
+| Fungsi | Ganti |
+|---|---|
+| `refreshAkunPage` | `i<=5` → `i<=TOTAL_PAKET` |
+| `getBadgeStats` | `i<=5` → `i<=TOTAL_PAKET` |
+| `refreshStatistik` | `i<=5` → `i<=TOTAL_PAKET` |
+| `mulaiSimulasi` | `i<=5` → `i<=TOTAL_PAKET` |
+| `resetAllProgress` | `i<=5` → `i<=TOTAL_PAKET` |
+
+---
+
+## 6. Ganti badge "Selesaikan semua 5 paket"
+
+Cari:
+```javascript
+{id:'all_done',...,check:s=>s.totalDone>=5},
+```
+Ganti:
+```javascript
+{id:'all_done',...,check:s=>s.totalDone>=TOTAL_PAKET},
+```
+
+Dan di `akunPage` HTML stat card:
+```html
+<!-- Ganti hardcode "0 / 5" jadi dinamis lewat JS -->
+<span class="akun-row-val" id="akunPaketDone">0 / 5</span>
+```
+Sudah otomatis karena `refreshAkunPage` mengisi nilainya — tapi ganti baris ini di fungsi tersebut:
+```javascript
+setEl('akunPaketDone', done + ' / ' + TOTAL_PAKET);
+```
+
+---
+
+Setelah semua ini, untuk tambah paket berikutnya cukup:
+1. Ubah `TOTAL_PAKET = 8` (atau berapa pun)
+2. Tambah `<script src="paket8.js"></script>` di HTML
+3. Buat file `paket8.js` dengan format yang sama
+
